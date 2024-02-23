@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Texture2D" uid="uid://wgrpnctk5kdp" path="res://iso-test-1.png" id="1_dml6c"]
+[ext_resource type="Texture2D" uid="uid://d0bf26ov3kemy" path="res://character.png" id="2_0r2b6"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_74qju"]
 tile_data = PackedInt32Array(0, 65536, 0, 1, 65536, 0, 2, 65536, 0, 65538, 65536, 0)
@@ -57,6 +58,12 @@ texture_region_size = Vector2i(690, 946)
 6:1/0 = 0
 6:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xq4yj"]
+texture = ExtResource("2_0r2b6")
+margins = Vector2i(60, 18)
+texture_region_size = Vector2i(240, 331)
+0:0/0 = 0
+
 [resource]
 tile_shape = 1
 tile_layout = 5
@@ -65,4 +72,5 @@ occlusion_layer_0/light_mask = 1
 terrain_set_0/mode = 0
 sources/0 = SubResource("TileSetAtlasSource_rsnl8")
 sources/1 = SubResource("TileSetAtlasSource_jmqy1")
+sources/2 = SubResource("TileSetAtlasSource_xq4yj")
 pattern_0 = SubResource("TileMapPattern_74qju")

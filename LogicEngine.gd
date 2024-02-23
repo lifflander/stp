@@ -38,7 +38,7 @@ class Unit:
 		
 	func renderAtLocation():
 		print("renderAtLocation location=", location)
-		tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(3, 3)
+		tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(0, 0)
 
 var is_initialized : bool = false
 
@@ -52,7 +52,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	print("process engine: ", tile_map)
+	#print("process engine: ", tile_map)
 	if tile_map != null and not is_initialized:
 		is_initialized = true
 		initialize(2)

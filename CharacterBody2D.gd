@@ -22,7 +22,6 @@ func _input(event):
 			var map_pos = tile_map.local_to_map(local_pos)
 			print(map_pos)
 			tile_map.special_cell = Vector2i(map_pos.x,map_pos.y)
-			tile_map.set_cell(1, Vector2i(map_pos.x,map_pos.y), 0, Vector2i(1,1), 0)
 			
 	elif event is InputEventMouseMotion and dragging:
 		var new_position = get_local_mouse_position()

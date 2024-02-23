@@ -1,7 +1,7 @@
 extends TileMap
 class_name IsoTileMap
 
-const unit_tile_set : int = 0
+const unit_tile_set : int = 2
 var width : int = 10
 var height : int = 10
 var special_cell : Vector2i = Vector2i(-1,-1)
