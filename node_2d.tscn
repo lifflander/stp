@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=6 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
 [ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="3_2d54c"]
 [ext_resource type="Script" path="res://CharacterBody2D.gd" id="3_qhnfj"]
+[ext_resource type="Script" path="res://LogicEngine.gd" id="3_uiovt"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -14,6 +15,9 @@ rendering_quadrant_size = 30
 format = 2
 layer_0/tile_data = PackedInt32Array(-65537, 0, 0, -131073, 65536, 0, -1, 131072, 0, 0, 65536, 1, -262144, 0, 1, 65535, 65536, 0, 131071, 65536, 0, -262143, 65536, 4, 65536, 65536, 0, 131073, 65536, 0, 1, 65536, 0, 65537, 65536, 0, -65535, 65536, 0, -65536, 65536, 0, -131072, 65536, 0, -196608, 65536, 0, -196607, 65536, 0, -131071, 65536, 0, 131072, 262144, 5, 196607, 262144, 4, -65534, 393217, 2, 65538, 196608, 4, -131070, 196608, 4, -65533, 196608, 4, 2, 196608, 4)
 script = ExtResource("2_dd161")
+
+[node name="LogicEngine" type="Node" parent="."]
+script = ExtResource("3_uiovt")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 script = ExtResource("3_qhnfj")
