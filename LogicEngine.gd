@@ -1,6 +1,6 @@
 class_name LogicEngine extends Node
 
-@onready var tile_map : IsoTileMap = get_node("Tiles")
+@onready var tile_map : IsoTileMap = get_parent().get_node("Tiles")
 
 var turn_counter : int = 0
 var players : Array[Player]
@@ -34,9 +34,13 @@ class Unit:
 	func _init(in_tile_map : IsoTileMap, in_location : Vector2i):
 		tile_map = in_tile_map
 		location = in_location
+		renderAtLocation()
 		
 	func renderAtLocation():
-		tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(0, 0)
+		print("renderAtLocation location=", location)
+		tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(3, 3)
+
+var is_initialized : bool = false
 
 func initialize(num_players : int):
 	for i in num_players:
@@ -45,8 +49,10 @@ func initialize(num_players : int):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("Logic Engine is ready")
-	initialize(2)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	print("process engine: ", tile_map)
+	if tile_map != null and not is_initialized:
+		is_initialized = true
+		initialize(2)
