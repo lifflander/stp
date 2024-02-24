@@ -1,7 +1,10 @@
-[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=14 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Texture2D" uid="uid://wgrpnctk5kdp" path="res://iso-test-1.png" id="1_dml6c"]
-[ext_resource type="Texture2D" uid="uid://d0bf26ov3kemy" path="res://character.png" id="2_0r2b6"]
+[ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
+[ext_resource type="Texture2D" uid="uid://b0wwswgu3i444" path="res://Spaceman_4.png" id="2_r85mu"]
+[ext_resource type="Texture2D" uid="uid://ctcpcdrq8bdq7" path="res://Tileset_1.png" id="3_ikaif"]
+[ext_resource type="Texture2D" uid="uid://df0cjtfex5ee3" path="res://Photon_Tank_1.png" id="4_x2max"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_74qju"]
 tile_data = PackedInt32Array(0, 65536, 0, 1, 65536, 0, 2, 65536, 0, 65538, 65536, 0)
@@ -23,6 +26,7 @@ texture_region_size = Vector2i(698, 563)
 4:2/0 = 0
 4:3/0 = 0
 2:3/0 = 0
+2:3/0/texture_origin = Vector2i(0, 50)
 3:4/0 = 0
 4:4/0 = 0
 5:4/0 = 0
@@ -58,19 +62,55 @@ texture_region_size = Vector2i(690, 946)
 6:1/0 = 0
 6:0/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xq4yj"]
-texture = ExtResource("2_0r2b6")
-margins = Vector2i(60, 18)
-texture_region_size = Vector2i(240, 331)
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3deau"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f0a4u"]
+texture = ExtResource("2_r85mu")
+margins = Vector2i(300, 50)
+texture_region_size = Vector2i(350, 400)
 0:0/0 = 0
+0:0/0/texture_origin = Vector2i(20, 55)
+0:0/0/material = ExtResource("2_40q4k")
+0:0/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_3deau")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k64m7"]
+texture = ExtResource("3_ikaif")
+margins = Vector2i(0, 155)
+separation = Vector2i(4, 0)
+texture_region_size = Vector2i(625, 500)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fwkjo"]
+texture = ExtResource("3_ikaif")
+separation = Vector2i(4, 0)
+texture_region_size = Vector2i(625, 650)
+4:0/0 = 0
+4:0/0/texture_origin = Vector2i(0, 75)
+5:0/0 = 0
+5:0/0/texture_origin = Vector2i(0, 75)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gjg5q"]
+texture = ExtResource("4_x2max")
+margins = Vector2i(200, 50)
+texture_region_size = Vector2i(525, 370)
+use_texture_padding = false
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 75)
+0:0/0/material = ExtResource("2_40q4k")
 
 [resource]
 tile_shape = 1
 tile_layout = 5
-tile_size = Vector2i(690, 400)
+tile_size = Vector2i(625, 360)
 occlusion_layer_0/light_mask = 1
 terrain_set_0/mode = 0
 sources/0 = SubResource("TileSetAtlasSource_rsnl8")
 sources/1 = SubResource("TileSetAtlasSource_jmqy1")
-sources/2 = SubResource("TileSetAtlasSource_xq4yj")
+sources/2 = SubResource("TileSetAtlasSource_f0a4u")
+sources/3 = SubResource("TileSetAtlasSource_k64m7")
+sources/4 = SubResource("TileSetAtlasSource_fwkjo")
+sources/5 = SubResource("TileSetAtlasSource_gjg5q")
 pattern_0 = SubResource("TileMapPattern_74qju")

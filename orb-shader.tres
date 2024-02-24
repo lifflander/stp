@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dp8smeaxg8g1"]
+
+[ext_resource type="Shader" path="res://orb-shader.gdshader" id="1_vg168"]
+
+[resource]
+shader = ExtResource("1_vg168")
+shader_parameter/offset = Vector2(-0.061, -0.036)
+shader_parameter/shadow_alpha = 0.4

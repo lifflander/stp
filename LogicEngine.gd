@@ -16,7 +16,10 @@ class Player:
 		player_id = in_player_id
 		
 		# Dummy insertion of a unit
-		units.append(Unit.new(tile_map, Vector2i(player_id, player_id)))
+		if player_id == 0:
+			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), 2))
+		else:
+			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), 5))
 
 class UnitAbilities:
 	var distance : int = 1
@@ -30,15 +33,18 @@ class Unit:
 	var selected : bool = false
 	var abilities : UnitAbilities = UnitAbilities.new()
 	var tile_map : IsoTileMap
+	var unit_source_id : int
 	
-	func _init(in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int):
 		tile_map = in_tile_map
 		location = in_location
+		unit_source_id = in_unit_source_id
 		renderAtLocation()
 		
 	func renderAtLocation():
 		print("renderAtLocation location=", location)
 		tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(0, 0)
+		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = unit_source_id
 
 var is_initialized : bool = false
 
