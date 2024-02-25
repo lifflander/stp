@@ -161,8 +161,8 @@ texture_region_size = Vector2i(480, 450)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r0v2n"]
 texture = ExtResource("8_5s6m1")
-margins = Vector2i(0, 100)
-texture_region_size = Vector2i(482, 294)
+margins = Vector2i(0, 50)
+texture_region_size = Vector2i(482, 350)
 0:0/0 = 0
 0:0/0/texture_origin = Vector2i(0, 55)
 0:0/0/modulate = Color(1, 1, 1, 0.486275)
@@ -170,6 +170,9 @@ texture_region_size = Vector2i(482, 294)
 1:0/0/texture_origin = Vector2i(0, 55)
 2:0/0 = 0
 2:0/0/texture_origin = Vector2i(0, 55)
+3:0/0 = 0
+3:0/0/texture_origin = Vector2i(0, 10)
+3:0/0/modulate = Color(1, 1, 1, 0.388235)
 
 [resource]
 tile_shape = 1

@@ -69,6 +69,10 @@ func select_cell(cell : Vector2i):
 	var set_selected = true
 	if cell == selected_cell:
 		selected_times += 1
+		
+		if hasUnitOnSquare(selected_cell) and selected_times % 2 != 0:
+			unit_is_selected = false
+			unselect_around()
 	else:
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
 			print("calling move unit")
@@ -76,6 +80,8 @@ func select_cell(cell : Vector2i):
 			logic_engine.move_unit(selected_cell, cell)
 			selected_cell = Vector2i(-1,-1)
 			set_selected = false
+		else:
+			unselect_around()
 		
 		unselect_current()
 		selected_times = 0
@@ -126,14 +132,14 @@ func _process(delta):
 		var topx : Vector2i = Vector2i(selected_cell.x - 1, selected_cell.y - 1)
 		var bottomx : Vector2i = Vector2i(selected_cell.x + 1, selected_cell.y + 1)
 		
-		set_cell(selection_layer, right, 11, Vector2i(0,0), 0)
-		set_cell(selection_layer, left, 11, Vector2i(0,0), 0)
-		set_cell(selection_layer, top, 11, Vector2i(0,0), 0)
-		set_cell(selection_layer, bottom, 11, Vector2i(0,0), 0)
-		set_cell(selection_layer, rightx, 11, Vector2i(0,0), 0)
-		set_cell(selection_layer, leftx, 11, Vector2i(0,0), 0)
-		set_cell(selection_layer, topx, 11, Vector2i(0,0), 0)
-		set_cell(selection_layer, bottomx, 11, Vector2i(0,0), 0)
+		set_cell(selection_layer, right, 9, Vector2i(3,0), 0)
+		set_cell(selection_layer, left, 9, Vector2i(3,0), 0)
+		set_cell(selection_layer, top, 9, Vector2i(3,0), 0)
+		set_cell(selection_layer, bottom, 9, Vector2i(3,0), 0)
+		set_cell(selection_layer, rightx, 9, Vector2i(3,0), 0)
+		set_cell(selection_layer, leftx, 9, Vector2i(3,0), 0)
+		set_cell(selection_layer, topx, 9, Vector2i(3,0), 0)
+		set_cell(selection_layer, bottomx, 9, Vector2i(3,0), 0)
 
 	for child in label_holder.get_children():
 		label_holder.remove_child(child)

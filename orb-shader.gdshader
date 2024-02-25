@@ -1,7 +1,7 @@
 shader_type canvas_item;
 
-uniform vec4 line_color  = vec4(0.0, 0.3, 1.0, 0.6);
-uniform float line_thickness : hint_range(0, 10) = 15.0;
+uniform vec4 line_color  = vec4(0.0, 0.3, 1.0, 0.3);
+uniform float line_thickness : hint_range(0, 10) = 5.0;
 
 void fragment() {
 	vec2 size = TEXTURE_PIXEL_SIZE * line_thickness;
