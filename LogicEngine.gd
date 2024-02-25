@@ -5,6 +5,8 @@ class_name LogicEngine extends Node
 var turn_counter : int = 0
 var players : Array[Player]
 
+const unit_tile_set : int = 8
+
 class Player:
 	var player_id : int = -1
 	var last_turn_completed : int = -1
@@ -17,9 +19,9 @@ class Player:
 		
 		# Dummy insertion of a unit
 		if player_id == 0:
-			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), 8))
+			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), unit_tile_set))
 		else:
-			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), 8))
+			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), unit_tile_set))
 
 class UnitAbilities:
 	var distance : int = 1
