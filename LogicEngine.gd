@@ -4,6 +4,7 @@ class_name LogicEngine extends Node
 
 var turn_counter : int = 0
 var players : Array[Player]
+var all_units : Array[Unit]
 
 const unit_tile_set : int = 8
 
@@ -12,16 +13,18 @@ class Player:
 	var last_turn_completed : int = -1
 	var units : Array[Unit]
 	var tile_map : IsoTileMap
+	var le : LogicEngine
 	
-	func _init(in_tile_map : IsoTileMap, in_player_id : int):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_player_id : int):
 		tile_map = in_tile_map
 		player_id = in_player_id
+		le = in_le
 		
 		# Dummy insertion of a unit
 		if player_id == 0:
-			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), unit_tile_set))
+			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set))
 		else:
-			units.append(Unit.new(tile_map, Vector2i(player_id, player_id), unit_tile_set))
+			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set))
 
 class UnitAbilities:
 	var distance : int = 1
@@ -36,12 +39,18 @@ class Unit:
 	var abilities : UnitAbilities = UnitAbilities.new()
 	var tile_map : IsoTileMap
 	var unit_source_id : int
+	var le : LogicEngine
 	
-	func _init(in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int):
 		tile_map = in_tile_map
 		location = in_location
 		unit_source_id = in_unit_source_id
+		le = in_le
+		le.all_units.append(self)
 		renderAtLocation()
+		
+	func changeLocation():
+		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = -1
 		
 	func renderAtLocation():
 		print("renderAtLocation location=", location)
@@ -53,9 +62,16 @@ class Unit:
 
 var is_initialized : bool = false
 
+func move_unit(unit_location : Vector2i, new_location : Vector2i):
+	for u in all_units:
+		if u.location == unit_location:
+			u.changeLocation()
+			u.location = new_location
+			u.renderAtLocation()
+
 func initialize(num_players : int):
 	for i in num_players:
-		players.append(Player.new(tile_map, i))
+		players.append(Player.new(self, tile_map, i))
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
