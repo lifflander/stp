@@ -22,9 +22,9 @@ class Player:
 		
 		# Dummy insertion of a unit
 		if player_id == 0:
-			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set))
+			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set, 0))
 		else:
-			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set))
+			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set, 1))
 
 class UnitAbilities:
 	var distance : int = 1
@@ -40,25 +40,29 @@ class Unit:
 	var tile_map : IsoTileMap
 	var unit_source_id : int
 	var le : LogicEngine
+	var unit_type : int = 0
 	
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int, in_unit_type : int):
 		tile_map = in_tile_map
 		location = in_location
 		unit_source_id = in_unit_source_id
+		unit_type = in_unit_type
 		le = in_le
 		le.all_units.append(self)
 		renderAtLocation()
 		
 	func changeLocation():
 		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = -1
+		tile_map.unit_layer_health[tile_map.convertTo1D(location)] = -1
 		
 	func renderAtLocation():
 		print("renderAtLocation location=", location)
-		if location.x == 0:
+		if unit_type == 0:
 			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(0, 0)
 		else:
 			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(2, 0)
 		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = unit_source_id
+		tile_map.unit_layer_health[tile_map.convertTo1D(location)] = abilities.hp
 
 var is_initialized : bool = false
 

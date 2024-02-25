@@ -48,6 +48,11 @@ layer_3/z_index = 1
 layer_3/tile_data = PackedInt32Array()
 script = ExtResource("2_dd161")
 
+[node name="LabelHolder" type="Node2D" parent="Tiles"]
+z_index = 10
+y_sort_enabled = true
+position = Vector2(281, 790)
+
 [node name="LogicEngine" type="Node" parent="."]
 script = ExtResource("3_uiovt")
 
