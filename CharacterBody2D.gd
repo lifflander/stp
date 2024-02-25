@@ -16,13 +16,17 @@ func _input(event):
 		else:
 			dragging = false
 			prev_position = Vector2(0,0)
-			
-			var local_pos = get_global_mouse_position()
-			print(local_pos)
+
+			var global_pos = get_global_mouse_position()
+
+			print("global: ", global_pos)
+			var local_pos = tile_map.to_local(global_pos)
+			print("local: ", local_pos)
 			var map_pos = tile_map.local_to_map(local_pos)
 			print(map_pos)
-			tile_map.special_cell = Vector2i(map_pos.x,map_pos.y)
-			
+			tile_map.unselect_current()
+			tile_map.select_cell(map_pos)
+
 	elif event is InputEventMouseMotion and dragging:
 		var new_position = get_local_mouse_position()
 		position = prev_position - new_position
