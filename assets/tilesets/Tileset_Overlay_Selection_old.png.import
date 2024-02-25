@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfi2wkiec7kl0"
-path="res://.godot/imported/Mars_Tileset_2.png-4bd19690b3051f7922ad7b4aa91e6dbe.ctex"
+uid="uid://drjl2n37ifpa0"
+path="res://.godot/imported/Tileset_Overlay_Selection_old.png-0352c62133df64875424e56d4abf8fa0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mars_Tileset_2.png"
-dest_files=["res://.godot/imported/Mars_Tileset_2.png-4bd19690b3051f7922ad7b4aa91e6dbe.ctex"]
+source_file="res://assets/tilesets/Tileset_Overlay_Selection_old.png"
+dest_files=["res://.godot/imported/Tileset_Overlay_Selection_old.png-0352c62133df64875424e56d4abf8fa0.ctex"]
 
 [params]
 

@@ -1,73 +1,18 @@
-[gd_resource type="TileSet" load_steps=24 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=19 format=3 uid="uid://0jewu7pkdoe8"]
 
-[ext_resource type="Texture2D" uid="uid://wgrpnctk5kdp" path="res://iso-test-1.png" id="1_dml6c"]
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
-[ext_resource type="Texture2D" uid="uid://b0wwswgu3i444" path="res://Spaceman_4.png" id="2_r85mu"]
-[ext_resource type="Texture2D" uid="uid://ctcpcdrq8bdq7" path="res://Tileset_1.png" id="3_ikaif"]
-[ext_resource type="Texture2D" uid="uid://d1m2xqftxh6nk" path="res://x.png" id="4_nga2q"]
-[ext_resource type="Texture2D" uid="uid://df0cjtfex5ee3" path="res://Photon_Tank_1.png" id="4_x2max"]
-[ext_resource type="Texture2D" uid="uid://bfi2wkiec7kl0" path="res://Mars_Tileset_2.png" id="6_bji4p"]
-[ext_resource type="Texture2D" uid="uid://2mr8bmf0j5kw" path="res://Units-Tileset_1.png" id="7_jby72"]
-[ext_resource type="Texture2D" uid="uid://ch07hmn8g1ydq" path="res://Tileset_Overlay_Selection.png" id="8_5s6m1"]
+[ext_resource type="Texture2D" uid="uid://2mr8bmf0j5kw" path="res://assets/tilesets/Units-Tileset_1.png" id="2_t27ds"]
+[ext_resource type="Texture2D" uid="uid://b0wwswgu3i444" path="res://assets/tilesets/Spaceman_4.png" id="3_ol1jg"]
+[ext_resource type="Texture2D" uid="uid://ctcpcdrq8bdq7" path="res://assets/tilesets/Tileset_1.png" id="4_vypo8"]
+[ext_resource type="Texture2D" uid="uid://df0cjtfex5ee3" path="res://assets/tilesets/Photon_Tank_1.png" id="5_wtof3"]
+[ext_resource type="Texture2D" uid="uid://ch07hmn8g1ydq" path="res://assets/tilesets/Tileset_Overlay_Selection.png" id="7_6aigk"]
+[ext_resource type="Texture2D" uid="uid://bfi2wkiec7kl0" path="res://assets/tilesets/Mars_Tileset_2.png" id="8_iwov0"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_74qju"]
 tile_data = PackedInt32Array(0, 65536, 0, 1, 65536, 0, 2, 65536, 0, 65538, 65536, 0)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rsnl8"]
-texture = ExtResource("1_dml6c")
-margins = Vector2i(0, 36)
-separation = Vector2i(128, 77)
-texture_region_size = Vector2i(698, 563)
-0:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:3/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-4:3/0 = 0
-2:3/0 = 0
-2:3/0/texture_origin = Vector2i(0, 50)
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-5:3/0 = 0
-5:2/0 = 0
-5:1/0 = 0
-5:0/0 = 0
-2:2/0 = 0
-1:2/0 = 0
-0:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-0:4/0 = 0
-0:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-1:5/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-4:0/0 = 0
-4:1/0 = 0
-3:0/0 = 0
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jmqy1"]
-texture = ExtResource("1_dml6c")
-margins = Vector2i(16, 713)
-texture_region_size = Vector2i(690, 946)
-6:2/0 = 0
-6:2/0/texture_origin = Vector2i(0, 200)
-6:1/0 = 0
-6:0/0 = 0
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v8dyp"]
-texture = ExtResource("7_jby72")
+texture = ExtResource("2_t27ds")
 separation = Vector2i(7, 0)
 texture_region_size = Vector2i(480, 450)
 0:0/0 = 0
@@ -81,17 +26,10 @@ texture_region_size = Vector2i(480, 450)
 3:0/0 = 0
 3:0/0/material = ExtResource("2_40q4k")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l1666"]
-texture = ExtResource("4_nga2q")
-margins = Vector2i(50, 50)
-texture_region_size = Vector2i(370, 320)
-0:0/0 = 0
-0:0/0/texture_origin = Vector2i(-120, -10)
-
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3deau"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f0a4u"]
-texture = ExtResource("2_r85mu")
+texture = ExtResource("3_ol1jg")
 margins = Vector2i(300, 50)
 texture_region_size = Vector2i(350, 400)
 0:0/0 = 0
@@ -100,7 +38,7 @@ texture_region_size = Vector2i(350, 400)
 0:0/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_3deau")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k64m7"]
-texture = ExtResource("3_ikaif")
+texture = ExtResource("4_vypo8")
 margins = Vector2i(0, 155)
 separation = Vector2i(4, 0)
 texture_region_size = Vector2i(625, 500)
@@ -110,7 +48,7 @@ texture_region_size = Vector2i(625, 500)
 3:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fwkjo"]
-texture = ExtResource("3_ikaif")
+texture = ExtResource("4_vypo8")
 separation = Vector2i(4, 0)
 texture_region_size = Vector2i(625, 650)
 4:0/0 = 0
@@ -119,7 +57,7 @@ texture_region_size = Vector2i(625, 650)
 5:0/0/texture_origin = Vector2i(0, 75)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gjg5q"]
-texture = ExtResource("4_x2max")
+texture = ExtResource("5_wtof3")
 margins = Vector2i(200, 50)
 texture_region_size = Vector2i(525, 370)
 use_texture_padding = false
@@ -128,7 +66,7 @@ use_texture_padding = false
 0:0/0/material = ExtResource("2_40q4k")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_naytt"]
-texture = ExtResource("6_bji4p")
+texture = ExtResource("8_iwov0")
 margins = Vector2i(0, 111)
 separation = Vector2i(4, 0)
 texture_region_size = Vector2i(480, 384)
@@ -138,7 +76,7 @@ texture_region_size = Vector2i(480, 384)
 3:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jsbub"]
-texture = ExtResource("6_bji4p")
+texture = ExtResource("8_iwov0")
 separation = Vector2i(3, 0)
 texture_region_size = Vector2i(480, 498)
 4:0/0 = 0
@@ -149,7 +87,7 @@ texture_region_size = Vector2i(480, 498)
 6:0/0/texture_origin = Vector2i(0, 55)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_somb0"]
-texture = ExtResource("7_jby72")
+texture = ExtResource("2_t27ds")
 separation = Vector2i(7, 0)
 texture_region_size = Vector2i(480, 450)
 0:0/0 = 0
@@ -160,7 +98,7 @@ texture_region_size = Vector2i(480, 450)
 3:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r0v2n"]
-texture = ExtResource("8_5s6m1")
+texture = ExtResource("7_6aigk")
 margins = Vector2i(0, 50)
 texture_region_size = Vector2i(482, 350)
 0:0/0 = 0
@@ -180,8 +118,6 @@ tile_layout = 5
 tile_size = Vector2i(480, 277)
 occlusion_layer_0/light_mask = 1
 terrain_set_0/mode = 0
-sources/0 = SubResource("TileSetAtlasSource_rsnl8")
-sources/1 = SubResource("TileSetAtlasSource_jmqy1")
 sources/2 = SubResource("TileSetAtlasSource_f0a4u")
 sources/3 = SubResource("TileSetAtlasSource_k64m7")
 sources/4 = SubResource("TileSetAtlasSource_fwkjo")
@@ -191,5 +127,4 @@ sources/7 = SubResource("TileSetAtlasSource_jsbub")
 sources/8 = SubResource("TileSetAtlasSource_somb0")
 sources/9 = SubResource("TileSetAtlasSource_r0v2n")
 sources/10 = SubResource("TileSetAtlasSource_v8dyp")
-sources/11 = SubResource("TileSetAtlasSource_l1666")
 pattern_0 = SubResource("TileMapPattern_74qju")

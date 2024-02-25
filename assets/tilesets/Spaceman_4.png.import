@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://df0cjtfex5ee3"
-path="res://.godot/imported/Photon_Tank_1.png-42a6f661b9cdffad545b2ff9fb917cb0.ctex"
+uid="uid://b0wwswgu3i444"
+path="res://.godot/imported/Spaceman_4.png-ada26480e3ae4b76c8c65ed5112a53dc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Photon_Tank_1.png"
-dest_files=["res://.godot/imported/Photon_Tank_1.png-42a6f661b9cdffad545b2ff9fb917cb0.ctex"]
+source_file="res://assets/tilesets/Spaceman_4.png"
+dest_files=["res://.godot/imported/Spaceman_4.png-ada26480e3ae4b76c8c65ed5112a53dc.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1m2xqftxh6nk"
-path="res://.godot/imported/x.png-3348759b97191df77e4508fc5eeab1e9.ctex"
+uid="uid://df0cjtfex5ee3"
+path="res://.godot/imported/Photon_Tank_1.png-9a67bd217448be080e0f86fe80796bc1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://x.png"
-dest_files=["res://.godot/imported/x.png-3348759b97191df77e4508fc5eeab1e9.ctex"]
+source_file="res://assets/tilesets/Photon_Tank_1.png"
+dest_files=["res://.godot/imported/Photon_Tank_1.png-9a67bd217448be080e0f86fe80796bc1.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://culir6abi1kqn"
-path="res://.godot/imported/Photon_Tank_2.png-c786a08478bd5f79c5abc70991d53341.ctex"
+path="res://.godot/imported/Photon_Tank_2.png-808856769685fcdb7b4fcdf43012ca27.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Photon_Tank_2.png"
-dest_files=["res://.godot/imported/Photon_Tank_2.png-c786a08478bd5f79c5abc70991d53341.ctex"]
+source_file="res://assets/tilesets/Photon_Tank_2.png"
+dest_files=["res://.godot/imported/Photon_Tank_2.png-808856769685fcdb7b4fcdf43012ca27.ctex"]
 
 [params]
 
