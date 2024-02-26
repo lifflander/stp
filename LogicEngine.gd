@@ -21,10 +21,8 @@ class Player:
 		le = in_le
 		
 		# Dummy insertion of a unit
-		if player_id == 0:
-			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set, 0))
-		else:
-			units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set, 1))
+
+		units.append(Unit.new(in_le, tile_map, Vector2i(player_id, player_id), unit_tile_set, player_id))
 
 class UnitAbilities:
 	var distance : int = 1
@@ -59,8 +57,10 @@ class Unit:
 		print("renderAtLocation location=", location)
 		if unit_type == 0:
 			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(0, 0)
-		else:
+		elif unit_type == 1:
 			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(2, 0)
+		else:
+			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(4, 0)
 		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = unit_source_id
 		tile_map.unit_layer_health[tile_map.convertTo1D(location)] = abilities.hp
 
@@ -86,4 +86,4 @@ func _process(delta):
 	#print("process engine: ", tile_map)
 	if tile_map != null and not is_initialized:
 		is_initialized = true
-		initialize(2)
+		initialize(3)

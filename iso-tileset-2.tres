@@ -1,11 +1,11 @@
 [gd_resource type="TileSet" load_steps=19 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
-[ext_resource type="Texture2D" uid="uid://2mr8bmf0j5kw" path="res://assets/tilesets/Units-Tileset_1.png" id="2_t27ds"]
+[ext_resource type="Texture2D" uid="uid://d2ql6dm0nudk4" path="res://assets/tilesets/Units-Tileset_1.png" id="2_t27ds"]
 [ext_resource type="Texture2D" uid="uid://b0wwswgu3i444" path="res://assets/tilesets/Spaceman_4.png" id="3_ol1jg"]
 [ext_resource type="Texture2D" uid="uid://ctcpcdrq8bdq7" path="res://assets/tilesets/Tileset_1.png" id="4_vypo8"]
 [ext_resource type="Texture2D" uid="uid://df0cjtfex5ee3" path="res://assets/tilesets/Photon_Tank_1.png" id="5_wtof3"]
-[ext_resource type="Texture2D" uid="uid://ch07hmn8g1ydq" path="res://assets/tilesets/Tileset_Overlay_Selection.png" id="7_6aigk"]
+[ext_resource type="Texture2D" uid="uid://gt15n4bniw2k" path="res://assets/tilesets/Tileset_Overlay_Selection.png" id="7_6aigk"]
 [ext_resource type="Texture2D" uid="uid://bfi2wkiec7kl0" path="res://assets/tilesets/Mars_Tileset_2.png" id="8_iwov0"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_74qju"]
@@ -25,6 +25,9 @@ texture_region_size = Vector2i(480, 450)
 2:0/0/material = ExtResource("2_40q4k")
 3:0/0 = 0
 3:0/0/material = ExtResource("2_40q4k")
+4:0/0 = 0
+4:0/0/texture_origin = Vector2i(0, 40)
+4:0/0/material = ExtResource("2_40q4k")
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3deau"]
 
@@ -96,6 +99,10 @@ texture_region_size = Vector2i(480, 450)
 1:0/0/texture_origin = Vector2i(0, 55)
 2:0/0 = 0
 3:0/0 = 0
+4:0/0 = 0
+4:0/0/texture_origin = Vector2i(0, 40)
+5:0/0 = 0
+6:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r0v2n"]
 texture = ExtResource("7_6aigk")
@@ -111,6 +118,7 @@ texture_region_size = Vector2i(482, 350)
 3:0/0 = 0
 3:0/0/texture_origin = Vector2i(0, 10)
 3:0/0/modulate = Color(1, 1, 1, 0.388235)
+4:0/0 = 0
 
 [resource]
 tile_shape = 1
