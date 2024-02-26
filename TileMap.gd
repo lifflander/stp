@@ -112,6 +112,11 @@ func select_cell(cell : Vector2i):
 func _process(delta):
 	var layer : int = 0
 
+	for child in label_holder.get_children():
+		label_holder.remove_child(child)
+	for child in sprite_holder.get_children():
+		sprite_holder.remove_child(child)
+
 	# Draw the base map layer
 	for x in range(width):
 		for y in range(height):
@@ -139,6 +144,26 @@ func _process(delta):
 			var base_to_draw : Vector2i = base_layer[lin_idx]
 			if base_to_draw.x != -1 and base_to_draw.y != -1:
 				set_cell(layer, Vector2i(x,y), 12, base_to_draw, 0)
+				var the_base = logic_engine.get_base(Vector2i(x,y))
+				the_base.name
+
+				var new_label : Label = Label.new()
+				new_label.position.x = 40
+				new_label.label_settings = load("res://base-name-label-settings.tres")
+				new_label.text = the_base.name
+
+				var poly_pos = map_to_local(Vector2i(x, y))
+				poly_pos.x -= 75
+				var global_pos = to_global(poly_pos)
+				var new_poly : Polygon2D = Polygon2D.new()
+				new_poly.position = global_pos
+				var height : int = 75
+				var width : int = 200
+				new_poly.set_polygon(PackedVector2Array([Vector2(0,0),Vector2(width,0),Vector2(width,height),Vector2(0,height)]))
+				new_poly.set_color(Color(0,0,0,0.7))
+				new_poly.add_child(new_label)
+
+				label_holder.add_child(new_poly)
 
 	if selected_cell.x != -1 and selected_cell.y != -1:
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
@@ -169,11 +194,6 @@ func _process(delta):
 		set_cell(selection_layer, topx, 9, Vector2i(3,0), 0)
 		set_cell(selection_layer, bottomx, 9, Vector2i(3,0), 0)
 
-	for child in label_holder.get_children():
-		label_holder.remove_child(child)
-	for child in sprite_holder.get_children():
-		sprite_holder.remove_child(child)
-
 	# draw health decorators
 	for x in range(width):
 		for y in range(height):
@@ -181,8 +201,8 @@ func _process(delta):
 			if unit_layer_health[lin_idx] != -1:
 				var new_label : Label = Label.new()
 				var label_pos = map_to_local(Vector2i(x, y))
-				label_pos.x -= 150
-				label_pos.y -= tile_set.tile_size.y - 50
+				label_pos.x -= 180
+				label_pos.y -= tile_set.tile_size.y - 80
 				var global_pos = to_global(label_pos)
 				new_label.position = global_pos
 				new_label.label_settings = load("res://unit-hp-label-settings.tres")
