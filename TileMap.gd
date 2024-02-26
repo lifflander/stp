@@ -3,6 +3,7 @@ class_name IsoTileMap
 
 @onready var logic_engine : LogicEngine = get_parent().get_node("LogicEngine")
 @onready var label_holder : Node2D = get_node("LabelHolder")
+@onready var sprite_holder : Node2D = get_node("SpriteHolder")
 
 const unit_tile_set : int = 8
 var width : int = 10
@@ -11,12 +12,26 @@ var selected_cell : Vector2i = Vector2i(-1,-1)
 var selected_times : int = 0
 var unit_is_selected : bool = false
 
+var base_layer : Array[Vector2i]
 var unit_layer : Array[Vector2i]
 var unit_tile_set_layer : Array[int]
 var unit_layer_health : Array[int]
+var unit_layer_build : Array[int]
 
 const selection_layer = 3
 const unit_layer_id = 1
+const city_layer_id = 4
+
+class BuilderIcon extends Sprite2D:
+	var location : Vector2i
+	var le : LogicEngine
+	
+	func _input(event):
+		var global_pos = get_global_mouse_position()
+		var local_pos = to_local(global_pos)
+		if event is InputEventMouseButton and event.is_pressed() and get_rect().has_point(local_pos):
+			print("clicked builder")
+			le.build_city(location)
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -26,13 +41,17 @@ func _ready():
 	# Populate layers
 	# At the beginning no units exist to set all to -1
 	unit_layer.resize(width*height)
+	base_layer.resize(width*height)
 	unit_tile_set_layer.resize(width*height)
 	unit_layer_health.resize(width*height)
+	unit_layer_build.resize(width*height)
 	for x in range(width):
 		for y in range(height):
 			#print("x=", x, ", y=", y, ", 1d=", convertTo1D(Vector2i(x,y)))
 			unit_layer[convertTo1D(Vector2i(x,y))] = Vector2i(-1, -1)
+			base_layer[convertTo1D(Vector2i(x,y))] = Vector2i(-1, -1)
 			unit_layer_health[convertTo1D(Vector2i(x,y))] = -1
+			unit_layer_build[convertTo1D(Vector2i(x,y))] = -1
 
 func hasUnitOnSquare(cell) -> bool:
 	if cell.x == -1 or cell.y == -1:
@@ -112,6 +131,15 @@ func _process(delta):
 				set_cell(layer, Vector2i(x,y), unit_tile_set_layer[lin_idx], unit_to_draw, 0)
 				set_cell(selection_layer, selected_cell, -1, Vector2i(0,0), 0)
 
+	# Draw the city layer
+	layer = city_layer_id
+	for x in range(width):
+		for y in range(height):
+			var lin_idx : int = convertTo1D(Vector2i(x,y))
+			var base_to_draw : Vector2i = base_layer[lin_idx]
+			if base_to_draw.x != -1 and base_to_draw.y != -1:
+				set_cell(layer, Vector2i(x,y), 12, base_to_draw, 0)
+
 	if selected_cell.x != -1 and selected_cell.y != -1:
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
 			var lin_idx : int = convertTo1D(selected_cell)
@@ -143,6 +171,8 @@ func _process(delta):
 
 	for child in label_holder.get_children():
 		label_holder.remove_child(child)
+	for child in sprite_holder.get_children():
+		sprite_holder.remove_child(child)
 
 	# draw health decorators
 	for x in range(width):
@@ -158,6 +188,22 @@ func _process(delta):
 				new_label.label_settings = load("res://unit-hp-label-settings.tres")
 				new_label.text = str(unit_layer_health[lin_idx])
 				label_holder.add_child(new_label)
+
+	# draw builder decorators
+	for x in range(width):
+		for y in range(height):
+			var lin_idx : int = convertTo1D(Vector2i(x,y))
+			if unit_layer_build[lin_idx] != -1:
+				var new_sprite : BuilderIcon = BuilderIcon.new()
+				new_sprite.location = Vector2i(x,y)
+				new_sprite.le = logic_engine
+				var label_pos = map_to_local(Vector2i(x, y))
+				label_pos.x += 50
+				label_pos.y -= tile_set.tile_size.y - 20
+				var global_pos = to_global(label_pos)
+				new_sprite.position = global_pos
+				new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
+				sprite_holder.add_child(new_sprite)
 
 
 

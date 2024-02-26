@@ -1,7 +1,8 @@
-[gd_resource type="TileSet" load_steps=19 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=21 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
 [ext_resource type="Texture2D" uid="uid://d2ql6dm0nudk4" path="res://assets/tilesets/Units-Tileset_1.png" id="2_t27ds"]
+[ext_resource type="Texture2D" uid="uid://dalalwkh6mad7" path="res://assets/tilesets/Base_Tileset_1.png" id="3_itlhw"]
 [ext_resource type="Texture2D" uid="uid://b0wwswgu3i444" path="res://assets/tilesets/Spaceman_4.png" id="3_ol1jg"]
 [ext_resource type="Texture2D" uid="uid://ctcpcdrq8bdq7" path="res://assets/tilesets/Tileset_1.png" id="4_vypo8"]
 [ext_resource type="Texture2D" uid="uid://df0cjtfex5ee3" path="res://assets/tilesets/Photon_Tank_1.png" id="5_wtof3"]
@@ -34,6 +35,17 @@ texture_region_size = Vector2i(480, 450)
 6:0/0 = 0
 6:0/0/texture_origin = Vector2i(0, 40)
 6:0/0/material = ExtResource("2_40q4k")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vgkwd"]
+texture = ExtResource("3_itlhw")
+margins = Vector2i(0, 40)
+texture_region_size = Vector2i(480, 488)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 160)
+1:0/0 = 0
+1:0/0/texture_origin = Vector2i(0, 160)
+2:0/0 = 0
+2:0/0/texture_origin = Vector2i(0, 160)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3deau"]
 
@@ -143,4 +155,5 @@ sources/7 = SubResource("TileSetAtlasSource_jsbub")
 sources/8 = SubResource("TileSetAtlasSource_somb0")
 sources/9 = SubResource("TileSetAtlasSource_r0v2n")
 sources/10 = SubResource("TileSetAtlasSource_v8dyp")
+sources/12 = SubResource("TileSetAtlasSource_vgkwd")
 pattern_0 = SubResource("TileMapPattern_74qju")

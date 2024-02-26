@@ -46,7 +46,15 @@ layer_3/name = "Selection"
 layer_3/y_sort_enabled = true
 layer_3/z_index = 1
 layer_3/tile_data = PackedInt32Array()
+layer_4/name = "City"
+layer_4/y_sort_enabled = true
+layer_4/z_index = 2
+layer_4/tile_data = PackedInt32Array()
 script = ExtResource("2_dd161")
+
+[node name="SpriteHolder" type="Node2D" parent="Tiles"]
+z_index = 11
+position = Vector2(281, 790)
 
 [node name="LabelHolder" type="Node2D" parent="Tiles"]
 z_index = 10
