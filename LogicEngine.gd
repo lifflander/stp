@@ -45,6 +45,13 @@ class Unit:
 		location = in_location
 		unit_source_id = in_unit_source_id
 		unit_type = in_unit_type
+		
+		if unit_type == 3:
+			abilities.hp = 20
+
+		if unit_type == 2:
+			abilities.hp = 5
+
 		le = in_le
 		le.all_units.append(self)
 		renderAtLocation()
@@ -59,8 +66,10 @@ class Unit:
 			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(0, 0)
 		elif unit_type == 1:
 			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(2, 0)
-		else:
+		elif unit_type == 2:
 			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(4, 0)
+		else:
+			tile_map.unit_layer[tile_map.convertTo1D(location)] = Vector2i(5, 0)
 		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = unit_source_id
 		tile_map.unit_layer_health[tile_map.convertTo1D(location)] = abilities.hp
 
@@ -86,4 +95,4 @@ func _process(delta):
 	#print("process engine: ", tile_map)
 	if tile_map != null and not is_initialized:
 		is_initialized = true
-		initialize(3)
+		initialize(4)
