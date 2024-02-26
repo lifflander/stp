@@ -193,7 +193,7 @@ func _process(delta):
 	for x in range(width):
 		for y in range(height):
 			var lin_idx : int = convertTo1D(Vector2i(x,y))
-			if unit_layer_build[lin_idx] != -1:
+			if unit_layer_build[lin_idx] != -1 and unit_is_selected and selected_cell.x == x and selected_cell.y == y:
 				var new_sprite : BuilderIcon = BuilderIcon.new()
 				new_sprite.location = Vector2i(x,y)
 				new_sprite.le = logic_engine
