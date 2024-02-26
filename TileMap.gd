@@ -29,6 +29,8 @@ class BuilderIcon extends Sprite2D:
 	func _input(event):
 		var global_pos = get_global_mouse_position()
 		var local_pos = to_local(global_pos)
+		# if event is InputEventMouseMotion and get_rect().has_point(local_pos):
+		# 	new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
 		if event is InputEventMouseButton and event.is_pressed() and get_rect().has_point(local_pos):
 			print("clicked builder")
 			le.build_city(location)
@@ -107,6 +109,16 @@ func select_cell(cell : Vector2i):
 
 	if set_selected:
 		selected_cell = cell
+		if hasUnitOnSquare(selected_cell):
+			var lin_idx : int = convertTo1D(selected_cell)
+			var unit_to_draw : Vector2i = unit_layer[lin_idx]
+			var source = tile_set.get_source(10) as TileSetAtlasSource
+			var origin = source.get_tile_data(unit_to_draw, 0).texture_origin
+			var tile_data = source.get_tile_data(unit_to_draw, 0)
+
+			var tween = get_tree().create_tween()
+			tween.tween_property(tile_data, "texture_origin:y", origin.y+50, 0.1).set_trans(Tween.TRANS_LINEAR)
+			tween.chain().tween_property(tile_data, "texture_origin:y", origin.y, 0.1).set_trans(Tween.TRANS_LINEAR)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
