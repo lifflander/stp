@@ -33,22 +33,21 @@ rendering_quadrant_size = 30
 format = 2
 layer_0/name = "Base layer"
 layer_0/y_sort_enabled = true
-layer_0/tile_data = PackedInt32Array(0, 131078, 0, -65536, 131078, 0, -65535, 131078, 0, 1, 131078, 0, -131072, 131078, 0, -131071, 131078, 0, -65534, 393223, 0, -65533, 131078, 0, -131070, 393223, 0, -196606, 393223, 0, -196607, 131078, 0, -262143, 131078, 0, -262144, 131078, 0, -196608, 131078, 0, -262142, 131078, 0, -262141, 131078, 0, -196605, 131078, 0, -131069, 131078, 0, 2, 131078, 0, 3, 131078, 0, 65539, 65542, 0, 65538, 6, 0, 65537, 6, 0, 65536, 6, 0, 131072, 6, 0, 131073, 6, 0, 131074, 6, 0, 131075, 65542, 0, 196609, 262151, 0, 196610, 327687, 0, 262145, 262151, 0, 262146, 327687, 0, 196611, 65542, 0, 262147, 65542, 0, 196608, 6, 0, 262144, 6, 0, 327680, 6, 0, 327681, 6, 0, 327682, 6, 0, 65540, 65542, 0, 131076, 65542, 0, 196612, 65542, 0, 262148, 65542, 0, 327683, 65542, 0, 327684, 65542, 0)
-layer_1/name = "Unit layer"
+layer_0/tile_data = PackedInt32Array(65539, 65542, 0, 65537, 6, 0, 65536, 6, 0, 131072, 6, 0, 131073, 6, 0, 131074, 6, 0, 131075, 65542, 0, 196609, 262151, 0, 196610, 327687, 0, 262145, 262151, 0, 262146, 327687, 0, 196611, 65542, 0, 262147, 65542, 0, 196608, 6, 0, 262144, 6, 0, 327680, 6, 0, 327681, 6, 0, 327682, 6, 0, 65540, 65542, 0, 131076, 65542, 0, 196612, 65542, 0, 262148, 65542, 0, 327683, 65542, 0, 327684, 65542, 0, 0, 65542, 0, 1, 65542, 0, 2, 65542, 0, 3, 65542, 0, 4, 65542, 0, 327685, 131078, 0, 262149, 131078, 0, 196613, 131078, 0, 131077, 131078, 0, 65541, 131078, 0, 5, 131078, 0, 6, 131078, 0, 65542, 131078, 0, 131078, 393223, 0, 196614, 393223, 0, 196615, 393223, 0, 196616, 393223, 0, 327686, 131078, 0, 262150, 131078, 0, 327687, 131078, 0, 262151, 131078, 0, 327688, 131078, 0, 262152, 131078, 0, 131080, 131078, 0, 131079, 131078, 0, 65543, 131078, 0, 7, 131078, 0, 8, 131078, 0, 65544, 131078, 0, 65538, 6, 0)
+layer_1/name = "Resources"
 layer_1/y_sort_enabled = true
-layer_1/z_index = 3
-layer_1/tile_data = PackedInt32Array(-131069, 65544, 0, -262141, 196616, 0)
-layer_2/name = "Resources"
+layer_1/tile_data = PackedInt32Array(65539, 131081, 0, 196611, 131081, 0, 131075, 65545, 0, 262150, 131081, 0, 6, 131081, 0, 65543, 65545, 0, 65544, 65545, 0, 65541, 131081, 0, 327688, 131081, 0)
+layer_2/name = "City"
 layer_2/y_sort_enabled = true
-layer_2/z_index = 2
-layer_2/tile_data = PackedInt32Array(65539, 131081, 0, 196611, 131081, 0, -196608, 131081, 0, 131075, 65545, 0, -65533, 65545, 0)
-layer_3/name = "Selection"
+layer_2/y_sort_origin = 150
+layer_2/tile_data = PackedInt32Array()
+layer_3/name = "Unit layer"
 layer_3/y_sort_enabled = true
-layer_3/z_index = 1
+layer_3/y_sort_origin = 150
 layer_3/tile_data = PackedInt32Array()
-layer_4/name = "City"
+layer_4/name = "Selection"
 layer_4/y_sort_enabled = true
-layer_4/z_index = 2
+layer_4/z_index = 1
 layer_4/tile_data = PackedInt32Array()
 script = ExtResource("2_dd161")
 
@@ -70,3 +69,38 @@ script = ExtResource("3_qhnfj")
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 zoom = Vector2(0.7, 0.7)
 script = ExtResource("3_2d54c")
+
+[node name="UI" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ColorRect" type="ColorRect" parent="UI/Control"]
+layout_mode = 2
+offset_top = -100.0
+offset_right = 1300.0
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/Control"]
+layout_mode = 0
+offset_top = -75.0
+offset_right = 1300.0
+offset_bottom = -25.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Control/CenterContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="UI/Control/CenterContainer/HBoxContainer"]
+layout_mode = 2
+text = "Test Button"
+
+[node name="Button2" type="Button" parent="UI/Control/CenterContainer/HBoxContainer"]
+layout_mode = 2
+text = "Test Button"

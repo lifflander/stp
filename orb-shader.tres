@@ -5,4 +5,4 @@
 [resource]
 shader = ExtResource("1_vg168")
 shader_parameter/line_color = Vector4(0, 0.3, 1, 0.6)
-shader_parameter/line_thickness = 15.0
+shader_parameter/line_thickness = 10.0

@@ -18,9 +18,9 @@ var unit_tile_set_layer : Array[int]
 var unit_layer_health : Array[int]
 var unit_layer_build : Array[int]
 
-const selection_layer = 3
-const unit_layer_id = 1
-const city_layer_id = 4
+var selection_layer : int = -1
+var unit_layer_id : int = -1
+var city_layer_id : int = -1
 
 class BuilderIcon extends Sprite2D:
 	var location : Vector2i
@@ -40,6 +40,18 @@ func convertTo1D(idx : Vector2i) -> int:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	for i in get_layers_count():
+		if get_layer_name(i) == "Base layer":
+			pass
+		if get_layer_name(i) == "Resources":
+			pass
+		if get_layer_name(i) == "City":
+			city_layer_id = i
+		if get_layer_name(i) == "Unit layer":
+			unit_layer_id = i
+		if get_layer_name(i) == "Selection":
+			selection_layer = i
+
 	# Populate layers
 	# At the beginning no units exist to set all to -1
 	unit_layer.resize(width*height)
