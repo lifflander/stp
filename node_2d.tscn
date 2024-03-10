@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=9 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
 [ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="3_2d54c"]
+[ext_resource type="Script" path="res://Map.gd" id="3_et2nw"]
 [ext_resource type="Script" path="res://CharacterBody2D.gd" id="3_qhnfj"]
 [ext_resource type="Script" path="res://LogicEngine.gd" id="3_uiovt"]
 
@@ -58,6 +59,9 @@ position = Vector2(281, 790)
 z_index = 10
 y_sort_enabled = true
 position = Vector2(281, 790)
+
+[node name="Map" type="Node" parent="."]
+script = ExtResource("3_et2nw")
 
 [node name="LogicEngine" type="Node" parent="."]
 script = ExtResource("3_uiovt")

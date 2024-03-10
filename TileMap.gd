@@ -2,6 +2,7 @@ extends TileMap
 class_name IsoTileMap
 
 @onready var logic_engine : LogicEngine = get_parent().get_node("LogicEngine")
+@onready var map : Map = get_parent().get_node("Map")
 @onready var label_holder : Node2D = get_node("LabelHolder")
 @onready var sprite_holder : Node2D = get_node("SpriteHolder")
 
@@ -39,50 +40,8 @@ class BuilderIcon extends Sprite2D:
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
 
-
-class Circle:
-	var pos : Vector2
-	var radius : float
-	var x1 : float
-	var x2 : float
-	var y1 : float
-	var y2 : float
-	var planet = 0
-
-	func getSquareLen(rad : float) -> float:
-		return sqrt(2) * rad
-	
-	func _init(p : Vector2, in_radius : float, in_planet : int):
-		pos = p
-		radius = in_radius
-		planet = in_planet
-
-		var len = getSquareLen(radius)
-
-		x1 = p.x-len/2
-		x2 = p.x+len/2
-		y1 = p.y-len/2
-		y2 = p.y+len/2
-
-	func inCircle(p : Vector2i) -> bool:
-		return (p.x - pos.x) * (p.x - pos.x) + (p.y - pos.y) * (p.y - pos.y) < radius * radius
-
-	func inSquare(p : Vector2i) -> bool:
-		return p.x >= x1 and p.x <= x2 and p.y >= y1 and p.y <= y2
-
-# 10, 2, 10
-# 15, 27, 10
-
-#5, 25, 10
-#0, 0, 10
-
-var circles = [Circle.new(Vector2(6,5), 6, 0), Circle.new(Vector2(5,17), 6, 1)]
-var altitude = FastNoiseLite.new()
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	altitude.seed = randi()
-
 	for i in get_layers_count():
 		if get_layer_name(i) == "Base layer":
 			terrain_layer_id = i
@@ -184,37 +143,12 @@ func _process(delta):
 	for child in sprite_holder.get_children():
 		sprite_holder.remove_child(child)
 
-	var cx = 0
-	var cy = 0
-
 	# Draw the base map layer
 	for x in range(width):
 		for y in range(height):
-				for c in circles:
-					if c.inCircle(Vector2i(x,y)):
-						#print("planet=" + str(c.planet) + ", x=", str(x), ", y=", str(y))
-						var alt = altitude.get_noise_2d(float(x)*50.0, float(y)*50.0)*10
-						var mountain = alt > 1
-						if c.planet == 0:
-							if mountain:
-								set_cell(terrain_layer_id, Vector2i(x,y), 7, Vector2i(5,0))
-							else:
-								set_cell(terrain_layer_id, Vector2i(x,y), 6, Vector2i(1,0))
-							cx += 1
-						elif c.planet == 1:
-							if mountain:
-								set_cell(terrain_layer_id, Vector2i(x,y), 7, Vector2i(6,0))
-							else:
-								set_cell(terrain_layer_id, Vector2i(x,y), 6, Vector2i(2,0))
-							cy += 1
-						else:
-							print("ERROR")
-			#if special_cell.x == x and special_cell.y == y:
-			#	set_cell(layer, Vector2i(x,y), 0, Vector2i(3,4), 0)
-			#else:
-			#set_cell(layer, Vector2i(x,y), 6, Vector2i(x%4,0), 0)
-			#pass
-	#print("cx=", cx, ", cy=", cy)
+			var tile = map.getTileXY(x, y)
+			if tile != null:
+				set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
 
 	# Draw the unit layer
 	layer = unit_layer_id
