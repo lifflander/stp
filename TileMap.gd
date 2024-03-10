@@ -17,6 +17,7 @@ var selection_layer : int = -1
 var unit_layer_id : int = -1
 var city_layer_id : int = -1
 var terrain_layer_id : int = -1
+var resource_layer_id : int = -1
 
 class BuilderIcon extends Sprite2D:
 	var location : Vector2i
@@ -40,7 +41,7 @@ func _ready():
 		if get_layer_name(i) == "Base layer":
 			terrain_layer_id = i
 		if get_layer_name(i) == "Resources":
-			pass
+			resource_layer_id = i
 		if get_layer_name(i) == "City":
 			city_layer_id = i
 		if get_layer_name(i) == "Unit layer":
@@ -61,24 +62,10 @@ func unselect_current():
 	unit_is_selected = false
 	
 func unselect_around():
-	var right : Vector2i = Vector2i(selected_cell.x + 1, selected_cell.y)
-	var left : Vector2i = Vector2i(selected_cell.x, selected_cell.y + 1)
-	var top : Vector2i = Vector2i(selected_cell.x - 1, selected_cell.y)
-	var bottom : Vector2i = Vector2i(selected_cell.x, selected_cell.y - 1)
-		
-	var rightx : Vector2i = Vector2i(selected_cell.x + 1, selected_cell.y - 1)
-	var leftx: Vector2i = Vector2i(selected_cell.x - 1, selected_cell.y + 1)
-	var topx : Vector2i = Vector2i(selected_cell.x - 1, selected_cell.y - 1)
-	var bottomx : Vector2i = Vector2i(selected_cell.x + 1, selected_cell.y + 1)
-		
-	set_cell(selection_layer, right, -1, Vector2i(0,0), 0)
-	set_cell(selection_layer, left, -1, Vector2i(0,0), 0)
-	set_cell(selection_layer, top, -1, Vector2i(0,0), 0)
-	set_cell(selection_layer, bottom, -1, Vector2i(0,0), 0)
-	set_cell(selection_layer, rightx, -1, Vector2i(0,0), 0)
-	set_cell(selection_layer, leftx, -1, Vector2i(0,0), 0)
-	set_cell(selection_layer, topx, -1, Vector2i(0,0), 0)
-	set_cell(selection_layer, bottomx, -1, Vector2i(0,0), 0)
+	var unit = map.getTileVec(selected_cell).unit
+	if unit:
+		for move in unit.getValidMoves():
+			set_cell(selection_layer, move, -1, Vector2i(-1,-1), 0)
 
 func select_cell(cell : Vector2i):
 	var set_selected = true
@@ -115,8 +102,6 @@ func select_cell(cell : Vector2i):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var layer : int = 0
-
 	for child in label_holder.get_children():
 		label_holder.remove_child(child)
 	for child in sprite_holder.get_children():
@@ -130,12 +115,11 @@ func _process(delta):
 				set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
 
 	# Draw the unit layer
-	layer = unit_layer_id
 	for x in range(width):
 		for y in range(height):
 			var tile = map.getTileXY(x, y)
 			if tile != null and tile.unit != null:
-				set_cell(layer, Vector2i(x,y), tile.unit.unit_source_id, tile.unit.unit_coord, 0)
+				set_cell(unit_layer_id, Vector2i(x,y), tile.unit.unit_source_id, tile.unit.unit_coord, 0)
 				set_cell(selection_layer, selected_cell, -1, Vector2i(0,0), 0)
 				
 				# raster the health indicator
@@ -162,19 +146,14 @@ func _process(delta):
 					new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
 					sprite_holder.add_child(new_sprite)
 			else:
-				set_cell(layer, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
+				set_cell(unit_layer_id, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
 
-			#var lin_idx : int = convertTo1D(Vector2i(x,y))
-			#var unit_to_draw : Vector2i = unit_layer[lin_idx]
-			#if unit_to_draw.x != -1 and unit_to_draw.y != -1:
-				
 	# Draw the city layer
-	layer = city_layer_id
 	for x in range(width):
 		for y in range(height):
 			var tile = map.getTileVec(Vector2i(x,y))
 			if tile.base != null:
-				set_cell(layer, Vector2i(x,y), tile.base.base_source_id, tile.base.base_coord, 0)
+				set_cell(city_layer_id, Vector2i(x,y), tile.base.base_source_id, tile.base.base_coord, 0)
 
 				var new_label : Label = Label.new()
 				new_label.position.x = 40
@@ -197,30 +176,19 @@ func _process(delta):
 	if selected_cell.x != -1 and selected_cell.y != -1:
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
 			var unit = map.getTileVec(selected_cell).unit
+			var valid_move_squares : Array[Vector2i] = unit.getValidMoves()
 			set_cell(unit_layer_id, selected_cell, unit.unit_source_id+2, unit.unit_coord, 0)
 			unit_is_selected = true
 		else:
 			set_cell(selection_layer, selected_cell, 9, Vector2i(0,0), 0)
-			
+
 	if unit_is_selected:
-		var right : Vector2i = Vector2i(selected_cell.x + 1, selected_cell.y)
-		var left : Vector2i = Vector2i(selected_cell.x, selected_cell.y + 1)
-		var top : Vector2i = Vector2i(selected_cell.x - 1, selected_cell.y)
-		var bottom : Vector2i = Vector2i(selected_cell.x, selected_cell.y - 1)
-		
-		var rightx : Vector2i = Vector2i(selected_cell.x + 1, selected_cell.y - 1)
-		var leftx: Vector2i = Vector2i(selected_cell.x - 1, selected_cell.y + 1)
-		var topx : Vector2i = Vector2i(selected_cell.x - 1, selected_cell.y - 1)
-		var bottomx : Vector2i = Vector2i(selected_cell.x + 1, selected_cell.y + 1)
-		
-		set_cell(selection_layer, right, 9, Vector2i(3,0), 0)
-		set_cell(selection_layer, left, 9, Vector2i(3,0), 0)
-		set_cell(selection_layer, top, 9, Vector2i(3,0), 0)
-		set_cell(selection_layer, bottom, 9, Vector2i(3,0), 0)
-		set_cell(selection_layer, rightx, 9, Vector2i(3,0), 0)
-		set_cell(selection_layer, leftx, 9, Vector2i(3,0), 0)
-		set_cell(selection_layer, topx, 9, Vector2i(3,0), 0)
-		set_cell(selection_layer, bottomx, 9, Vector2i(3,0), 0)
+		var unit = map.getTileVec(selected_cell).unit
+
+		if unit:
+			for move in unit.getValidMoves():
+				set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
+
 
 
 

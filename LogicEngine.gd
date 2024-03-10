@@ -23,13 +23,13 @@ class Player:
 
 		# Dummy insertion of a unit
 		if player_id == 0:
-			units.append(SpacemanUnit.new(in_le, tile_map, Vector2i(player_id, player_id)))
+			units.append(SpacemanUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
 		elif player_id == 1:
-			units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id, player_id)))
+			units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
 		elif player_id == 2:
-			units.append(ColonypodUnit.new(in_le, tile_map, Vector2i(player_id, player_id)))
+			units.append(ColonypodUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
 		elif player_id == 3:
-			units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id, player_id)))
+			units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
 
 class Base:
 	var location : Vector2i
@@ -78,6 +78,33 @@ class Unit:
 	func hasBuilder() -> bool:
 		return false
 
+	var basic_directions : Array[Vector2i] = [
+		Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1),
+		Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, 1)
+		]
+
+	func getValidMoves() -> Array[Vector2i]:
+		return getValidMovesImpl([location])
+
+	func getValidMovesImpl(positions_at_dist : Array[Vector2i], dist : int = 1) -> Array[Vector2i]:
+		var valid_moves : Array[Vector2i] = []
+		
+		for position in positions_at_dist:
+			for d in basic_directions:
+				var loc_to_check : Vector2i = position + d
+				var tile : Map.Tile = le.map.getTileVec(loc_to_check)
+				if not tile.hasUnit():
+					if tile.type in getValidTypes():
+						valid_moves.append(loc_to_check)
+
+		if dist == abilities.distance:
+			return valid_moves
+		else:
+			return getValidMovesImpl(valid_moves, dist+1)
+		
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return []
+
 class SpacemanUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -85,6 +112,8 @@ class SpacemanUnit extends Unit:
 		abilities.hp = 10
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND]
 
 class TankUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -92,6 +121,9 @@ class TankUnit extends Unit:
 		var unit_coords : Vector2i = Vector2i(0, 0)
 		abilities.hp = 15
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+	
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND]
 
 class ColonypodUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -102,13 +134,20 @@ class ColonypodUnit extends Unit:
 
 	func hasBuilder() -> bool:
 		return true
+		
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND]
 
 class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(5, 0)
 		abilities.hp = 20
+		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+		
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN]
 
 var is_initialized : bool = false
 
