@@ -1,6 +1,7 @@
 class_name LogicEngine extends Node
 
 @onready var tile_map : IsoTileMap = get_parent().get_node("Tiles")
+@onready var map : Map = get_parent().get_node("Map")
 
 var turn_counter : int = 0
 var players : Array[Player]
@@ -36,16 +37,14 @@ class Base:
 	var le : LogicEngine
 	var name : String = "Atari"
 	var level : int = 1
+	var base_source_id = 12
+	var base_coord : Vector2i = Vector2i(level - 1, 0)
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		tile_map = in_tile_map
 		location = in_location
 		le = in_le
-		
-		renderAtLocation()
-		
-	func renderAtLocation():
-		tile_map.base_layer[tile_map.convertTo1D(location)] = Vector2i(level - 1, 0)
+		le.map.getTileVec(location).base = self
 
 class UnitAbilities:
 	var distance : int = 1
@@ -69,22 +68,15 @@ class Unit:
 		unit_source_id = in_unit_source_id
 		unit_coord = in_unit_coord
 		le = in_le
-		renderAtLocation()
+		le.map.getTileVec(location).unit = self
 		
-	func changeLocation():
-		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = -1
-		tile_map.unit_layer_health[tile_map.convertTo1D(location)] = -1
-		tile_map.unit_layer_build[tile_map.convertTo1D(location)] = -1
-		
-	func renderAtLocation():
-		print("renderAtLocation location=", location)
-		tile_map.unit_layer[tile_map.convertTo1D(location)] = unit_coord
-		tile_map.unit_tile_set_layer[tile_map.convertTo1D(location)] = unit_source_id
-		tile_map.unit_layer_health[tile_map.convertTo1D(location)] = abilities.hp
-		renderBuilders()
+	func changeLocation(new_location : Vector2i):
+		le.map.getTileVec(location).unit = null
+		le.map.getTileVec(new_location).unit = self
+		location = new_location
 
-	func renderBuilders():
-		pass
+	func hasBuilder() -> bool:
+		return false
 
 class SpacemanUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -108,8 +100,8 @@ class ColonypodUnit extends Unit:
 		abilities.hp = 5
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
-	func renderBuilders():
-		tile_map.unit_layer_build[tile_map.convertTo1D(location)] = 1
+	func hasBuilder() -> bool:
+		return true
 
 class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -132,7 +124,7 @@ func build_city(unit_location : Vector2i):
 		for i in range(len(p.units)):
 			print("i=", i, " unit location:", p.units[i].location, " passed loc: ", unit_location)
 			if p.units[i].location == unit_location:
-				p.units[i].changeLocation()
+				map.getTileVec(unit_location).unit = null
 				p.units.remove_at(i)
 				p.bases.append(Base.new(self, tile_map, unit_location))
 				break
@@ -141,9 +133,7 @@ func move_unit(unit_location : Vector2i, new_location : Vector2i):
 	for p in players:
 		for i in range(len(p.units)):
 			if p.units[i].location == unit_location:
-				p.units[i].changeLocation()
-				p.units[i].location = new_location
-				p.units[i].renderAtLocation()
+				p.units[i].changeLocation(new_location)
 
 func initialize(num_players : int):
 	for i in num_players:

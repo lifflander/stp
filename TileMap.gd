@@ -13,12 +13,6 @@ var selected_cell : Vector2i = Vector2i(-1,-1)
 var selected_times : int = 0
 var unit_is_selected : bool = false
 
-var base_layer : Array[Vector2i]
-var unit_layer : Array[Vector2i]
-var unit_tile_set_layer : Array[int]
-var unit_layer_health : Array[int]
-var unit_layer_build : Array[int]
-
 var selection_layer : int = -1
 var unit_layer_id : int = -1
 var city_layer_id : int = -1
@@ -54,26 +48,12 @@ func _ready():
 		if get_layer_name(i) == "Selection":
 			selection_layer = i
 
-	# Populate layers
-	# At the beginning no units exist to set all to -1
-	unit_layer.resize(width*height)
-	base_layer.resize(width*height)
-	unit_tile_set_layer.resize(width*height)
-	unit_layer_health.resize(width*height)
-	unit_layer_build.resize(width*height)
-	for x in range(width):
-		for y in range(height):
-			#print("x=", x, ", y=", y, ", 1d=", convertTo1D(Vector2i(x,y)))
-			unit_layer[convertTo1D(Vector2i(x,y))] = Vector2i(-1, -1)
-			base_layer[convertTo1D(Vector2i(x,y))] = Vector2i(-1, -1)
-			unit_layer_health[convertTo1D(Vector2i(x,y))] = -1
-			unit_layer_build[convertTo1D(Vector2i(x,y))] = -1
-
-func hasUnitOnSquare(cell) -> bool:
+func hasUnitOnSquare(cell : Vector2i) -> bool:
 	if cell.x == -1 or cell.y == -1:
 		return false
 	else:
-		return unit_layer[convertTo1D(cell)].x != -1 and unit_layer[convertTo1D(cell)].y != -1 and unit_tile_set_layer[convertTo1D(cell)] != -1
+		return map.getTileVec(cell).unit != null
+		#return unit_layer[convertTo1D(cell)].x != -1 and unit_layer[convertTo1D(cell)].y != -1 and unit_tile_set_layer[convertTo1D(cell)] != -1
 
 func unselect_current():
 	if selected_cell.x != -1 and selected_cell.y != -1:
@@ -124,11 +104,10 @@ func select_cell(cell : Vector2i):
 	if set_selected:
 		selected_cell = cell
 		if hasUnitOnSquare(selected_cell):
-			var lin_idx : int = convertTo1D(selected_cell)
-			var unit_to_draw : Vector2i = unit_layer[lin_idx]
+			var unit = map.getTileVec(selected_cell).unit
 			var source = tile_set.get_source(10) as TileSetAtlasSource
-			var origin = source.get_tile_data(unit_to_draw, 0).texture_origin
-			var tile_data = source.get_tile_data(unit_to_draw, 0)
+			var origin = source.get_tile_data(unit.unit_coord, 0).texture_origin
+			var tile_data = source.get_tile_data(unit.unit_coord, 0)
 
 			var tween = get_tree().create_tween()
 			tween.tween_property(tile_data, "texture_origin:y", origin.y+50, 0.1).set_trans(Tween.TRANS_LINEAR)
@@ -154,27 +133,53 @@ func _process(delta):
 	layer = unit_layer_id
 	for x in range(width):
 		for y in range(height):
-			var lin_idx : int = convertTo1D(Vector2i(x,y))
-			var unit_to_draw : Vector2i = unit_layer[lin_idx]
-			if unit_to_draw.x != -1 and unit_to_draw.y != -1:
-				set_cell(layer, Vector2i(x,y), unit_tile_set_layer[lin_idx], unit_to_draw, 0)
+			var tile = map.getTileXY(x, y)
+			if tile != null and tile.unit != null:
+				set_cell(layer, Vector2i(x,y), tile.unit.unit_source_id, tile.unit.unit_coord, 0)
 				set_cell(selection_layer, selected_cell, -1, Vector2i(0,0), 0)
+				
+				# raster the health indicator
+				var new_label : Label = Label.new()
+				var label_pos = map_to_local(Vector2i(x, y))
+				label_pos.x -= 180
+				label_pos.y -= tile_set.tile_size.y - 80
+				var global_pos = to_global(label_pos)
+				new_label.position = global_pos
+				new_label.label_settings = load("res://unit-hp-label-settings.tres")
+				new_label.text = str(tile.unit.abilities.hp)
+				label_holder.add_child(new_label)
+				
+				# check if we need to raster a builder icon
+				if tile.unit.hasBuilder() and unit_is_selected and selected_cell.x == x and selected_cell.y == y:
+					var new_sprite : BuilderIcon = BuilderIcon.new()
+					new_sprite.location = Vector2i(x,y)
+					new_sprite.le = logic_engine
+					var builder_label_pos = map_to_local(Vector2i(x, y))
+					builder_label_pos.x += 50
+					builder_label_pos.y -= tile_set.tile_size.y - 20
+					var builder_global_pos = to_global(builder_label_pos)
+					new_sprite.position = builder_global_pos
+					new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
+					sprite_holder.add_child(new_sprite)
+			else:
+				set_cell(layer, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
 
+			#var lin_idx : int = convertTo1D(Vector2i(x,y))
+			#var unit_to_draw : Vector2i = unit_layer[lin_idx]
+			#if unit_to_draw.x != -1 and unit_to_draw.y != -1:
+				
 	# Draw the city layer
 	layer = city_layer_id
 	for x in range(width):
 		for y in range(height):
-			var lin_idx : int = convertTo1D(Vector2i(x,y))
-			var base_to_draw : Vector2i = base_layer[lin_idx]
-			if base_to_draw.x != -1 and base_to_draw.y != -1:
-				set_cell(layer, Vector2i(x,y), 12, base_to_draw, 0)
-				var the_base = logic_engine.get_base(Vector2i(x,y))
-				the_base.name
+			var tile = map.getTileVec(Vector2i(x,y))
+			if tile.base != null:
+				set_cell(layer, Vector2i(x,y), tile.base.base_source_id, tile.base.base_coord, 0)
 
 				var new_label : Label = Label.new()
 				new_label.position.x = 40
 				new_label.label_settings = load("res://base-name-label-settings.tres")
-				new_label.text = the_base.name
+				new_label.text = tile.base.name
 
 				var poly_pos = map_to_local(Vector2i(x, y))
 				poly_pos.x -= 75
@@ -191,9 +196,8 @@ func _process(delta):
 
 	if selected_cell.x != -1 and selected_cell.y != -1:
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
-			var lin_idx : int = convertTo1D(selected_cell)
-			var unit_to_draw : Vector2i = unit_layer[lin_idx]
-			set_cell(unit_layer_id, selected_cell, unit_tile_set_layer[lin_idx]+2, unit_to_draw, 0)
+			var unit = map.getTileVec(selected_cell).unit
+			set_cell(unit_layer_id, selected_cell, unit.unit_source_id+2, unit.unit_coord, 0)
 			unit_is_selected = true
 		else:
 			set_cell(selection_layer, selected_cell, 9, Vector2i(0,0), 0)
@@ -217,37 +221,6 @@ func _process(delta):
 		set_cell(selection_layer, leftx, 9, Vector2i(3,0), 0)
 		set_cell(selection_layer, topx, 9, Vector2i(3,0), 0)
 		set_cell(selection_layer, bottomx, 9, Vector2i(3,0), 0)
-
-	# draw health decorators
-	for x in range(width):
-		for y in range(height):
-			var lin_idx : int = convertTo1D(Vector2i(x,y))
-			if unit_layer_health[lin_idx] != -1:
-				var new_label : Label = Label.new()
-				var label_pos = map_to_local(Vector2i(x, y))
-				label_pos.x -= 180
-				label_pos.y -= tile_set.tile_size.y - 80
-				var global_pos = to_global(label_pos)
-				new_label.position = global_pos
-				new_label.label_settings = load("res://unit-hp-label-settings.tres")
-				new_label.text = str(unit_layer_health[lin_idx])
-				label_holder.add_child(new_label)
-
-	# draw builder decorators
-	for x in range(width):
-		for y in range(height):
-			var lin_idx : int = convertTo1D(Vector2i(x,y))
-			if unit_layer_build[lin_idx] != -1 and unit_is_selected and selected_cell.x == x and selected_cell.y == y:
-				var new_sprite : BuilderIcon = BuilderIcon.new()
-				new_sprite.location = Vector2i(x,y)
-				new_sprite.le = logic_engine
-				var label_pos = map_to_local(Vector2i(x, y))
-				label_pos.x += 50
-				label_pos.y -= tile_set.tile_size.y - 20
-				var global_pos = to_global(label_pos)
-				new_sprite.position = global_pos
-				new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
-				sprite_holder.add_child(new_sprite)
 
 
 
