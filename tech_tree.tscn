@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dxkotvbowd8bo"]
+
+[node name="TechTree" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+offset_left = 1544.0
+offset_top = 916.0
+offset_right = 2061.0
+offset_bottom = 1493.0
+text = "TEST
+"
