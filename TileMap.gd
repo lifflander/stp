@@ -49,6 +49,16 @@ func _ready():
 		if get_layer_name(i) == "Selection":
 			selection_layer = i
 
+	drawTerrainLayer()
+
+func drawTerrainLayer():
+	# Draw the base map layer
+	for x in range(width):
+		for y in range(height):
+			var tile = map.getTileXY(x, y)
+			if tile != null:
+				set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
+
 func hasUnitOnSquare(cell : Vector2i) -> bool:
 	if cell.x == -1 or cell.y == -1:
 		return false
@@ -56,36 +66,69 @@ func hasUnitOnSquare(cell : Vector2i) -> bool:
 		return map.getTileVec(cell).unit != null
 		#return unit_layer[convertTo1D(cell)].x != -1 and unit_layer[convertTo1D(cell)].y != -1 and unit_tile_set_layer[convertTo1D(cell)] != -1
 
-func unselect_current():
+func unselectCurrent():
 	if selected_cell.x != -1 and selected_cell.y != -1:
 		set_cell(selection_layer, selected_cell, -1, Vector2i(0,0), 0)
 	unit_is_selected = false
+	if builder:
+		builder.queue_free()
 	
-func unselect_around():
+func unselectAround():
 	var unit = map.getTileVec(selected_cell).unit
 	if unit:
 		for move in unit.getValidMoves():
 			set_cell(selection_layer, move, -1, Vector2i(-1,-1), 0)
+	if builder:
+		builder.queue_free()
+		builder = null
 
-func select_cell(cell : Vector2i):
+func animateUnit(unit : LogicEngine.Unit, from : Vector2i, to : Vector2i):
+	var new_sprite : Sprite2D = Sprite2D.new()
+	var start_pos = to_global(map_to_local(from))
+	var end_pos = to_global(map_to_local(to))
+	new_sprite.position = start_pos
+	var source = tile_set.get_source(unit.unit_source_id) as TileSetAtlasSource
+	var origin = source.get_tile_data(unit.unit_coord, 0).texture_origin
+	start_pos.y -= origin.y
+	end_pos.y -= origin.y
+	new_sprite.texture = source.get_texture()
+	new_sprite.region_enabled = true
+	new_sprite.region_rect = source.get_tile_texture_region(unit.unit_coord)
+	sprite_holder.add_child(new_sprite)
+
+	var tween = get_tree().create_tween()
+	tween.tween_property(new_sprite, "position", end_pos, 0.3).set_trans(Tween.TRANS_LINEAR)
+	tween.tween_callback(new_sprite.queue_free)
+	return tween
+
+func selectCell(cell : Vector2i):
 	var set_selected = true
 	if cell == selected_cell:
 		selected_times += 1
 		
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 != 0:
 			unit_is_selected = false
-			unselect_around()
+			unselectAround()
 	else:
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
 			print("calling move unit")
-			unselect_around()
-			logic_engine.move_unit(selected_cell, cell)
+			unselectAround()
+			var tile = map.getTileVec(selected_cell)
+			var unit = tile.unit
+			if cell in unit.getValidMoves():
+				var tween = animateUnit(unit, selected_cell, cell)
+				tile.unit = null
+
+				var do_move = func do_move_impl():
+					logic_engine.moveUnit(unit, selected_cell, cell)
+
+				tween.tween_callback(do_move)
 			selected_cell = Vector2i(-1,-1)
 			set_selected = false
 		else:
-			unselect_around()
+			unselectAround()
 		
-		unselect_current()
+		unselectCurrent()
 		selected_times = 0
 
 	if set_selected:
@@ -100,19 +143,12 @@ func select_cell(cell : Vector2i):
 			tween.tween_property(tile_data, "texture_origin:y", origin.y+50, 0.1).set_trans(Tween.TRANS_LINEAR)
 			tween.chain().tween_property(tile_data, "texture_origin:y", origin.y, 0.1).set_trans(Tween.TRANS_LINEAR)
 
+var builder : BuilderIcon = null
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	for child in label_holder.get_children():
 		label_holder.remove_child(child)
-	for child in sprite_holder.get_children():
-		sprite_holder.remove_child(child)
-
-	# Draw the base map layer
-	for x in range(width):
-		for y in range(height):
-			var tile = map.getTileXY(x, y)
-			if tile != null:
-				set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
 
 	# Draw the unit layer
 	for x in range(width):
@@ -134,17 +170,17 @@ func _process(delta):
 				label_holder.add_child(new_label)
 				
 				# check if we need to raster a builder icon
-				if tile.unit.hasBuilder() and unit_is_selected and selected_cell.x == x and selected_cell.y == y:
-					var new_sprite : BuilderIcon = BuilderIcon.new()
-					new_sprite.location = Vector2i(x,y)
-					new_sprite.le = logic_engine
+				if not builder and tile.unit.hasBuilder() and unit_is_selected and selected_cell.x == x and selected_cell.y == y:
+					builder = BuilderIcon.new()
+					builder.location = Vector2i(x,y)
+					builder.le = logic_engine
 					var builder_label_pos = map_to_local(Vector2i(x, y))
 					builder_label_pos.x += 50
 					builder_label_pos.y -= tile_set.tile_size.y - 20
 					var builder_global_pos = to_global(builder_label_pos)
-					new_sprite.position = builder_global_pos
-					new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
-					sprite_holder.add_child(new_sprite)
+					builder.position = builder_global_pos
+					builder.texture = load("res://assets/tilesets/Builder_Selection_1.png")
+					sprite_holder.add_child(builder)
 			else:
 				set_cell(unit_layer_id, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
 

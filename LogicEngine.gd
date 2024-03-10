@@ -151,13 +151,6 @@ class SpaceshipUnit extends Unit:
 
 var is_initialized : bool = false
 
-func get_base(location : Vector2i) -> Base:
-	for p in players:
-		for i in range(len(p.bases)):
-			if p.bases[i].location == location:
-				return p.bases[i]
-	return null
-
 func build_city(unit_location : Vector2i):
 	for p in players:
 		for i in range(len(p.units)):
@@ -168,11 +161,8 @@ func build_city(unit_location : Vector2i):
 				p.bases.append(Base.new(self, tile_map, unit_location))
 				break
 
-func move_unit(unit_location : Vector2i, new_location : Vector2i):
-	for p in players:
-		for i in range(len(p.units)):
-			if p.units[i].location == unit_location:
-				p.units[i].changeLocation(new_location)
+func moveUnit(unit : Unit, unit_location : Vector2i, new_location : Vector2i):
+	unit.changeLocation(new_location)
 
 func initialize(num_players : int):
 	for i in num_players:

@@ -26,6 +26,12 @@ glow_hdr_luminance_cap = 19.0
 environment = SubResource("Environment_qo0ox")
 camera_attributes = SubResource("CameraAttributesPhysical_de0q8")
 
+[node name="LogicEngine" type="Node" parent="."]
+script = ExtResource("3_uiovt")
+
+[node name="Map" type="Node" parent="."]
+script = ExtResource("3_et2nw")
+
 [node name="Tiles" type="TileMap" parent="."]
 y_sort_enabled = true
 position = Vector2(-281, -790)
@@ -59,12 +65,6 @@ position = Vector2(281, 790)
 z_index = 10
 y_sort_enabled = true
 position = Vector2(281, 790)
-
-[node name="Map" type="Node" parent="."]
-script = ExtResource("3_et2nw")
-
-[node name="LogicEngine" type="Node" parent="."]
-script = ExtResource("3_uiovt")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 script = ExtResource("3_qhnfj")

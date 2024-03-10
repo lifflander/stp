@@ -21,7 +21,7 @@ func _input(event):
 			var local_pos = tile_map.to_local(global_pos)
 			var map_pos = tile_map.local_to_map(local_pos)
 			print("global:, ", global_pos, ", local: ", local_pos, ", map: ", map_pos)
-			tile_map.select_cell(map_pos)
+			tile_map.selectCell(map_pos)
 
 	elif event is InputEventMouseMotion and dragging:
 		var new_position = get_local_mouse_position()
