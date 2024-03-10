@@ -30,7 +30,7 @@ class BuilderIcon extends Sprite2D:
 		# 	new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
 		if event is InputEventMouseButton and event.is_pressed() and get_rect().has_point(local_pos):
 			print("clicked builder")
-			le.build_city(location)
+			le.buildCity(location)
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -143,13 +143,31 @@ func selectCell(cell : Vector2i):
 			tween.tween_property(tile_data, "texture_origin:y", origin.y+50, 0.1).set_trans(Tween.TRANS_LINEAR)
 			tween.chain().tween_property(tile_data, "texture_origin:y", origin.y, 0.1).set_trans(Tween.TRANS_LINEAR)
 
+func drawCity(base : LogicEngine.Base):
+	set_cell(city_layer_id, base.location, base.base_source_id, base.base_coord, 0)
+
+	var new_label : Label = Label.new()
+	new_label.position.x = 40
+	new_label.label_settings = load("res://base-name-label-settings.tres")
+	new_label.text = base.name
+
+	var poly_pos = map_to_local(base.location)
+	poly_pos.x -= 75
+	var global_pos = to_global(poly_pos)
+	var new_poly : Polygon2D = Polygon2D.new()
+	new_poly.position = global_pos
+	var height : int = 75
+	var width : int = 200
+	new_poly.set_polygon(PackedVector2Array([Vector2(0,0),Vector2(width,0),Vector2(width,height),Vector2(0,height)]))
+	new_poly.set_color(Color(0,0,0,0.7))
+	new_poly.add_child(new_label)
+
+	label_holder.add_child(new_poly)
+
 var builder : BuilderIcon = null
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	for child in label_holder.get_children():
-		label_holder.remove_child(child)
-
 	# Draw the unit layer
 	for x in range(width):
 		for y in range(height):
@@ -183,31 +201,6 @@ func _process(delta):
 					sprite_holder.add_child(builder)
 			else:
 				set_cell(unit_layer_id, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
-
-	# Draw the city layer
-	for x in range(width):
-		for y in range(height):
-			var tile = map.getTileVec(Vector2i(x,y))
-			if tile.base != null:
-				set_cell(city_layer_id, Vector2i(x,y), tile.base.base_source_id, tile.base.base_coord, 0)
-
-				var new_label : Label = Label.new()
-				new_label.position.x = 40
-				new_label.label_settings = load("res://base-name-label-settings.tres")
-				new_label.text = tile.base.name
-
-				var poly_pos = map_to_local(Vector2i(x, y))
-				poly_pos.x -= 75
-				var global_pos = to_global(poly_pos)
-				var new_poly : Polygon2D = Polygon2D.new()
-				new_poly.position = global_pos
-				var height : int = 75
-				var width : int = 200
-				new_poly.set_polygon(PackedVector2Array([Vector2(0,0),Vector2(width,0),Vector2(width,height),Vector2(0,height)]))
-				new_poly.set_color(Color(0,0,0,0.7))
-				new_poly.add_child(new_label)
-
-				label_holder.add_child(new_poly)
 
 	if selected_cell.x != -1 and selected_cell.y != -1:
 		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
