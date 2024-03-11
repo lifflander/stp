@@ -9,9 +9,65 @@ class_name IsoTileMap
 const unit_tile_set : int = 8
 var width : int = 200
 var height : int = 200
-var selected_cell : Vector2i = Vector2i(-1,-1)
-var selected_times : int = 0
-var unit_is_selected : bool = false
+
+class SelectionState:
+	var tile : Vector2i = Vector2i(-1,-1)
+	var times : int = 0
+	var map : Map = null
+	var has_unit_selected : bool = false
+	var unit_valid_moves : Array[Vector2i]
+
+	func _init(in_map : Map):
+		map = in_map
+
+	func select(in_tile : Vector2i) -> Vector2i:
+		var old_tile = tile
+	
+		if in_tile != tile:
+			tile = in_tile
+			times = 0
+		else:
+			times += 1
+	
+		has_unit_selected = unitSelected()
+	
+		return old_tile
+
+	func getTile() -> Vector2i:
+		return tile
+
+	func validTile() -> bool:
+		return tile != Vector2i(-1,-1)
+
+	func selectedTileHasBase() -> bool:
+		if validTile():
+			return map.getTileVec(tile).hasBase()
+		else:
+			return false
+			
+	func selectedTileHasUnit() -> bool:
+		if validTile():
+			return map.getTileVec(tile).hasUnit()
+		else:
+			return false
+
+	func unitSelected() -> bool:
+		if selectedTileHasUnit() and times % 2 == 0:
+			return true
+		else:
+			return false
+
+	func baseSelected() -> bool:
+		if selectedTileHasBase():
+			if selectedTileHasUnit() and times % 2 == 1:
+				return true
+			elif selectedTileHasUnit() and times % 2 == 0:
+				return false
+			return true
+		else:
+			return false
+
+var selection : SelectionState = null
 
 var selection_layer : int = -1
 var unit_layer_id : int = -1
@@ -57,6 +113,8 @@ func _ready():
 
 	drawTerrainLayer()
 
+	selection = SelectionState.new(map)
+
 func drawTerrainLayer():
 	# Draw the base map layer
 	for x in range(width):
@@ -64,36 +122,6 @@ func drawTerrainLayer():
 			var tile = map.getTileXY(x, y)
 			if tile != null:
 				set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
-
-func hasUnitOnSquare(cell : Vector2i) -> bool:
-	if cell.x == -1 or cell.y == -1:
-		return false
-	else:
-		return map.getTileVec(cell).unit != null
-
-func hasBaseOnSquare(cell : Vector2i) -> bool:
-	if cell.x == -1 or cell.y == -1:
-		return false
-	else:
-		return map.getTileVec(cell).base != null
-
-func unselectCurrent():
-	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
-	dcr.visible = false
-	if selected_cell.x != -1 and selected_cell.y != -1:
-		set_cell(selection_layer, selected_cell, -1, Vector2i(0,0), 0)
-	unit_is_selected = false
-	if builder:
-		builder.queue_free()
-	
-func unselectAround():
-	var unit = map.getTileVec(selected_cell).unit
-	if unit:
-		for move in unit.getValidMoves():
-			set_cell(selection_layer, move, -1, Vector2i(-1,-1), 0)
-	if builder:
-		builder.queue_free()
-		builder = null
 
 func animateUnit(unit : LogicEngine.Unit, from : Vector2i, to : Vector2i):
 	var new_sprite : Sprite2D = Sprite2D.new()
@@ -138,50 +166,69 @@ func setUIForBase(base : LogicEngine.Base):
 	#var u4 = BuildUnit.new(LogicEngine.TankUnit.new(logic_engine, self, loc))
 	#dcrc.add_child(u4)
 
-func selectCell(cell : Vector2i):
-	var set_selected = true
-	if cell == selected_cell:
-		selected_times += 1
+func unselectCell(tile : Vector2i):
+	set_cell(selection_layer, tile, -1, Vector2i(0,0), 0)
+	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
+	dcr.visible = false
+	if builder:
+		builder.queue_free()
+		builder = null
+
+func selectCell(tile : Vector2i):
+	if selection.has_unit_selected:
+		var elm = map.getTileVec(selection.getTile())
+		var unit = elm.unit
 		
-		if hasUnitOnSquare(selected_cell) and selected_times % 2 != 0:
-			unit_is_selected = false
-			unselectAround()
-	else:
-		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
-			print("calling move unit")
-			unselectAround()
-			var tile = map.getTileVec(selected_cell)
-			var unit = tile.unit
-			if cell in unit.getValidMoves():
-				var tween = animateUnit(unit, selected_cell, cell)
-				tile.unit = null
+		if unit:
+			var valid_moves = unit.getValidMoves()
+			if tile in valid_moves:
+				print("moving to tile: ", tile)
+				var tween = animateUnit(unit, selection.getTile(), tile)
+				elm.unit = null
 
 				var do_move = func do_move_impl():
-					logic_engine.moveUnit(unit, selected_cell, cell)
+					logic_engine.moveUnit(unit, selection.getTile(), tile)
 
 				tween.tween_callback(do_move)
-			selected_cell = Vector2i(-1,-1)
-			set_selected = false
-		else:
-			unselectAround()
-
-		unselectCurrent()
-		selected_times = 0
+				
+				tile = Vector2i(-1,-1)
 		
-		if hasBaseOnSquare(cell) and selected_times % 2 == 0:
-			setUIForBase(map.getTileVec(cell).base)
+			for move in valid_moves:
+				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
+		else:
+			for move in selection.unit_valid_moves:
+				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
+	
+	var old_tile = selection.select(tile)
 
-	if set_selected:
-		selected_cell = cell
-		if hasUnitOnSquare(selected_cell):
-			var unit = map.getTileVec(selected_cell).unit
-			var source = tile_set.get_source(10) as TileSetAtlasSource
-			var origin = source.get_tile_data(unit.unit_coord, 0).texture_origin
-			var tile_data = source.get_tile_data(unit.unit_coord, 0)
+	if old_tile != tile:
+		unselectCell(old_tile)
 
-			var tween = get_tree().create_tween()
-			tween.tween_property(tile_data, "texture_origin:y", origin.y+50, 0.1).set_trans(Tween.TRANS_LINEAR)
-			tween.chain().tween_property(tile_data, "texture_origin:y", origin.y, 0.1).set_trans(Tween.TRANS_LINEAR)
+	var unit_selected = selection.unitSelected()
+	var base_selected = selection.baseSelected()
+
+	print("unit: ", unit_selected, ", base:", base_selected)
+
+	if unit_selected:
+		unselectCell(selection.getTile())
+
+		var unit = map.getTileVec(selection.getTile()).unit
+		var source = tile_set.get_source(10) as TileSetAtlasSource
+		var origin = source.get_tile_data(unit.unit_coord, 0).texture_origin
+		var tile_data = source.get_tile_data(unit.unit_coord, 0)
+
+		var tween = get_tree().create_tween()
+		tween.tween_property(tile_data, "texture_origin:y", origin.y+50, 0.1).set_trans(Tween.TRANS_LINEAR)
+		tween.chain().tween_property(tile_data, "texture_origin:y", origin.y, 0.1).set_trans(Tween.TRANS_LINEAR)
+		
+		var valid_moves = unit.getValidMoves()
+		selection.unit_valid_moves = valid_moves
+		for move in valid_moves:
+			set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
+	elif base_selected:
+		setUIForBase(map.getTileVec(selection.getTile()).base)
+	else:
+		set_cell(selection_layer, selection.getTile(), 9, Vector2i(0,0), 0)
 
 func drawCity(base : LogicEngine.Base):
 	set_cell(city_layer_id, base.location, base.base_source_id, base.base_coord, 0)
@@ -217,7 +264,7 @@ func _process(delta):
 			var tile = map.getTileXY(x, y)
 			if tile != null and tile.unit != null:
 				set_cell(unit_layer_id, Vector2i(x,y), tile.unit.unit_source_id, tile.unit.unit_coord, 0)
-				set_cell(selection_layer, selected_cell, -1, Vector2i(0,0), 0)
+				set_cell(selection_layer, selection.getTile(), -1, Vector2i(0,0), 0)
 				
 				# raster the health indicator
 				var new_label : Label = Label.new()
@@ -231,7 +278,9 @@ func _process(delta):
 				label_holder.add_child(new_label)
 				
 				# check if we need to raster a builder icon
-				if not builder and tile.unit.hasBuilder() and unit_is_selected and selected_cell.x == x and selected_cell.y == y:
+				var selected_tile = selection.getTile()
+				if not builder and tile.unit.hasBuilder() and selection.unitSelected() and selected_tile.x == x and selected_tile.y == y:
+					print("making builder")
 					builder = BuilderIcon.new()
 					builder.location = Vector2i(x,y)
 					builder.le = logic_engine
@@ -245,21 +294,11 @@ func _process(delta):
 			else:
 				set_cell(unit_layer_id, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
 
-	if selected_cell.x != -1 and selected_cell.y != -1:
-		if hasUnitOnSquare(selected_cell) and selected_times % 2 == 0:
-			var unit = map.getTileVec(selected_cell).unit
-			var valid_move_squares : Array[Vector2i] = unit.getValidMoves()
-			set_cell(unit_layer_id, selected_cell, unit.unit_source_id+2, unit.unit_coord, 0)
-			unit_is_selected = true
-		else:
-			set_cell(selection_layer, selected_cell, 9, Vector2i(0,0), 0)
+	var unit_selected = selection.unitSelected()
+	if unit_selected:
+		var unit = map.getTileVec(selection.getTile()).unit
+		set_cell(unit_layer_id, selection.getTile(), unit.unit_source_id+2, unit.unit_coord, 0)
 
-	if unit_is_selected:
-		var unit = map.getTileVec(selected_cell).unit
-
-		if unit:
-			for move in unit.getValidMoves():
-				set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
 
 
 
