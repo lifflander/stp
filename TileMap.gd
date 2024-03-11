@@ -31,6 +31,12 @@ class BuilderIcon extends Sprite2D:
 		if event is InputEventMouseButton and event.is_pressed() and get_rect().has_point(local_pos):
 			print("clicked builder")
 			le.buildCity(location)
+			
+class BuildUnit extends Button:
+	var unit : LogicEngine.Unit = null
+
+	func _init(unit : LogicEngine.Unit):
+		text = unit.getName()
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -64,9 +70,16 @@ func hasUnitOnSquare(cell : Vector2i) -> bool:
 		return false
 	else:
 		return map.getTileVec(cell).unit != null
-		#return unit_layer[convertTo1D(cell)].x != -1 and unit_layer[convertTo1D(cell)].y != -1 and unit_tile_set_layer[convertTo1D(cell)] != -1
+
+func hasBaseOnSquare(cell : Vector2i) -> bool:
+	if cell.x == -1 or cell.y == -1:
+		return false
+	else:
+		return map.getTileVec(cell).base != null
 
 func unselectCurrent():
+	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
+	dcr.visible = false
 	if selected_cell.x != -1 and selected_cell.y != -1:
 		set_cell(selection_layer, selected_cell, -1, Vector2i(0,0), 0)
 	unit_is_selected = false
@@ -101,6 +114,30 @@ func animateUnit(unit : LogicEngine.Unit, from : Vector2i, to : Vector2i):
 	tween.tween_callback(new_sprite.queue_free)
 	return tween
 
+func setUIForBase(base : LogicEngine.Base):
+	print("setUIBase")
+	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
+	dcr.visible = true
+	var dcrc = get_parent().find_child("DynamicHBoxContainer") as HBoxContainer
+	for child in dcrc.get_children():
+		dcrc.remove_child(child)
+	var new_label : Label = Label.new()
+	new_label.text = base.name
+	dcrc.add_child(new_label)
+#
+	#var loc = base.location
+	#var u1 = BuildUnit.new(LogicEngine.SpacemanUnit.new(logic_engine, self, loc))
+	#dcrc.add_child(u1)
+#
+	#var u2 = BuildUnit.new(LogicEngine.ColonypodUnit.new(logic_engine, self, loc))
+	#dcrc.add_child(u2)
+#
+	#var u3 = BuildUnit.new(LogicEngine.SpacemanUnit.new(logic_engine, self, loc))
+	#dcrc.add_child(u3)
+#
+	#var u4 = BuildUnit.new(LogicEngine.TankUnit.new(logic_engine, self, loc))
+	#dcrc.add_child(u4)
+
 func selectCell(cell : Vector2i):
 	var set_selected = true
 	if cell == selected_cell:
@@ -127,9 +164,12 @@ func selectCell(cell : Vector2i):
 			set_selected = false
 		else:
 			unselectAround()
-		
+
 		unselectCurrent()
 		selected_times = 0
+		
+		if hasBaseOnSquare(cell) and selected_times % 2 == 0:
+			setUIForBase(map.getTileVec(cell).base)
 
 	if set_selected:
 		selected_cell = cell
@@ -162,7 +202,7 @@ func drawCity(base : LogicEngine.Base):
 	new_poly.set_color(Color(0,0,0,0.7))
 	new_poly.add_child(new_label)
 
-	label_holder.add_child(new_poly)
+	sprite_holder.add_child(new_poly)
 
 var builder : BuilderIcon = null
 

@@ -70,6 +70,9 @@ class Unit:
 		le = in_le
 		le.map.getTileVec(location).unit = self
 		
+	func getName():
+		return "Unknown"
+
 	func changeLocation(new_location : Vector2i):
 		le.map.getTileVec(location).unit = null
 		le.map.getTileVec(new_location).unit = self
@@ -115,6 +118,9 @@ class SpacemanUnit extends Unit:
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND]
 
+	func getName():
+		return "Spaceman"
+
 class TankUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -124,6 +130,9 @@ class TankUnit extends Unit:
 	
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND]
+
+	func getName():
+		return "Tank"
 
 class ColonypodUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -138,6 +147,9 @@ class ColonypodUnit extends Unit:
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND]
 
+	func getName():
+		return "Colonypod"
+
 class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -148,6 +160,9 @@ class SpaceshipUnit extends Unit:
 		
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN]
+
+	func getName():
+		return "Spaceship"
 
 var is_initialized : bool = false
 
