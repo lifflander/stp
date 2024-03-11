@@ -168,6 +168,9 @@ var builder : BuilderIcon = null
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	for child in label_holder.get_children():
+		label_holder.remove_child(child)
+
 	# Draw the unit layer
 	for x in range(width):
 		for y in range(height):
