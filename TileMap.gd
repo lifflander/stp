@@ -150,7 +150,7 @@ func setUIForBase(base : LogicEngine.Base):
 	for child in dcrc.get_children():
 		dcrc.remove_child(child)
 	var new_label : Label = Label.new()
-	new_label.text = base.name
+	new_label.text = base.name + ": Level " + str(base.level)
 	dcrc.add_child(new_label)
 #
 	#var loc = base.location
@@ -228,7 +228,8 @@ func selectCell(tile : Vector2i):
 	elif base_selected:
 		setUIForBase(map.getTileVec(selection.getTile()).base)
 	else:
-		set_cell(selection_layer, selection.getTile(), 9, Vector2i(0,0), 0)
+		if selection.validTile():
+			set_cell(selection_layer, selection.getTile(), 9, Vector2i(0,0), 0)
 
 func drawCity(base : LogicEngine.Base):
 	set_cell(city_layer_id, base.location, base.base_source_id, base.base_coord, 0)
@@ -264,7 +265,7 @@ func _process(delta):
 			var tile = map.getTileXY(x, y)
 			if tile != null and tile.unit != null:
 				set_cell(unit_layer_id, Vector2i(x,y), tile.unit.unit_source_id, tile.unit.unit_coord, 0)
-				set_cell(selection_layer, selection.getTile(), -1, Vector2i(0,0), 0)
+				#set_cell(selection_layer, selection.getTile(), -1, Vector2i(0,0), 0)
 				
 				# raster the health indicator
 				var new_label : Label = Label.new()

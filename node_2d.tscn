@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://Map.gd" id="3_et2nw"]
 [ext_resource type="Script" path="res://CharacterBody2D.gd" id="3_qhnfj"]
 [ext_resource type="Script" path="res://LogicEngine.gd" id="3_uiovt"]
-[ext_resource type="SystemFont" uid="uid://dkdiv2nun8h0t" path="res://basic-system-font.tres" id="7_1kuxj"]
+[ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="7_yey6t"]
 
 [sub_resource type="Environment" id="Environment_qo0ox"]
 background_mode = 3
@@ -85,6 +85,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
+theme = ExtResource("7_yey6t")
 
 [node name="DynamicColorRect" type="ColorRect" parent="UI/Control"]
 visible = false
@@ -128,7 +129,6 @@ layout_mode = 2
 
 [node name="Button" type="Button" parent="UI/Control/CenterContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("7_1kuxj")
 text = "Tech Tree"
 
 [node name="Button2" type="Button" parent="UI/Control/CenterContainer/HBoxContainer"]

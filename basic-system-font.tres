@@ -1,4 +1,5 @@
 [gd_resource type="SystemFont" format=3 uid="uid://dkdiv2nun8h0t"]
 
 [resource]
+font_names = PackedStringArray("Sans-Serif")
 font_weight = 425
