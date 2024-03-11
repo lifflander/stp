@@ -7,6 +7,15 @@ var prev_position : Vector2
 
 func _ready():
 	set_process_input(true)
+	
+	get_tree().get_root().size_changed.connect(resize)
+
+func resize():
+	var size = get_tree().get_root().get_viewport().size
+	var cr = get_parent().find_child("ColorRect") as ColorRect
+	var cc = get_parent().find_child("CenterContainer") as CenterContainer
+	cr.set_size(Vector2i(size.x, 100))
+	cc.set_size(Vector2i(size.x, 50))
 
 func _input(event):
 	if event is InputEventMouseButton:
