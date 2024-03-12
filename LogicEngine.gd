@@ -57,6 +57,9 @@ class Base:
 		le.map.getTileVec(location).base = self
 		
 		calculateBorder(1)
+		
+		for tile in tiles_inside:
+			le.map.getTileVec(tile).owned_by_base = self
 
 	func calculateBorder(distance : int = 1):
 		tiles_inside = calculateBorderImpl([location], 1, distance)

@@ -90,9 +90,23 @@ class BuilderIcon extends Sprite2D:
 			
 class BuildUnit extends Button:
 	var unit : LogicEngine.Unit = null
+	var location : Vector2i
+	var tile_map : IsoTileMap
+	var le : LogicEngine
 
-	func _init(unit : LogicEngine.Unit):
-		text = unit.getName()
+	func _init(name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap):
+		set_text(name)
+		location = in_loc
+		tile_map = in_tile_map
+		le = in_le
+		
+	func _pressed():
+		if get_text() == "ColonyPod":
+			unit = LogicEngine.ColonypodUnit.new(le, tile_map, location)
+			le.players[0].units.append(unit)
+		elif get_text() == "Spaceman":
+			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
+			le.players[0].units.append(unit)
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -153,9 +167,12 @@ func setUIForBase(base : LogicEngine.Base):
 	new_label.text = base.name + ": Level " + str(base.level)
 	dcrc.add_child(new_label)
 #
-	#var loc = base.location
-	#var u1 = BuildUnit.new(LogicEngine.SpacemanUnit.new(logic_engine, self, loc))
-	#dcrc.add_child(u1)
+	var loc = base.location
+	var u1 = BuildUnit.new("ColonyPod", loc, logic_engine, self)
+	dcrc.add_child(u1)
+	
+	var u2 = BuildUnit.new("Spaceman", loc, logic_engine, self)
+	dcrc.add_child(u2)
 #
 	#var u2 = BuildUnit.new(LogicEngine.ColonypodUnit.new(logic_engine, self, loc))
 	#dcrc.add_child(u2)
