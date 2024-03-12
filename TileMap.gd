@@ -192,8 +192,8 @@ func unselectCell(tile : Vector2i):
 		builder = null
 	if map.getTileVec(tile).hasBase():
 		var base = map.getTileVec(tile).base
-		for line in base.border_lines:
-			line.set_default_color(Color(1.0,1.0,0.5,0.5))
+		for line in base.highlight_border_lines:
+			line.set_visible(false)
 
 func selectCell(tile : Vector2i):
 	if selection.has_unit_selected:
@@ -249,8 +249,8 @@ func selectCell(tile : Vector2i):
 	elif base_selected:
 		var base = map.getTileVec(selection.getTile()).base
 		setUIForBase(base)
-		for line in base.border_lines:
-			line.set_default_color(Color(0,0.3,1.0,0.5))
+		for line in base.highlight_border_lines:
+			line.set_visible(true)
 	else:
 		if selection.validTile():
 			set_cell(selection_layer, selection.getTile(), 9, Vector2i(0,0), 0)
@@ -275,6 +275,31 @@ func drawCity(base : LogicEngine.Base):
 	new_poly.add_child(new_label)
 
 	sprite_holder.add_child(new_poly)
+	
+	for p in logic_engine.players:
+		for b in p.bases:
+			for l in b.border_lines:
+				l.queue_free()
+			b.border_lines.clear()
+
+			for l in b.highlight_border_lines:
+				l.queue_free()
+			b.highlight_border_lines.clear()
+
+			var border_lines = drawBorders(b, false)
+			for l in border_lines:
+				sprite_holder.add_child(l)
+				b.border_lines.append(l)
+
+			var highlight_border_lines = drawBorders(b, true)
+			for l in highlight_border_lines:
+				l.set_default_color(Color(0,0.3,1.0,0.5))
+				l.set_visible(false)
+				sprite_holder.add_child(l)
+				b.highlight_border_lines.append(l)
+
+func drawBorders(base : LogicEngine.Base, draw_overlap : bool) -> Array[Line2D]:
+	var lines : Array[Line2D] = []
 
 	for tile in base.tiles_inside_outer:
 		var line : Line2D = Line2D.new()
@@ -286,38 +311,43 @@ func drawCity(base : LogicEngine.Base):
 
 		var local_pos = map_to_local(tile)
 		var offset = 20
-		
+
 		var offsetPoint = func off(pt : Vector2) -> Vector2:
 			pt.x -= 15
 			pt.y -= offset+20
 			return pt
-		
-		if tile.x > base.location.x:
-			var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
-			var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
-			line.add_point(offsetPoint.call(p1))
-			line.add_point(offsetPoint.call(p2))
-		
-		if tile.y > base.location.y:
-			var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
-			var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
-			line.add_point(offsetPoint.call(p1))
-			line.add_point(offsetPoint.call(p2))
-			
-		if tile.x < base.location.x:
-			var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
-			var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
-			line.add_point(offsetPoint.call(p1))
-			line.add_point(offsetPoint.call(p2))
-			
-		if tile.y < base.location.y:
-			var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
-			var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
-			line.add_point(offsetPoint.call(p1))
-			line.add_point(offsetPoint.call(p2))
 
-		sprite_holder.add_child(line)
-		base.border_lines.append(line)
+		if tile.x > base.location.x:
+			if not map.getTileVec(Vector2i(tile.x+1, tile.y)).isOownedByBase() or draw_overlap:
+				var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
+				var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
+				line.add_point(offsetPoint.call(p1))
+				line.add_point(offsetPoint.call(p2))
+
+		if tile.y > base.location.y:
+			if not map.getTileVec(Vector2i(tile.x, tile.y+1)).isOownedByBase() or draw_overlap:
+				var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
+				var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
+				line.add_point(offsetPoint.call(p1))
+				line.add_point(offsetPoint.call(p2))
+
+		if tile.x < base.location.x:
+			if not map.getTileVec(Vector2i(tile.x-1, tile.y)).isOownedByBase() or draw_overlap:
+				var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
+				var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
+				line.add_point(offsetPoint.call(p1))
+				line.add_point(offsetPoint.call(p2))
+
+		if tile.y < base.location.y:
+			if not map.getTileVec(Vector2i(tile.x, tile.y-1)).isOownedByBase() or draw_overlap:
+				var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
+				var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
+				line.add_point(offsetPoint.call(p1))
+				line.add_point(offsetPoint.call(p2))
+
+		lines.append(line)
+
+	return lines
 
 var builder : BuilderIcon = null
 

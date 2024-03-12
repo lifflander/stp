@@ -49,6 +49,7 @@ class Base:
 	var tiles_inside : Array[Vector2i]
 	var tiles_inside_outer : Array[Vector2i]
 	var border_lines : Array[Line2D] = []
+	var highlight_border_lines : Array[Line2D] = []
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		tile_map = in_tile_map
@@ -58,6 +59,7 @@ class Base:
 		
 		calculateBorder(1)
 		
+		le.map.getTileVec(location).owned_by_base = self
 		for tile in tiles_inside:
 			le.map.getTileVec(tile).owned_by_base = self
 
