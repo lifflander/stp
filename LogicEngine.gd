@@ -8,6 +8,13 @@ var players : Array[Player]
 
 const unit_tile_set : int = 8
 
+func getBasicDirections() -> Array[Vector2i]:
+	var basic_directions : Array[Vector2i] = [
+		Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1),
+		Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, 1)
+		]
+	return basic_directions
+
 class Player:
 	var player_id : int = -1
 	var last_turn_completed : int = -1
@@ -39,12 +46,41 @@ class Base:
 	var level : int = 1
 	var base_source_id = 12
 	var base_coord : Vector2i = Vector2i(level - 1, 0)
+	var tiles_inside : Array[Vector2i]
+	var tiles_inside_outer : Array[Vector2i]
+	var border_lines : Array[Line2D] = []
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		tile_map = in_tile_map
 		location = in_location
 		le = in_le
 		le.map.getTileVec(location).base = self
+		
+		calculateBorder(1)
+
+	func calculateBorder(distance : int = 1):
+		tiles_inside = calculateBorderImpl([location], 1, distance)
+
+	func calculateBorderImpl(positions_at_dist : Array[Vector2i], cur_dist : int, total_dist : int) -> Array[Vector2i]:
+		var border_tiles : Array[Vector2i] = []
+		
+		for position in positions_at_dist:
+			for d in le.getBasicDirections():
+				var loc_to_check : Vector2i = position + d
+				var tile : Map.Tile = le.map.getTileVec(loc_to_check)
+				if not tile.isOownedByBase():
+					var new_pos = position+d
+					border_tiles.append(new_pos)
+					if (new_pos.x == location.x + total_dist or
+						new_pos.y == location.y + total_dist or
+						new_pos.x == location.x - total_dist or
+						new_pos.y == location.y - total_dist):
+						tiles_inside_outer.append(new_pos)
+
+		if cur_dist < total_dist:
+			return calculateBorderImpl(border_tiles, cur_dist+1, total_dist)
+		else:
+			return border_tiles
 
 class UnitAbilities:
 	var distance : int = 1
@@ -81,11 +117,6 @@ class Unit:
 	func hasBuilder() -> bool:
 		return false
 
-	var basic_directions : Array[Vector2i] = [
-		Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1),
-		Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, 1)
-		]
-
 	func getValidMoves() -> Array[Vector2i]:
 		return getValidMovesImpl([location])
 
@@ -93,7 +124,7 @@ class Unit:
 		var valid_moves : Array[Vector2i] = []
 		
 		for position in positions_at_dist:
-			for d in basic_directions:
+			for d in le.getBasicDirections():
 				var loc_to_check : Vector2i = position + d
 				var tile : Map.Tile = le.map.getTileVec(loc_to_check)
 				if not tile.hasUnit():

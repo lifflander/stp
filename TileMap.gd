@@ -173,6 +173,10 @@ func unselectCell(tile : Vector2i):
 	if builder:
 		builder.queue_free()
 		builder = null
+	if map.getTileVec(tile).hasBase():
+		var base = map.getTileVec(tile).base
+		for line in base.border_lines:
+			line.set_default_color(Color(1.0,1.0,0.5,0.5))
 
 func selectCell(tile : Vector2i):
 	if selection.has_unit_selected:
@@ -226,7 +230,10 @@ func selectCell(tile : Vector2i):
 		for move in valid_moves:
 			set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
 	elif base_selected:
-		setUIForBase(map.getTileVec(selection.getTile()).base)
+		var base = map.getTileVec(selection.getTile()).base
+		setUIForBase(base)
+		for line in base.border_lines:
+			line.set_default_color(Color(0,0.3,1.0,0.5))
 	else:
 		if selection.validTile():
 			set_cell(selection_layer, selection.getTile(), 9, Vector2i(0,0), 0)
@@ -251,6 +258,49 @@ func drawCity(base : LogicEngine.Base):
 	new_poly.add_child(new_label)
 
 	sprite_holder.add_child(new_poly)
+
+	for tile in base.tiles_inside_outer:
+		var line : Line2D = Line2D.new()
+		line.set_default_color(Color(1.0,1.0,0.5,0.5))
+		line.set_z_index(-1)
+		line.set_width(15)
+		line.set_joint_mode(Line2D.LINE_JOINT_BEVEL)
+		#line.set_texture(load("res://dashed-line-material.tres"))
+
+		var local_pos = map_to_local(tile)
+		var offset = 20
+		
+		var offsetPoint = func off(pt : Vector2) -> Vector2:
+			pt.x -= 15
+			pt.y -= offset+20
+			return pt
+		
+		if tile.x > base.location.x:
+			var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
+			var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
+			line.add_point(offsetPoint.call(p1))
+			line.add_point(offsetPoint.call(p2))
+		
+		if tile.y > base.location.y:
+			var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
+			var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
+			line.add_point(offsetPoint.call(p1))
+			line.add_point(offsetPoint.call(p2))
+			
+		if tile.x < base.location.x:
+			var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
+			var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
+			line.add_point(offsetPoint.call(p1))
+			line.add_point(offsetPoint.call(p2))
+			
+		if tile.y < base.location.y:
+			var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
+			var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
+			line.add_point(offsetPoint.call(p1))
+			line.add_point(offsetPoint.call(p2))
+
+		sprite_holder.add_child(line)
+		base.border_lines.append(line)
 
 var builder : BuilderIcon = null
 

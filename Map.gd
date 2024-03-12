@@ -22,6 +22,7 @@ class Tile:
 	var unit : LogicEngine.Unit = null
 	var base : LogicEngine.Base = null
 	var type : TileTypeEnum = TileTypeEnum.EMPTY
+	var owned_by_base : LogicEngine.Base = null
 	
 	func _init():
 		atlas = AtlasIdent.new(-1, Vector2i(-1,-1))
@@ -31,6 +32,12 @@ class Tile:
 	
 	func hasBase() -> bool:
 		return base != null
+		
+	func isOownedByBase() -> bool:
+		return owned_by_base != null
+		
+	func baseOwnedBy() -> LogicEngine.Base:
+		return owned_by_base
 
 class Circle:
 	var pos : Vector2

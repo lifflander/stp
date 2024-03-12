@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b35x4fo8n7l6u"]
+
+[ext_resource type="Shader" path="res://dashed-line-shader.gdshader" id="1_vc0ng"]
+
+[resource]
+shader = ExtResource("1_vc0ng")
+shader_parameter/is_dashed = true
+shader_parameter/dashed_count = 10.0
