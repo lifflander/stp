@@ -317,29 +317,33 @@ func drawBorders(base : LogicEngine.Base, draw_overlap : bool) -> Array[Line2D]:
 			pt.y -= offset+20
 			return pt
 
-		if tile.x > base.location.x:
-			if not map.getTileVec(Vector2i(tile.x+1, tile.y)).isOownedByBase() or draw_overlap:
+		if tile.x > base.location.x or true:
+			var base_owned = map.getTileVec(Vector2i(tile.x+1, tile.y)).baseOwnedBy()
+			if not base_owned or (draw_overlap and not base_owned == base):
 				var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
 				var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
 				line.add_point(offsetPoint.call(p1))
 				line.add_point(offsetPoint.call(p2))
 
-		if tile.y > base.location.y:
-			if not map.getTileVec(Vector2i(tile.x, tile.y+1)).isOownedByBase() or draw_overlap:
+		if tile.y > base.location.y or true:
+			var base_owned = map.getTileVec(Vector2i(tile.x, tile.y+1)).baseOwnedBy()
+			if not base_owned or (draw_overlap and not base_owned == base):
 				var p1 = to_global(Vector2(local_pos.x, local_pos.y + tile_set.tile_size.y/2))
 				var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
 				line.add_point(offsetPoint.call(p1))
 				line.add_point(offsetPoint.call(p2))
 
-		if tile.x < base.location.x:
-			if not map.getTileVec(Vector2i(tile.x-1, tile.y)).isOownedByBase() or draw_overlap:
+		if tile.x < base.location.x or true:
+			var base_owned = map.getTileVec(Vector2i(tile.x-1, tile.y)).baseOwnedBy()
+			if not base_owned or (draw_overlap and not base_owned == base):
 				var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
 				var p2 = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2, local_pos.y))
 				line.add_point(offsetPoint.call(p1))
 				line.add_point(offsetPoint.call(p2))
 
-		if tile.y < base.location.y:
-			if not map.getTileVec(Vector2i(tile.x, tile.y-1)).isOownedByBase() or draw_overlap:
+		if tile.y < base.location.y or true:
+			var base_owned = map.getTileVec(Vector2i(tile.x, tile.y-1)).baseOwnedBy()
+			if not base_owned or (draw_overlap and not base_owned == base):
 				var p1 = to_global(Vector2(local_pos.x, local_pos.y - tile_set.tile_size.y/2))
 				var p2 = to_global(Vector2(local_pos.x + tile_set.tile_size.x/2, local_pos.y))
 				line.add_point(offsetPoint.call(p1))

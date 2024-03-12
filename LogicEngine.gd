@@ -65,6 +65,8 @@ class Base:
 
 	func calculateBorder(distance : int = 1):
 		tiles_inside = calculateBorderImpl([location], 1, distance)
+		tiles_inside.append(location)
+		tiles_inside_outer.append(location)
 
 	func calculateBorderImpl(positions_at_dist : Array[Vector2i], cur_dist : int, total_dist : int) -> Array[Vector2i]:
 		var border_tiles : Array[Vector2i] = []
@@ -76,11 +78,11 @@ class Base:
 				if not tile.isOownedByBase():
 					var new_pos = position+d
 					border_tiles.append(new_pos)
-					if (new_pos.x == location.x + total_dist or
-						new_pos.y == location.y + total_dist or
-						new_pos.x == location.x - total_dist or
-						new_pos.y == location.y - total_dist):
-						tiles_inside_outer.append(new_pos)
+					#if (new_pos.x == location.x + total_dist or
+						#new_pos.y == location.y + total_dist or
+						#new_pos.x == location.x - total_dist or
+						#new_pos.y == location.y - total_dist):
+					tiles_inside_outer.append(new_pos)
 
 		if cur_dist < total_dist:
 			return calculateBorderImpl(border_tiles, cur_dist+1, total_dist)
