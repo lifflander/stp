@@ -281,17 +281,17 @@ func drawCity(base : LogicEngine.Base):
 	new_label.position.x = 40
 	new_label.label_settings = load("res://base-name-label-settings.tres")
 	new_label.text = base.name
+	new_label.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
 
 	var poly_pos = map_to_local(base.location)
-	poly_pos.x -= 75
 	var global_pos = to_global(poly_pos)
-	var new_poly : Polygon2D = Polygon2D.new()
-	new_poly.position = global_pos
-	var height : int = 75
-	var width : int = 200
-	new_poly.set_polygon(PackedVector2Array([Vector2(0,0),Vector2(width,0),Vector2(width,height),Vector2(0,height)]))
-	new_poly.set_color(Color(0,0,0,0.7))
-	new_poly.add_child(new_label)
+	
+	var new_pc : PanelContainer = PanelContainer.new()
+	new_pc.position = global_pos
+	new_pc.add_child(new_label)
+	new_pc.set_size(Vector2(150,70))
+	new_pc.position.x -= new_pc.get_size().x/2
+	sprite_holder.add_child(new_pc)
 
 	var base_pos = map_to_local(base.location)
 	var global_base_pos = to_global(base_pos)
@@ -303,9 +303,6 @@ func drawCity(base : LogicEngine.Base):
 	new_pop_bar.set_size(Vector2(len*200,50))
 	sprite_holder.add_child(new_pop_bar)
 
-
-	sprite_holder.add_child(new_poly)
-	
 	for p in logic_engine.players:
 		for b in p.bases:
 			for l in b.border_lines:
