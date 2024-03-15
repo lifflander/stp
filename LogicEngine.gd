@@ -31,6 +31,7 @@ class Player:
 		# Dummy insertion of a unit
 		if player_id == 0:
 			units.append(SpacemanUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
+			units.append(SatelliteUnit.new(in_le, tile_map, Vector2i(player_id+1, player_id+1)))
 		elif player_id == 1:
 			units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 		elif player_id == 2:
@@ -201,6 +202,20 @@ class SpaceshipUnit extends Unit:
 
 	func getName():
 		return "Spaceship"
+		
+class SatelliteUnit extends Unit:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+		var unit_source_id : int = unit_tile_set
+		var unit_coords : Vector2i = Vector2i(7, 0)
+		abilities.hp = 5
+		abilities.distance = 2
+		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+		
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
+
+	func getName():
+		return "Satellite"
 
 var is_initialized : bool = false
 

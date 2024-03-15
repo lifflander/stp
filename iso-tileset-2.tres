@@ -66,6 +66,12 @@ texture_region_size = Vector2i(480, 450)
 6:0/0 = 0
 6:0/0/texture_origin = Vector2i(0, 40)
 6:0/0/material = ExtResource("2_40q4k")
+7:0/0 = 0
+7:0/0/texture_origin = Vector2i(-20, 40)
+7:0/0/material = ExtResource("2_40q4k")
+8:0/0 = 0
+8:0/0/texture_origin = Vector2i(-20, 40)
+8:0/0/material = ExtResource("2_40q4k")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cxa5v"]
 texture = ExtResource("1_o4mdy")
@@ -166,6 +172,10 @@ texture_region_size = Vector2i(480, 450)
 5:0/0/texture_origin = Vector2i(0, 40)
 6:0/0 = 0
 6:0/0/texture_origin = Vector2i(0, 40)
+7:0/0 = 0
+7:0/0/texture_origin = Vector2i(-20, 40)
+8:0/0 = 0
+8:0/0/texture_origin = Vector2i(-20, 40)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r0v2n"]
 texture = ExtResource("7_6aigk")

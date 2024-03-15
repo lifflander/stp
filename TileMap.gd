@@ -163,6 +163,8 @@ func animateUnit(unit : LogicEngine.Unit, from : Vector2i, to : Vector2i):
 	var origin = source.get_tile_data(unit.unit_coord, 0).texture_origin
 	start_pos.y -= origin.y
 	end_pos.y -= origin.y
+	start_pos.x -= origin.x
+	end_pos.x -= origin.x
 	new_sprite.texture = source.get_texture()
 	new_sprite.region_enabled = true
 	new_sprite.region_rect = source.get_tile_texture_region(unit.unit_coord)
