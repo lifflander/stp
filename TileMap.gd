@@ -74,6 +74,7 @@ var unit_layer_id : int = -1
 var city_layer_id : int = -1
 var terrain_layer_id : int = -1
 var resource_layer_id : int = -1
+var space_layer_id : int = -1
 
 class BuilderIcon extends Sprite2D:
 	var location : Vector2i
@@ -124,6 +125,8 @@ func _ready():
 			unit_layer_id = i
 		if get_layer_name(i) == "Selection":
 			selection_layer = i
+		if get_layer_name(i) == "Space":
+			space_layer_id = i
 
 	drawTerrainLayer()
 
@@ -135,7 +138,21 @@ func drawTerrainLayer():
 		for y in range(height):
 			var tile = map.getTileXY(x, y)
 			if tile != null:
-				set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
+				if tile.type == Map.TileTypeEnum.SPACE or tile.type == Map.TileTypeEnum.ATMOSPHERE:
+					set_cell(space_layer_id, Vector2i(x,y), tile.atlas_space.source_id, tile.atlas_space.atlas_coord)
+				
+				if tile.type != Map.TileTypeEnum.SPACE:
+					set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
+					
+				#if tile.type == Map.TileTypeEnum.SPACE:
+					#var local_pos = map_to_local(Vector2i(x,y))
+					#var x_rand = randf() * tile_set.tile_size.x
+					#var y_rand = randf() * tile_set.tile_size.y
+					#var global_pos = to_global(Vector2(local_pos.x - tile_set.tile_size.x/2 + x_rand, local_pos.y - tile_set.tile_size.y/2 + y_rand))
+					#var c : Circle2D = Circle2D.new()
+					#c.position = global_pos
+					#c.radius = 10
+					#sprite_holder.add_child(c)
 
 func animateUnit(unit : LogicEngine.Unit, from : Vector2i, to : Vector2i):
 	var new_sprite : Sprite2D = Sprite2D.new()

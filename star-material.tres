@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cq0mxk3tkcs8g"]
+
+[ext_resource type="Shader" path="res://star-shader.gdshader" id="1_k8vci"]
+
+[resource]
+shader = ExtResource("1_k8vci")
+shader_parameter/small_stars = 50.0
+shader_parameter/small_stars_far_size = 0.5
+shader_parameter/small_stars_near_size = 1.0
+shader_parameter/large_stars = 8.0
+shader_parameter/large_stars_far_size = 0.7
+shader_parameter/large_stars_near_size = 1.0
+shader_parameter/far_stars_color = Color(0.360784, 0.270588, 0.94902, 1)
+shader_parameter/near_stars_color = Color(1, 1, 1, 1)
+shader_parameter/tile_position = Vector2(0, 0)
+shader_parameter/mouse = null
+shader_parameter/base_scroll_speed = 0.05

@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=11 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
 [ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="3_2d54c"]
 [ext_resource type="Script" path="res://Map.gd" id="3_et2nw"]
+[ext_resource type="Script" path="res://Circle2D.gd" id="3_jkbrn"]
 [ext_resource type="Script" path="res://CharacterBody2D.gd" id="3_qhnfj"]
 [ext_resource type="Script" path="res://LogicEngine.gd" id="3_uiovt"]
 [ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="7_yey6t"]
@@ -33,6 +34,9 @@ script = ExtResource("3_uiovt")
 [node name="Map" type="Node" parent="."]
 script = ExtResource("3_et2nw")
 
+[node name="Circle2D" type="Node2D" parent="."]
+script = ExtResource("3_jkbrn")
+
 [node name="Tiles" type="TileMap" parent="."]
 y_sort_enabled = true
 position = Vector2(-281, -790)
@@ -41,10 +45,9 @@ rendering_quadrant_size = 30
 format = 2
 layer_0/name = "Base layer"
 layer_0/y_sort_enabled = true
-layer_0/tile_data = PackedInt32Array(-131072, 65542, 0, -65537, 65542, 0, -131073, 65542, 0, -196608, 65542, 0, -65538, 65542, 0, -262144, 65542, 0, -196609, 65542, 0, -131074, 65542, 0, -196610, 65542, 0, -65539, 65542, 0, -131075, 65542, 0, -196611, 65542, 0, -262147, 65542, 0, -262146, 65542, 0, -262145, 65542, 0, -327680, 65542, 0, -65535, 393216, 0, -131071, 327680, 0, -196607, 327680, 0, -262143, 327680, 0, -65536, 262144, 0, -1, 262144, 0, -2, 262144, 0, -327684, 65536, 0, -262148, 131072, 0, -196612, 131072, 0, -131076, 131072, 0, -65540, 131072, 0, -327683, 196608, 0, -327682, 196608, 0, -327681, 196608, 0, -393216, 196608, 0, -3, 262144, 0, -327679, 327680, 0)
 layer_1/name = "Resources"
 layer_1/y_sort_enabled = true
-layer_1/tile_data = PackedInt32Array(65539, 131081, 0, 196611, 131081, 0, 131075, 65545, 0, 262150, 131081, 0, 6, 131081, 0, 65543, 65545, 0, 65544, 65545, 0, 65541, 131081, 0, 327688, 131081, 0)
+layer_1/tile_data = PackedInt32Array(262150, 131081, 0, 327688, 131081, 0)
 layer_2/name = "City"
 layer_2/y_sort_enabled = true
 layer_2/y_sort_origin = 150
@@ -57,6 +60,9 @@ layer_4/name = "Selection"
 layer_4/y_sort_enabled = true
 layer_4/z_index = 1
 layer_4/tile_data = PackedInt32Array()
+layer_5/name = "Space"
+layer_5/z_index = -1
+layer_5/tile_data = PackedInt32Array()
 script = ExtResource("2_dd161")
 
 [node name="SpriteHolder" type="Node2D" parent="Tiles"]

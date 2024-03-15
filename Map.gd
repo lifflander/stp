@@ -14,11 +14,12 @@ class AtlasIdent:
 		return false
 
 enum TileTypeEnum {
-	EMPTY = -1, LAND = 0, MOUNTAIN = 1, SPACE = 2
+	EMPTY = -1, LAND = 0, MOUNTAIN = 1, SPACE = 2, ATMOSPHERE = 3
 }
 
 class Tile:
 	var atlas : AtlasIdent
+	var atlas_space : AtlasIdent
 	var unit : LogicEngine.Unit = null
 	var base : LogicEngine.Base = null
 	var type : TileTypeEnum = TileTypeEnum.EMPTY
@@ -42,10 +43,10 @@ class Tile:
 class Circle:
 	var pos : Vector2
 	var radius : float
-	var x1 : float
-	var x2 : float
-	var y1 : float
-	var y2 : float
+	var x1 : int
+	var x2 : int
+	var y1 : int
+	var y2 : int
 	var planet = 0
 
 	func getSquareLen(rad : float) -> float:
@@ -58,21 +59,39 @@ class Circle:
 
 		var len = getSquareLen(radius)
 
-		x1 = p.x-len/2
-		x2 = p.x+len/2
-		y1 = p.y-len/2
-		y2 = p.y+len/2
+		x1 = int(p.x-len/2)
+		x2 = int(p.x+len/2)
+		y1 = int(p.y-len/2)
+		y2 = int(p.y+len/2)
 
 	func inCircle(p : Vector2i) -> bool:
 		return (p.x - pos.x) * (p.x - pos.x) + (p.y - pos.y) * (p.y - pos.y) < radius * radius
 
 	func inSquare(p : Vector2i) -> bool:
 		return p.x >= x1 and p.x <= x2 and p.y >= y1 and p.y <= y2
+		
+	func onBottomBoundary(p : Vector2i) -> bool:
+		return p.x >= x1 and p.x == x2+1 and p.y >= y1 and p.y <= y2
+	func onTopBoundary(p : Vector2i) -> bool:
+		return p.x == x1-1 and p.x <= x2 and p.y >= y1 and p.y <= y2
+	func onLeftBoundary(p : Vector2i) -> bool:
+		return p.x >= x1 and p.x <= x2 and p.y == y1-1 and p.y <= y2
+	func onRightBoundary(p : Vector2i) -> bool:
+		return p.x >= x1 and p.x <= x2 and p.y >= y1 and p.y == y2+1
+
+	func onBottomLeftBoundary(p : Vector2i) -> bool:
+		return p.x >= x1 and p.x == x2+1 and p.y == y1-1 and p.y <= y2
+	func onBottomRightBoundary(p : Vector2i) -> bool:
+		return p.x >= x1 and p.x == x2+1 and p.y >= y1 and p.y == y2+1
+	func onTopLeftBoundary(p : Vector2i) -> bool:
+		return p.x == x1-1 and p.x <= x2 and p.y == y1-1 and p.y <= y2
+	func onTopRightBoundary(p : Vector2i) -> bool:
+		return p.x == x1-1 and p.x <= x2 and p.y >= y1 and p.y == y2+1
 
 var altitude = FastNoiseLite.new()
 var width : int = 200
 var height : int = 200
-var circles = [Circle.new(Vector2(6,5), 6, 0), Circle.new(Vector2(5,17), 6, 1)]
+var circles = [Circle.new(Vector2(9,8), 5, 0), Circle.new(Vector2(8,20), 5, 1)]
 
 var tiles : Array[Tile]
 
@@ -110,12 +129,14 @@ func _ready():
 	for x in width:
 		for y in height:
 			tiles[convertTo1D(Vector2i(x, y))] = Tile.new()
+			var tile = getTileXY(x, y)
+			tile.type = TileTypeEnum.SPACE
+			tile.atlas_space = AtlasIdent.new(1, Vector2i(0,0))
 			for c in circles:
-				if c.inCircle(Vector2i(x,y)):
+				if c.inSquare(Vector2i(x,y)):
 					#print("planet=" + str(c.planet) + ", x=", str(x), ", y=", str(y))
 					var alt = altitude.get_noise_2d(float(x)*50.0, float(y)*50.0)*10
 					var mountain = alt > 1
-					var tile = getTileXY(x, y)
 					if c.planet == 0:
 						if mountain:
 							tile.type = TileTypeEnum.MOUNTAIN
@@ -132,6 +153,24 @@ func _ready():
 							tile.atlas = AtlasIdent.new(6, Vector2i(2,0))
 					else:
 						print("ERROR")
+				elif c.onBottomBoundary(Vector2i(x,y)) or c.onTopBoundary(Vector2i(x,y)):
+					tile.type = TileTypeEnum.ATMOSPHERE
+					tile.atlas = AtlasIdent.new(0, Vector2i(0,0))
+				elif c.onLeftBoundary(Vector2i(x,y)) or c.onRightBoundary(Vector2i(x,y)):
+					tile.type = TileTypeEnum.ATMOSPHERE
+					tile.atlas = AtlasIdent.new(0, Vector2i(1,0))
+				elif c.onBottomLeftBoundary(Vector2i(x,y)):
+					tile.type = TileTypeEnum.ATMOSPHERE
+					tile.atlas = AtlasIdent.new(0, Vector2i(3,0))
+				elif c.onBottomRightBoundary(Vector2i(x,y)):
+					tile.type = TileTypeEnum.ATMOSPHERE
+					tile.atlas = AtlasIdent.new(0, Vector2i(5,0))
+				elif c.onTopLeftBoundary(Vector2i(x,y)):
+					tile.type = TileTypeEnum.ATMOSPHERE
+					tile.atlas = AtlasIdent.new(0, Vector2i(2,0))
+				elif c.onTopRightBoundary(Vector2i(x,y)):
+					tile.type = TileTypeEnum.ATMOSPHERE
+					tile.atlas = AtlasIdent.new(0, Vector2i(4,0))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

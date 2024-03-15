@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://7rbg8gra110a"]
+
+[ext_resource type="Script" path="res://CharacterBody2DTest.gd" id="1_m47d7"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+follow_viewport_enabled = true
+scroll_offset = Vector2(2.08165e-12, 100)
+
+[node name="Line2D" type="Line2D" parent="ParallaxBackground"]
+points = PackedVector2Array(0, 0, 100, 100)
+width = 100.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(1000, 1000)
+
+[node name="CharacterBody2DTest" type="CharacterBody2D" parent="."]
+script = ExtResource("1_m47d7")
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2DTest"]

@@ -8,7 +8,7 @@ var players : Array[Player]
 
 const unit_tile_set : int = 8
 
-func getBasicDirections() -> Array[Vector2i]:
+static func getBasicDirections() -> Array[Vector2i]:
 	var basic_directions : Array[Vector2i] = [
 		Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1),
 		Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, 1)
@@ -30,13 +30,13 @@ class Player:
 
 		# Dummy insertion of a unit
 		if player_id == 0:
-			units.append(SpacemanUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
+			units.append(SpacemanUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 		elif player_id == 1:
-			units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
+			units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 		elif player_id == 2:
-			units.append(ColonypodUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
+			units.append(ColonypodUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 		elif player_id == 3:
-			units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id+2, player_id+2)))
+			units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 
 class Base:
 	var location : Vector2i
@@ -197,7 +197,7 @@ class SpaceshipUnit extends Unit:
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 		
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
-		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN]
+		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE]
 
 	func getName():
 		return "Spaceship"
