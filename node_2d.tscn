@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=12 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
 [ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
@@ -22,6 +22,34 @@ glow_hdr_luminance_cap = 19.0
 
 [sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_de0q8"]
 
+[sub_resource type="GDScript" id="GDScript_0om6i"]
+script/source = "class_name PopulationBar extends ProgressBar
+
+var divisions : int = 3
+
+func _init(in_divisions : int):
+	divisions = in_divisions
+	rounded = true
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	#for i in divisions:
+		#var val = 100/divisions
+		#var len = size.x;
+		#var wid = size.y;
+		#var line : Line2D = Line2D.new()
+		#line.add_point(Vector2(position.x,position.y-wid/2))
+		#line.add_point(Vector2(position.x, position.y+wid/2))
+		#add_child(line)
+	pass
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
 [node name="Node2D" type="Node2D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -30,6 +58,11 @@ camera_attributes = SubResource("CameraAttributesPhysical_de0q8")
 
 [node name="LogicEngine" type="Node" parent="."]
 script = ExtResource("3_uiovt")
+
+[node name="PopulationBar2" type="ProgressBar" parent="."]
+offset_right = 4.0
+offset_bottom = 27.0
+script = SubResource("GDScript_0om6i")
 
 [node name="Map" type="Node" parent="."]
 script = ExtResource("3_et2nw")

@@ -293,6 +293,17 @@ func drawCity(base : LogicEngine.Base):
 	new_poly.set_color(Color(0,0,0,0.7))
 	new_poly.add_child(new_label)
 
+	var base_pos = map_to_local(base.location)
+	var global_base_pos = to_global(base_pos)
+	var len = base.level+1
+	var new_pop_bar : PopulationBar2 = PopulationBar2.new(3)
+	global_base_pos.x -= len*200/2
+	global_base_pos.y += 75
+	new_pop_bar.position = global_base_pos
+	new_pop_bar.set_size(Vector2(len*200,50))
+	sprite_holder.add_child(new_pop_bar)
+
+
 	sprite_holder.add_child(new_poly)
 	
 	for p in logic_engine.players:
