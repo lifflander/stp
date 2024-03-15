@@ -60,6 +60,7 @@ camera_attributes = SubResource("CameraAttributesPhysical_de0q8")
 script = ExtResource("3_uiovt")
 
 [node name="PopulationBar2" type="ProgressBar" parent="."]
+visible = false
 offset_right = 4.0
 offset_bottom = 27.0
 script = SubResource("GDScript_0om6i")
