@@ -24,6 +24,7 @@ class Tile:
 	var base : LogicEngine.Base = null
 	var type : TileTypeEnum = TileTypeEnum.EMPTY
 	var owned_by_base : LogicEngine.Base = null
+	var resource : AtlasIdent = AtlasIdent.new(-1, Vector2i(-1,-1))
 	
 	func _init():
 		atlas = AtlasIdent.new(-1, Vector2i(-1,-1))
@@ -137,6 +138,7 @@ func _ready():
 					#print("planet=" + str(c.planet) + ", x=", str(x), ", y=", str(y))
 					var alt = altitude.get_noise_2d(float(x)*50.0, float(y)*50.0)*10
 					var mountain = alt > 1
+
 					if c.planet == 0:
 						if mountain:
 							tile.type = TileTypeEnum.MOUNTAIN
@@ -153,6 +155,14 @@ func _ready():
 							tile.atlas = AtlasIdent.new(6, Vector2i(2,0))
 					else:
 						print("ERROR")
+
+					var prob = randi_range(1,4)
+					if prob == 2:
+						if tile.type == TileTypeEnum.MOUNTAIN:
+							tile.resource = AtlasIdent.new(9, Vector2i(0,1))
+						else:
+							tile.resource = AtlasIdent.new(9, Vector2i(8,0))
+
 				elif c.onBottomBoundary(Vector2i(x,y)) or c.onTopBoundary(Vector2i(x,y)):
 					tile.type = TileTypeEnum.ATMOSPHERE
 					tile.atlas = AtlasIdent.new(0, Vector2i(0,0))
@@ -171,7 +181,6 @@ func _ready():
 				elif c.onTopRightBoundary(Vector2i(x,y)):
 					tile.type = TileTypeEnum.ATMOSPHERE
 					tile.atlas = AtlasIdent.new(0, Vector2i(4,0))
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

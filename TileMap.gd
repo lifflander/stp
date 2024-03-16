@@ -144,6 +144,9 @@ func drawTerrainLayer():
 				if tile.type != Map.TileTypeEnum.SPACE:
 					set_cell(terrain_layer_id, Vector2i(x,y), tile.atlas.source_id, tile.atlas.atlas_coord)
 					
+				if tile.resource.source_id != -1:
+					set_cell(resource_layer_id, Vector2i(x,y), tile.resource.source_id, tile.resource.atlas_coord)
+					
 				#if tile.type == Map.TileTypeEnum.SPACE:
 					#var local_pos = map_to_local(Vector2i(x,y))
 					#var x_rand = randf() * tile_set.tile_size.x
