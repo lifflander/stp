@@ -123,7 +123,8 @@ class ExtractResource extends Button:
 		base = in_base
 		
 	func _pressed():
-		print("extracted")
+		print("extracted crystal")
+		base.increasePopulation()
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -252,7 +253,7 @@ func setUIForSquare(tile : Map.Tile):
 				var u1 = Label.new()
 				u1.text = "Mountain square with Crystal"
 				dcrc.add_child(u1)
-	
+
 	else:
 		if tile.type == Map.TileTypeEnum.LAND:
 			var u1 = Label.new()
@@ -367,12 +368,13 @@ func drawCity(base : LogicEngine.Base):
 	var base_pos = map_to_local(base.location)
 	var global_base_pos = to_global(base_pos)
 	var len = base.level+1
-	var new_pop_bar : PopulationBar2 = PopulationBar2.new(3)
+	var new_pop_bar : PopulationBar2 = PopulationBar2.new(base)
 	global_base_pos.x -= len*200/2
 	global_base_pos.y += 75
 	new_pop_bar.position = global_base_pos
 	new_pop_bar.set_size(Vector2(len*200,50))
 	sprite_holder.add_child(new_pop_bar)
+	base.population_bar = new_pop_bar
 
 	for p in logic_engine.players:
 		for b in p.bases:

@@ -45,12 +45,14 @@ class Base:
 	var le : LogicEngine
 	var name : String = "Atari"
 	var level : int = 1
+	var population : int = 0
 	var base_source_id = 12
 	var base_coord : Vector2i = Vector2i(level - 1, 0)
 	var tiles_inside : Array[Vector2i]
 	var tiles_inside_outer : Array[Vector2i]
 	var border_lines : Array[Line2D] = []
 	var highlight_border_lines : Array[Line2D] = []
+	var population_bar : PopulationBar2 = null
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		tile_map = in_tile_map
@@ -63,6 +65,17 @@ class Base:
 		le.map.getTileVec(location).owned_by_base = self
 		for tile in tiles_inside:
 			le.map.getTileVec(tile).owned_by_base = self
+
+	func increasePopulation():
+		print("increasePopulation")
+		population += 1
+		population_bar.setPopulation(population)
+
+		if population == level+1:
+			level += 1
+			population_bar.setLevel(level)
+			population = 0
+			population_bar.setPopulation(population)
 
 	func calculateBorder(distance : int = 1):
 		tiles_inside = calculateBorderImpl([location], 1, distance)
