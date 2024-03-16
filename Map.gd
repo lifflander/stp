@@ -25,9 +25,14 @@ class Tile:
 	var type : TileTypeEnum = TileTypeEnum.EMPTY
 	var owned_by_base : LogicEngine.Base = null
 	var resource : AtlasIdent = AtlasIdent.new(-1, Vector2i(-1,-1))
-	
-	func _init():
+	var loc : Vector2i
+
+	func getXY() -> Vector2i:
+		return loc
+
+	func _init(in_loc : Vector2i):
 		atlas = AtlasIdent.new(-1, Vector2i(-1,-1))
+		loc = in_loc
 	
 	func hasUnit() -> bool:
 		return unit != null
@@ -129,7 +134,7 @@ func _ready():
 
 	for x in width:
 		for y in height:
-			tiles[convertTo1D(Vector2i(x, y))] = Tile.new()
+			tiles[convertTo1D(Vector2i(x, y))] = Tile.new(Vector2i(x, y))
 			var tile = getTileXY(x, y)
 			tile.type = TileTypeEnum.SPACE
 			tile.atlas_space = AtlasIdent.new(1, Vector2i(0,0))

@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=20 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=22 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Texture2D" uid="uid://b3bhoe2tb63dy" path="res://assets/tilesets/Atmosphere_1.png" id="1_o4mdy"]
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://d2ql6dm0nudk4" path="res://assets/tilesets/Units-Tileset_1.png" id="2_t27ds"]
 [ext_resource type="Texture2D" uid="uid://dalalwkh6mad7" path="res://assets/tilesets/Base_Tileset_1.png" id="3_itlhw"]
 [ext_resource type="Texture2D" uid="uid://ctcpcdrq8bdq7" path="res://assets/tilesets/Tileset_1.png" id="4_vypo8"]
+[ext_resource type="Texture2D" uid="uid://ck6lrfe6gir6e" path="res://assets/tilesets/Greenhouse_Level_3.png" id="6_88335"]
 [ext_resource type="Texture2D" uid="uid://gt15n4bniw2k" path="res://assets/tilesets/Tileset_Overlay_Selection.png" id="7_6aigk"]
 [ext_resource type="Texture2D" uid="uid://bfi2wkiec7kl0" path="res://assets/tilesets/Mars_Tileset_2.png" id="8_iwov0"]
 
@@ -81,6 +82,11 @@ texture_region_size = Vector2i(480, 488)
 1:0/0/texture_origin = Vector2i(0, 160)
 2:0/0 = 0
 2:0/0/texture_origin = Vector2i(0, 160)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xjdxl"]
+texture = ExtResource("6_88335")
+texture_region_size = Vector2i(900, 500)
+0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k64m7"]
 texture = ExtResource("4_vypo8")
@@ -183,4 +189,5 @@ sources/10 = SubResource("TileSetAtlasSource_v8dyp")
 sources/12 = SubResource("TileSetAtlasSource_vgkwd")
 sources/0 = SubResource("TileSetAtlasSource_yh4kb")
 sources/1 = SubResource("TileSetAtlasSource_wuy8j")
+sources/2 = SubResource("TileSetAtlasSource_xjdxl")
 pattern_0 = SubResource("TileMapPattern_74qju")

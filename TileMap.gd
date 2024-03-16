@@ -109,6 +109,22 @@ class BuildUnit extends Button:
 			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
 			le.players[0].units.append(unit)
 
+class ExtractResource extends Button:
+	var location : Vector2i
+	var tile_map : IsoTileMap
+	var le : LogicEngine
+	var base : LogicEngine.Base = null
+
+	func _init(name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : LogicEngine.Base):
+		set_text(name)
+		location = in_loc
+		tile_map = in_tile_map
+		le = in_le
+		base = in_base
+		
+	func _pressed():
+		print("extracted")
+
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
 
@@ -204,6 +220,56 @@ func setUIForBase(base : LogicEngine.Base):
 #
 	#var u4 = BuildUnit.new(LogicEngine.TankUnit.new(logic_engine, self, loc))
 	#dcrc.add_child(u4)
+	
+func setUIForSquare(tile : Map.Tile):
+	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
+	dcr.visible = true
+	var dcrc = get_parent().find_child("DynamicHBoxContainer") as HBoxContainer
+	for child in dcrc.get_children():
+		dcrc.remove_child(child)
+
+	var loc = tile.getXY()
+	
+	if tile.resource.source_id != -1:
+		var inside_base : bool = false
+		var base : LogicEngine.Base = null
+
+		for p in logic_engine.players:
+			for b in p.bases:
+				if loc in b.tiles_inside:
+					inside_base = true
+					base = b
+
+		if inside_base:
+			var u1 = ExtractResource.new("Extract Crystal", loc, logic_engine, self, base)
+			dcrc.add_child(u1)
+		else:
+			if tile.type == Map.TileTypeEnum.LAND:
+				var u1 = Label.new()
+				u1.text = "Land square with Crystal"
+				dcrc.add_child(u1)
+			elif tile.type == Map.TileTypeEnum.MOUNTAIN:
+				var u1 = Label.new()
+				u1.text = "Mountain square with Crystal"
+				dcrc.add_child(u1)
+	
+	else:
+		if tile.type == Map.TileTypeEnum.LAND:
+			var u1 = Label.new()
+			u1.text = "Land square"
+			dcrc.add_child(u1)
+		elif tile.type == Map.TileTypeEnum.MOUNTAIN:
+			var u1 = Label.new()
+			u1.text = "Mountain square"
+			dcrc.add_child(u1)
+		elif tile.type == Map.TileTypeEnum.SPACE:
+			var u1 = Label.new()
+			u1.text = "Space square"
+			dcrc.add_child(u1)
+		elif tile.type == Map.TileTypeEnum.ATMOSPHERE:
+			var u1 = Label.new()
+			u1.text = "Atmosphere square"
+			dcrc.add_child(u1)
 
 func unselectCell(tile : Vector2i):
 	set_cell(selection_layer, tile, -1, Vector2i(0,0), 0)
@@ -276,6 +342,8 @@ func selectCell(tile : Vector2i):
 	else:
 		if selection.validTile():
 			set_cell(selection_layer, selection.getTile(), 9, Vector2i(0,0), 0)
+			setUIForSquare(map.getTileVec(selection.getTile()))
+
 
 func drawCity(base : LogicEngine.Base):
 	set_cell(city_layer_id, base.location, base.base_source_id, base.base_coord, 0)
