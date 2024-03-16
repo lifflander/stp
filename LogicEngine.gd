@@ -53,6 +53,7 @@ class Base:
 	var border_lines : Array[Line2D] = []
 	var highlight_border_lines : Array[Line2D] = []
 	var population_bar : PopulationBar2 = null
+	var supported_units : Array[Unit] = []
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		tile_map = in_tile_map
@@ -66,6 +67,16 @@ class Base:
 		for tile in tiles_inside:
 			le.map.getTileVec(tile).owned_by_base = self
 
+	func addSupportedUnit(unit : Unit):
+		supported_units.append(unit)
+		population_bar.unitAdded()
+
+	func canSupportMoreUnits():
+		return supported_units.size() < level + 1
+		
+	func getNumberOfSupportedUnits() -> int:
+		return supported_units.size()
+
 	func increasePopulation():
 		print("increasePopulation")
 		population += 1
@@ -76,6 +87,8 @@ class Base:
 			population_bar.setLevel(level)
 			population = 0
 			population_bar.setPopulation(population)
+			base_coord = Vector2i(level-1, 0)
+			tile_map.updateCity(self)
 
 	func calculateBorder(distance : int = 1):
 		tiles_inside = calculateBorderImpl([location], 1, distance)

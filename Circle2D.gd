@@ -4,7 +4,7 @@ var radius : float = 0.0
 var color : Color = Color(0,0,0,1)
 
 func _draw():
-	draw_circle(position, radius, color)
+	draw_circle(to_local(get_parent().global_position) + position, radius, color)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

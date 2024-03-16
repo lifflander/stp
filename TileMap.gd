@@ -94,20 +94,24 @@ class BuildUnit extends Button:
 	var location : Vector2i
 	var tile_map : IsoTileMap
 	var le : LogicEngine
+	var base : LogicEngine.Base = null
 
-	func _init(name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap):
+	func _init(name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : LogicEngine.Base):
 		set_text(name)
 		location = in_loc
 		tile_map = in_tile_map
 		le = in_le
+		base = in_base
 		
 	func _pressed():
 		if get_text() == "ColonyPod":
 			unit = LogicEngine.ColonypodUnit.new(le, tile_map, location)
-			le.players[0].units.append(unit)
 		elif get_text() == "Spaceman":
 			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
+
+		if unit:
 			le.players[0].units.append(unit)
+			base.addSupportedUnit(unit)
 
 class ExtractResource extends Button:
 	var location : Vector2i
@@ -125,6 +129,7 @@ class ExtractResource extends Button:
 	func _pressed():
 		print("extracted crystal")
 		base.increasePopulation()
+		tile_map.removeResource(location)
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -149,6 +154,9 @@ func _ready():
 
 	selection = SelectionState.new(map)
 
+func removeResource(t : Vector2i):
+	set_cell(resource_layer_id, t, -1, Vector2i(-1,-1))
+
 func drawTerrainLayer():
 	# Draw the base map layer
 	for x in range(width):
@@ -163,7 +171,7 @@ func drawTerrainLayer():
 					
 				if tile.resource.source_id != -1:
 					set_cell(resource_layer_id, Vector2i(x,y), tile.resource.source_id, tile.resource.atlas_coord)
-					
+
 				#if tile.type == Map.TileTypeEnum.SPACE:
 					#var local_pos = map_to_local(Vector2i(x,y))
 					#var x_rand = randf() * tile_set.tile_size.x
@@ -207,21 +215,14 @@ func setUIForBase(base : LogicEngine.Base):
 	dcrc.add_child(new_label)
 #
 	var loc = base.location
-	var u1 = BuildUnit.new("ColonyPod", loc, logic_engine, self)
-	dcrc.add_child(u1)
 	
-	var u2 = BuildUnit.new("Spaceman", loc, logic_engine, self)
-	dcrc.add_child(u2)
-#
-	#var u2 = BuildUnit.new(LogicEngine.ColonypodUnit.new(logic_engine, self, loc))
-	#dcrc.add_child(u2)
-#
-	#var u3 = BuildUnit.new(LogicEngine.SpacemanUnit.new(logic_engine, self, loc))
-	#dcrc.add_child(u3)
-#
-	#var u4 = BuildUnit.new(LogicEngine.TankUnit.new(logic_engine, self, loc))
-	#dcrc.add_child(u4)
+	if base.canSupportMoreUnits():
+		var u1 = BuildUnit.new("ColonyPod", loc, logic_engine, self, base)
+		dcrc.add_child(u1)
 	
+		var u2 = BuildUnit.new("Spaceman", loc, logic_engine, self, base)
+		dcrc.add_child(u2)
+
 func setUIForSquare(tile : Map.Tile):
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
 	dcr.visible = true
@@ -345,6 +346,8 @@ func selectCell(tile : Vector2i):
 			set_cell(selection_layer, selection.getTile(), 9, Vector2i(0,0), 0)
 			setUIForSquare(map.getTileVec(selection.getTile()))
 
+func updateCity(base : LogicEngine.Base):
+	set_cell(city_layer_id, base.location, base.base_source_id, base.base_coord, 0)
 
 func drawCity(base : LogicEngine.Base):
 	set_cell(city_layer_id, base.location, base.base_source_id, base.base_coord, 0)
@@ -369,12 +372,13 @@ func drawCity(base : LogicEngine.Base):
 	var global_base_pos = to_global(base_pos)
 	var len = base.level+1
 	var new_pop_bar : PopulationBar2 = PopulationBar2.new(base)
-	global_base_pos.x -= len*200/2
+	global_base_pos.x -= len*120/2
 	global_base_pos.y += 75
 	new_pop_bar.position = global_base_pos
-	new_pop_bar.set_size(Vector2(len*200,50))
+	new_pop_bar.set_size(Vector2(len*120,50))
 	sprite_holder.add_child(new_pop_bar)
 	base.population_bar = new_pop_bar
+	new_pop_bar.drawLines()
 
 	for p in logic_engine.players:
 		for b in p.bases:
