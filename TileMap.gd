@@ -2,6 +2,7 @@ extends TileMap
 class_name IsoTileMap
 
 @onready var logic_engine : LogicEngine = get_parent().get_node("LogicEngine")
+@onready var character_body : CharacterBody2D = get_parent().get_node("CharacterBody2D")
 @onready var map : Map = get_parent().get_node("Map")
 @onready var label_holder : Node2D = get_node("LabelHolder")
 @onready var sprite_holder : Node2D = get_node("SpriteHolder")

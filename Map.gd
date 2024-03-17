@@ -163,10 +163,16 @@ func _ready():
 
 					var prob = randi_range(1,4)
 					if prob == 2:
-						if tile.type == TileTypeEnum.MOUNTAIN:
-							tile.resource = AtlasIdent.new(9, Vector2i(0,1))
-						else:
-							tile.resource = AtlasIdent.new(9, Vector2i(8,0))
+						if c.planet == 0:
+							if tile.type == TileTypeEnum.MOUNTAIN:
+								tile.resource = AtlasIdent.new(9, Vector2i(0,1))
+							else:
+								tile.resource = AtlasIdent.new(9, Vector2i(8,0))
+						elif c.planet == 1:
+							if tile.type == TileTypeEnum.MOUNTAIN:
+								tile.resource = AtlasIdent.new(9, Vector2i(2,1))
+							else:
+								tile.resource = AtlasIdent.new(9, Vector2i(1,1))
 
 				elif c.onBottomBoundary(Vector2i(x,y)) or c.onTopBoundary(Vector2i(x,y)):
 					tile.type = TileTypeEnum.ATMOSPHERE

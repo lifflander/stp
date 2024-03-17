@@ -22,7 +22,6 @@ func setLevel(level : int):
 	divisions = level + 1
 
 func drawLines():
-	print("Draw lines")
 	for child in get_children():
 		remove_child(child)
 

@@ -46,7 +46,7 @@ class Base:
 	var name : String = "Atari"
 	var level : int = 1
 	var population : int = 0
-	var base_source_id = 12
+	var base_source_id = 5
 	var base_coord : Vector2i = Vector2i(level - 1, 0)
 	var tiles_inside : Array[Vector2i]
 	var tiles_inside_outer : Array[Vector2i]
