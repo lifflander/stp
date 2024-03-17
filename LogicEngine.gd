@@ -45,13 +45,18 @@ class TileImprovement:
 	var le : LogicEngine
 	var base : Base
 	var ident : Map.AtlasIdent
+	var is_wormhole : bool
 
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i, in_ident : Map.AtlasIdent):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i, in_ident : Map.AtlasIdent, in_is_wormhole : bool):
 		tile_map = in_tile_map
 		location = in_location
 		le = in_le
 		base = in_base
 		ident = in_ident
+		is_wormhole = in_is_wormhole
+		
+	func isWormhole() -> bool:
+		return is_wormhole
 
 class Base:
 	var location : Vector2i
@@ -83,12 +88,12 @@ class Base:
 			le.map.getTileVec(tile).owned_by_base = self
 
 	func addWormhole(location : Vector2i) -> TileImprovement:
-		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(8, Vector2i(0,1)))
+		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(8, Vector2i(0,1)), true)
 		improvements.append(i)
 		return i
 		
 	func addGreenhouse(location : Vector2i) -> TileImprovement:
-		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(11, Vector2i(0,0)))
+		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(11, Vector2i(0,0)), false)
 		improvements.append(i)
 		return i
 

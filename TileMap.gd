@@ -251,6 +251,9 @@ func setUIForBase(base : LogicEngine.Base):
 		var u2 = BuildUnit.new("Spaceman", loc, logic_engine, self, base)
 		dcrc.add_child(u2)
 
+		var u3 = BuildUnit.new("Wormhole", loc, logic_engine, self, base)
+		dcrc.add_child(u3)
+
 func setUIForSquare(tile : Map.Tile):
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
 	dcr.visible = true
@@ -328,8 +331,18 @@ func selectCell(tile : Vector2i):
 		var unit = elm.unit
 		
 		if unit:
-			var valid_moves = unit.getValidMoves()
+			var valid_moves = selection.unit_valid_moves
 			if tile in valid_moves:
+				var into_wormhole : bool = false
+				if map.getTileVec(tile).isOownedByBase():
+					var base = map.getTileVec(tile).baseOwnedBy()
+					for i in base.improvements:
+						if i.location == tile and i.isWormhole():
+							into_wormhole = true
+
+				if into_wormhole:
+					print("into wormhole")
+
 				print("moving to tile: ", tile)
 				var tween = animateUnit(unit, selection.getTile(), tile)
 				elm.unit = null
@@ -369,9 +382,24 @@ func selectCell(tile : Vector2i):
 		tween.tween_property(tile_data, "texture_origin:y", origin.y+50, 0.1).set_trans(Tween.TRANS_LINEAR)
 		tween.chain().tween_property(tile_data, "texture_origin:y", origin.y, 0.1).set_trans(Tween.TRANS_LINEAR)
 		
-		var valid_moves = unit.getValidMoves()
-		selection.unit_valid_moves = valid_moves
-		for move in valid_moves:
+		var into_wormhole : bool = false
+		if map.getTileVec(tile).isOownedByBase():
+			var base = map.getTileVec(selection.getTile()).baseOwnedBy()
+			for i in base.improvements:
+				if i.location == tile and i.isWormhole():
+					into_wormhole = true
+		
+		var all_moves : Array[Vector2i] = []
+		if into_wormhole:
+			for p in logic_engine.players:
+				for u in p.units:
+					if u is LogicEngine.WormholeUnit:
+						var valid_moves = unit.getValidMovesImpl([u.location])
+						all_moves += valid_moves
+
+		all_moves += unit.getValidMoves()
+		selection.unit_valid_moves = all_moves
+		for move in all_moves:
 			set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
 	elif base_selected:
 		var base = map.getTileVec(selection.getTile()).base
