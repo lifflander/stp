@@ -91,9 +91,14 @@ class Base:
 		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(8, Vector2i(0,1)), true)
 		improvements.append(i)
 		return i
-		
+
 	func addGreenhouse(location : Vector2i) -> TileImprovement:
-		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(11, Vector2i(0,0)), false)
+		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(14, Vector2i(1,0)), false)
+		improvements.append(i)
+		return i
+		
+	func addSpacedock(location : Vector2i) -> TileImprovement:
+		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(14, Vector2i(0,0)), false)
 		improvements.append(i)
 		return i
 
