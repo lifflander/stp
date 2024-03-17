@@ -104,7 +104,7 @@ class BuildUnit extends Button:
 		tile_map = in_tile_map
 		le = in_le
 		base = in_base
-		
+
 	func _pressed():
 		if get_text() == "ColonyPod":
 			unit = LogicEngine.ColonypodUnit.new(le, tile_map, location)
@@ -112,6 +112,10 @@ class BuildUnit extends Button:
 			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
 		elif get_text() == "Wormhole":
 			unit = LogicEngine.WormholeUnit.new(le, tile_map, location)
+		elif get_text() == "Nuke":
+			unit = LogicEngine.NukeUnit.new(le, tile_map, location)
+		elif get_text() == "HoverSaber":
+			unit = LogicEngine.HoverSaberUnit.new(le, tile_map, location)
 
 		if unit:
 			le.players[0].units.append(unit)
@@ -253,6 +257,12 @@ func setUIForBase(base : LogicEngine.Base):
 
 		var u3 = BuildUnit.new("Wormhole", loc, logic_engine, self, base)
 		dcrc.add_child(u3)
+
+		var u4 = BuildUnit.new("Nuke", loc, logic_engine, self, base)
+		dcrc.add_child(u4)
+
+		var u5 = BuildUnit.new("HoverSaber", loc, logic_engine, self, base)
+		dcrc.add_child(u5)
 
 func setUIForSquare(tile : Map.Tile):
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect

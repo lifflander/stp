@@ -287,6 +287,34 @@ class WormholeUnit extends Unit:
 	func getName():
 		return "Wormhole"
 
+class NukeUnit extends Unit:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+		var unit_source_id : int = unit_tile_set
+		var unit_coords : Vector2i = Vector2i(5, 1)
+		abilities.hp = 5
+		abilities.distance = 2
+		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+		
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
+
+	func getName():
+		return "Nuke"
+
+class HoverSaberUnit extends Unit:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+		var unit_source_id : int = unit_tile_set
+		var unit_coords : Vector2i = Vector2i(6, 1)
+		abilities.hp = 5
+		abilities.distance = 2
+		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+		
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND]
+
+	func getName():
+		return "HoverSaber"
+
 var is_initialized : bool = false
 
 func buildCity(unit_location : Vector2i):
