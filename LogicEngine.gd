@@ -216,6 +216,9 @@ class SpacemanUnit extends Unit:
 	func getName():
 		return "Spaceman"
 
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(2,0))
+
 class TankUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -228,6 +231,9 @@ class TankUnit extends Unit:
 
 	func getName():
 		return "Tank"
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(0,0))
 
 class ColonypodUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -244,6 +250,9 @@ class ColonypodUnit extends Unit:
 
 	func getName():
 		return "Colonypod"
+		
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(4,0))
 
 class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -258,7 +267,10 @@ class SpaceshipUnit extends Unit:
 
 	func getName():
 		return "Spaceship"
-		
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(5,0))
+
 class SatelliteUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -266,13 +278,16 @@ class SatelliteUnit extends Unit:
 		abilities.hp = 5
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
-		
+
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
 
 	func getName():
 		return "Satellite"
-		
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(7,0))
+
 class WormholeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -280,12 +295,15 @@ class WormholeUnit extends Unit:
 		abilities.hp = 10
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
-		
+
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
 
 	func getName():
 		return "Wormhole"
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(2,1))
 
 class NukeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -294,12 +312,15 @@ class NukeUnit extends Unit:
 		abilities.hp = 5
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
-		
+
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
 
 	func getName():
 		return "Nuke"
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(4,1))
 
 class HoverSaberUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -308,12 +329,15 @@ class HoverSaberUnit extends Unit:
 		abilities.hp = 5
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
-		
+
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return [Map.TileTypeEnum.LAND]
 
 	func getName():
 		return "HoverSaber"
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(6,1))
 
 var is_initialized : bool = false
 

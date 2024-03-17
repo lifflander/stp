@@ -91,30 +91,38 @@ class BuilderIcon extends Sprite2D:
 			print("clicked builder")
 			le.buildCity(location)
 			
-class BuildUnit extends Button:
+class BuildUnit extends TextureButton:
 	var unit : LogicEngine.Unit = null
 	var location : Vector2i
 	var tile_map : IsoTileMap
 	var le : LogicEngine
 	var base : LogicEngine.Base = null
+	var build_name : String = ""
 
-	func _init(name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : LogicEngine.Base):
-		set_text(name)
+	func _init(in_build_name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : LogicEngine.Base):
+		build_name = in_build_name
 		location = in_loc
 		tile_map = in_tile_map
 		le = in_le
 		base = in_base
+		#var rect : ColorRect = ColorRect.new()
+		#rect.set_color(Color(1,1,1,0.5))
+		#rect.set_z_index(0)
+		##rect.radius = 50
+		#rect.set_position(Vector2(0,0))
+		#rect.set_size(Vector2(100,100))
+		#add_child(rect)
 
 	func _pressed():
-		if get_text() == "ColonyPod":
+		if build_name == "ColonyPod":
 			unit = LogicEngine.ColonypodUnit.new(le, tile_map, location)
-		elif get_text() == "Spaceman":
+		elif build_name == "Spaceman":
 			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
-		elif get_text() == "Wormhole":
+		elif build_name == "Wormhole":
 			unit = LogicEngine.WormholeUnit.new(le, tile_map, location)
-		elif get_text() == "Nuke":
+		elif build_name == "Nuke":
 			unit = LogicEngine.NukeUnit.new(le, tile_map, location)
-		elif get_text() == "HoverSaber":
+		elif build_name == "HoverSaber":
 			unit = LogicEngine.HoverSaberUnit.new(le, tile_map, location)
 
 		if unit:
@@ -235,6 +243,15 @@ func animateUnit(unit : LogicEngine.Unit, from : Vector2i, to : Vector2i):
 	tween.tween_callback(new_sprite.queue_free)
 	return tween
 
+func makeTextureForButton(ident : Map.AtlasIdent) -> AtlasTexture:
+	var source = tile_set.get_source(ident.source_id) as TileSetAtlasSource
+	#var origin = source.get_tile_data(ident.atlas_coord, 0).texture_origin
+	var texture = source.get_texture()
+	var t : AtlasTexture = AtlasTexture.new()
+	t.set_atlas(texture)
+	t.set_region(source.get_tile_texture_region(ident.atlas_coord))
+	return t
+
 func setUIForBase(base : LogicEngine.Base):
 	print("setUIBase")
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
@@ -250,18 +267,23 @@ func setUIForBase(base : LogicEngine.Base):
 	
 	if base.canSupportMoreUnits():
 		var u1 = BuildUnit.new("ColonyPod", loc, logic_engine, self, base)
+		u1.set_texture_normal(makeTextureForButton(LogicEngine.ColonypodUnit.smallImage()))
 		dcrc.add_child(u1)
 	
 		var u2 = BuildUnit.new("Spaceman", loc, logic_engine, self, base)
+		u2.set_texture_normal(makeTextureForButton(LogicEngine.SpacemanUnit.smallImage()))
 		dcrc.add_child(u2)
 
 		var u3 = BuildUnit.new("Wormhole", loc, logic_engine, self, base)
+		u3.set_texture_normal(makeTextureForButton(LogicEngine.WormholeUnit.smallImage()))
 		dcrc.add_child(u3)
 
 		var u4 = BuildUnit.new("Nuke", loc, logic_engine, self, base)
+		u4.set_texture_normal(makeTextureForButton(LogicEngine.NukeUnit.smallImage()))
 		dcrc.add_child(u4)
 
 		var u5 = BuildUnit.new("HoverSaber", loc, logic_engine, self, base)
+		u5.set_texture_normal(makeTextureForButton(LogicEngine.HoverSaberUnit.smallImage()))
 		dcrc.add_child(u5)
 
 func setUIForSquare(tile : Map.Tile):
