@@ -76,6 +76,7 @@ var city_layer_id : int = -1
 var terrain_layer_id : int = -1
 var resource_layer_id : int = -1
 var space_layer_id : int = -1
+var improvement_layer_id : int = -1
 
 class BuilderIcon extends Sprite2D:
 	var location : Vector2i
@@ -109,6 +110,8 @@ class BuildUnit extends Button:
 			unit = LogicEngine.ColonypodUnit.new(le, tile_map, location)
 		elif get_text() == "Spaceman":
 			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
+		elif get_text() == "Wormhole":
+			unit = LogicEngine.WormholeUnit.new(le, tile_map, location)
 
 		if unit:
 			le.players[0].units.append(unit)
@@ -131,6 +134,28 @@ class ExtractResource extends Button:
 		print("extracted crystal")
 		base.increasePopulation()
 		tile_map.removeResource(location)
+		
+class BuildImprovment extends Button:
+	var location : Vector2i
+	var tile_map : IsoTileMap
+	var le : LogicEngine
+	var base : LogicEngine.Base = null
+
+	func _init(name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : LogicEngine.Base):
+		set_text(name)
+		location = in_loc
+		tile_map = in_tile_map
+		le = in_le
+		base = in_base
+		
+	func _pressed():
+		print("build improvement")
+		if get_text() == "Wormhole":
+			var improvement = base.addWormhole(location)
+			tile_map.set_cell(tile_map.improvement_layer_id, location, improvement.ident.source_id, improvement.ident.atlas_coord)
+		if get_text() == "Greenhouse":
+			var improvement = base.addGreenhouse(location)
+			tile_map.set_cell(tile_map.improvement_layer_id, location, improvement.ident.source_id, improvement.ident.atlas_coord)
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -150,6 +175,8 @@ func _ready():
 			selection_layer = i
 		if get_layer_name(i) == "Space":
 			space_layer_id = i
+		if get_layer_name(i) == "Improvement":
+			improvement_layer_id = i
 
 	drawTerrainLayer()
 
@@ -261,6 +288,15 @@ func setUIForSquare(tile : Map.Tile):
 			var u1 = Label.new()
 			u1.text = "Land square"
 			dcrc.add_child(u1)
+			
+			if tile.isOownedByBase():
+				var the_base = tile.baseOwnedBy()
+				var u2 = BuildImprovment.new("Wormhole", loc, logic_engine, self, the_base)
+				dcrc.add_child(u2)
+
+				var u3 = BuildImprovment.new("Greenhouse", loc, logic_engine, self, the_base)
+				dcrc.add_child(u3)
+
 		elif tile.type == Map.TileTypeEnum.MOUNTAIN:
 			var u1 = Label.new()
 			u1.text = "Mountain square"

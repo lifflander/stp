@@ -39,6 +39,20 @@ class Player:
 		elif player_id == 3:
 			units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 
+class TileImprovement:
+	var location : Vector2i
+	var tile_map : IsoTileMap
+	var le : LogicEngine
+	var base : Base
+	var ident : Map.AtlasIdent
+
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i, in_ident : Map.AtlasIdent):
+		tile_map = in_tile_map
+		location = in_location
+		le = in_le
+		base = in_base
+		ident = in_ident
+
 class Base:
 	var location : Vector2i
 	var tile_map : IsoTileMap
@@ -54,6 +68,7 @@ class Base:
 	var highlight_border_lines : Array[Line2D] = []
 	var population_bar : PopulationBar2 = null
 	var supported_units : Array[Unit] = []
+	var improvements : Array[TileImprovement] = []
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		tile_map = in_tile_map
@@ -66,6 +81,16 @@ class Base:
 		le.map.getTileVec(location).owned_by_base = self
 		for tile in tiles_inside:
 			le.map.getTileVec(tile).owned_by_base = self
+
+	func addWormhole(location : Vector2i) -> TileImprovement:
+		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(8, Vector2i(0,1)))
+		improvements.append(i)
+		return i
+		
+	func addGreenhouse(location : Vector2i) -> TileImprovement:
+		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(11, Vector2i(0,0)))
+		improvements.append(i)
+		return i
 
 	func addSupportedUnit(unit : Unit):
 		supported_units.append(unit)
@@ -242,6 +267,20 @@ class SatelliteUnit extends Unit:
 
 	func getName():
 		return "Satellite"
+		
+class WormholeUnit extends Unit:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+		var unit_source_id : int = unit_tile_set
+		var unit_coords : Vector2i = Vector2i(2, 1)
+		abilities.hp = 10
+		abilities.distance = 2
+		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+		
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
+
+	func getName():
+		return "Wormhole"
 
 var is_initialized : bool = false
 
