@@ -15,9 +15,11 @@ func resize():
 	var size = get_tree().get_root().get_viewport().size
 	var cr = get_parent().find_child("ColorRect") as ColorRect
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
+	var tui = get_parent().find_child("TopUI") as ColorRect
 	var cc = get_parent().find_child("CenterContainer") as CenterContainer
 	cr.set_size(Vector2i(size.x, 100))
 	dcr.set_size(Vector2i(size.x, 100))
+	tui.set_size(Vector2i(size.x, 100))
 	cc.set_size(Vector2i(size.x, 50))
 
 func _input(event):

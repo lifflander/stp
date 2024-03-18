@@ -124,6 +124,10 @@ class BuildUnit extends TextureButton:
 			unit = LogicEngine.NukeUnit.new(le, tile_map, location)
 		elif build_name == "HoverSaber":
 			unit = LogicEngine.HoverSaberUnit.new(le, tile_map, location)
+		elif build_name == "Spaceship":
+			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
+		elif build_name == "Satellite":
+			unit = LogicEngine.SatelliteUnit.new(le, tile_map, location)
 
 		if unit:
 			le.players[0].units.append(unit)
@@ -173,6 +177,9 @@ class BuildImprovement extends Button:
 		elif build_name == "Spacedock":
 			var improvement = base.addSpacedock(location)
 			tile_map.set_cell(tile_map.improvement_layer_id, location, improvement.ident.source_id, improvement.ident.atlas_coord)
+		elif build_name == "Solarfarm":
+			var improvement = base.addSolarfarm(location)
+			tile_map.set_cell(tile_map.improvement_layer_id, location, improvement.ident.source_id, improvement.ident.atlas_coord)
 
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
@@ -200,6 +207,7 @@ func _ready():
 	selection = SelectionState.new(map)
 
 func removeResource(t : Vector2i):
+	map.getTileVec(t).resource.source_id = -1
 	set_cell(resource_layer_id, t, -1, Vector2i(-1,-1))
 
 func drawTerrainLayer():
@@ -279,9 +287,14 @@ func setUIForBase(base : LogicEngine.Base):
 		u2.set_texture_normal(makeTextureForButton(LogicEngine.SpacemanUnit.smallImage()))
 		dcrc.add_child(u2)
 
-		var u3 = BuildUnit.new("Wormhole", loc, logic_engine, self, base)
-		u3.set_texture_normal(makeTextureForButton(LogicEngine.WormholeUnit.smallImage()))
-		dcrc.add_child(u3)
+		if base.hasSpacedock():
+			var u3 = BuildUnit.new("Wormhole", loc, logic_engine, self, base)
+			u3.set_texture_normal(makeTextureForButton(LogicEngine.WormholeUnit.smallImage()))
+			dcrc.add_child(u3)
+			
+			var u6 = BuildUnit.new("Spaceship", loc, logic_engine, self, base)
+			u6.set_texture_normal(makeTextureForButton(LogicEngine.SpaceshipUnit.smallImage()))
+			dcrc.add_child(u6)
 
 		var u4 = BuildUnit.new("Nuke", loc, logic_engine, self, base)
 		u4.set_texture_normal(makeTextureForButton(LogicEngine.NukeUnit.smallImage()))
@@ -290,6 +303,11 @@ func setUIForBase(base : LogicEngine.Base):
 		var u5 = BuildUnit.new("HoverSaber", loc, logic_engine, self, base)
 		u5.set_texture_normal(makeTextureForButton(LogicEngine.HoverSaberUnit.smallImage()))
 		dcrc.add_child(u5)
+
+		var u7 = BuildUnit.new("Satellite", loc, logic_engine, self, base)
+		u7.set_texture_normal(makeTextureForButton(LogicEngine.SatelliteUnit.smallImage()))
+		dcrc.add_child(u7)
+
 
 func setUIForSquare(tile : Map.Tile):
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
@@ -336,6 +354,9 @@ func setUIForSquare(tile : Map.Tile):
 
 				var u3 = BuildImprovement.new("Greenhouse", loc, logic_engine, self, the_base)
 				dcrc.add_child(u3)
+
+				var u4 = BuildImprovement.new("Solarfarm", loc, logic_engine, self, the_base)
+				dcrc.add_child(u4)
 
 		elif tile.type == Map.TileTypeEnum.MOUNTAIN:
 			var u1 = Label.new()

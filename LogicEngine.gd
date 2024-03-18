@@ -22,6 +22,9 @@ class Player:
 	var bases : Array[Base]
 	var tile_map : IsoTileMap
 	var le : LogicEngine
+	var num_credits : int = 0
+	var num_credits_per_turn : int = 0
+	var score : int = 0
 	
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_player_id : int):
 		tile_map = in_tile_map
@@ -32,12 +35,12 @@ class Player:
 		if player_id == 0:
 			units.append(SpacemanUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 			units.append(SatelliteUnit.new(in_le, tile_map, Vector2i(player_id+1, player_id+1)))
-		elif player_id == 1:
-			units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
+		#elif player_id == 1:
+			#units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 		elif player_id == 2:
 			units.append(ColonypodUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
-		elif player_id == 3:
-			units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
+		#elif player_id == 3:
+			#units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 
 class TileImprovement:
 	var location : Vector2i
@@ -45,18 +48,45 @@ class TileImprovement:
 	var le : LogicEngine
 	var base : Base
 	var ident : Map.AtlasIdent
-	var is_wormhole : bool
 
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i, in_ident : Map.AtlasIdent, in_is_wormhole : bool):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i, in_ident : Map.AtlasIdent):
 		tile_map = in_tile_map
 		location = in_location
 		le = in_le
 		base = in_base
 		ident = in_ident
-		is_wormhole = in_is_wormhole
-		
+
 	func isWormhole() -> bool:
-		return is_wormhole
+		return false
+
+	func isSpacedock() -> bool:
+		return false
+
+class WormholeImprovement extends TileImprovement:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i):
+		var ident = Map.AtlasIdent.new(8, Vector2i(0,1))
+		super(in_le, in_tile_map, in_base, in_location, ident)
+
+	func isWormhole() -> bool:
+		return true
+
+class GreenhouseImprovement extends TileImprovement:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i):
+		var ident = Map.AtlasIdent.new(14, Vector2i(1,0))
+		super(in_le, in_tile_map, in_base, in_location, ident)
+
+class SpacedockImprovement extends TileImprovement:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i):
+		var ident = Map.AtlasIdent.new(14, Vector2i(0,0))
+		super(in_le, in_tile_map, in_base, in_location, ident)
+
+	func isSpacedock() -> bool:
+		return true
+
+class SolarfarmImprovement extends TileImprovement:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i):
+		var ident = Map.AtlasIdent.new(14, Vector2i(4,0))
+		super(in_le, in_tile_map, in_base, in_location, ident)
 
 class Base:
 	var location : Vector2i
@@ -87,19 +117,34 @@ class Base:
 		for tile in tiles_inside:
 			le.map.getTileVec(tile).owned_by_base = self
 
+	func hasSpacedock():
+		for i in improvements:
+			if i is SpacedockImprovement:
+				return true
+		return false
+
 	func addWormhole(location : Vector2i) -> TileImprovement:
-		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(8, Vector2i(0,1)), true)
+		var i = WormholeImprovement.new(le, tile_map, self, location)
 		improvements.append(i)
+		increasePopulation()
 		return i
 
 	func addGreenhouse(location : Vector2i) -> TileImprovement:
-		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(14, Vector2i(1,0)), false)
+		var i = GreenhouseImprovement.new(le, tile_map, self, location)
 		improvements.append(i)
+		increasePopulation()
 		return i
-		
+
 	func addSpacedock(location : Vector2i) -> TileImprovement:
-		var i = TileImprovement.new(le, tile_map, self, location, Map.AtlasIdent.new(14, Vector2i(0,0)), false)
+		var i = SpacedockImprovement.new(le, tile_map, self, location)
 		improvements.append(i)
+		increasePopulation()
+		return i
+
+	func addSolarfarm(location : Vector2i) -> TileImprovement:
+		var i = SolarfarmImprovement.new(le, tile_map, self, location)
+		improvements.append(i)
+		increasePopulation()
 		return i
 
 	func addSupportedUnit(unit : Unit):
@@ -302,7 +347,7 @@ class WormholeUnit extends Unit:
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
-		return [Map.TileTypeEnum.LAND, Map.TileTypeEnum.MOUNTAIN, Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
+		return [Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
 
 	func getName():
 		return "Wormhole"

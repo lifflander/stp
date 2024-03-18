@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=13 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
 [ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://CharacterBody2D.gd" id="3_qhnfj"]
 [ext_resource type="Script" path="res://LogicEngine.gd" id="3_uiovt"]
 [ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="7_yey6t"]
+[ext_resource type="Texture2D" uid="uid://bbxuh07ukj522" path="res://assets/tilesets/Energy Credit_2_Small.png" id="9_cgrt3"]
 
 [sub_resource type="Environment" id="Environment_qo0ox"]
 background_mode = 3
@@ -120,7 +121,7 @@ script = ExtResource("3_2d54c")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Control" type="Control" parent="UI"]
+[node name="ControlBottom" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 12
 anchor_top = 1.0
@@ -130,7 +131,7 @@ grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("7_yey6t")
 
-[node name="DynamicColorRect" type="ColorRect" parent="UI/Control"]
+[node name="DynamicColorRect" type="ColorRect" parent="UI/ControlBottom"]
 visible = false
 layout_mode = 0
 offset_top = -200.0
@@ -138,7 +139,7 @@ offset_right = 1300.0
 offset_bottom = -100.0
 color = Color(0, 0, 0, 0.666667)
 
-[node name="DynamicCenterContainer" type="CenterContainer" parent="UI/Control/DynamicColorRect"]
+[node name="DynamicCenterContainer" type="CenterContainer" parent="UI/ControlBottom/DynamicColorRect"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -152,31 +153,164 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DynamicHBoxContainer" type="HBoxContainer" parent="UI/Control/DynamicColorRect/DynamicCenterContainer"]
+[node name="DynamicHBoxContainer" type="HBoxContainer" parent="UI/ControlBottom/DynamicColorRect/DynamicCenterContainer"]
 layout_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="UI/Control"]
+[node name="ColorRect" type="ColorRect" parent="UI/ControlBottom"]
 layout_mode = 2
 offset_top = -100.0
 offset_right = 1300.0
 color = Color(0, 0, 0, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="UI/Control"]
+[node name="CenterContainer" type="CenterContainer" parent="UI/ControlBottom"]
 layout_mode = 0
 offset_top = -75.0
 offset_right = 1300.0
 offset_bottom = -25.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Control/CenterContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/ControlBottom/CenterContainer"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="UI/Control/CenterContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="UI/ControlBottom/CenterContainer/HBoxContainer"]
 layout_mode = 2
 text = "Tech Tree"
 
-[node name="Button2" type="Button" parent="UI/Control/CenterContainer/HBoxContainer"]
+[node name="Button2" type="Button" parent="UI/ControlBottom/CenterContainer/HBoxContainer"]
 layout_mode = 2
 text = "Test Button"
+
+[node name="ControlTop" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="TopUI" type="ColorRect" parent="UI/ControlTop"]
+offset_right = 1300.0
+offset_bottom = 120.0
+color = Color(0, 0, 0, 0.666667)
+
+[node name="DynamicCenterContainer" type="CenterContainer" parent="UI/ControlTop/TopUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="UI/ControlTop/TopUI/DynamicCenterContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="ScoreLabel" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Score"
+horizontal_alignment = 1
+
+[node name="EnergyCreditsLabel" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
+custom_minimum_size = Vector2(350, 2.08165e-12)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Energy Credits"
+horizontal_alignment = 1
+
+[node name="TurnLabel" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 2.08165e-12)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Turn"
+horizontal_alignment = 1
+
+[node name="ScoreField" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "0	"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="EnergyCreditsField" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "0
+"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("9_cgrt3")
+
+[node name="TurnField" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "0
+"
+horizontal_alignment = 1
+
+[node name="DynamicHBoxContainer" type="HBoxContainer" parent="UI/ControlTop/TopUI/DynamicCenterContainer"]
+layout_mode = 2
+
+[node name="UnitDialog" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 300.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI/UnitDialog"]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 600.0
+color = Color(0.247059, 0.247059, 0.247059, 0.85098)
+
+[node name="GridContainer" type="GridContainer" parent="UI/UnitDialog/ColorRect"]
+custom_minimum_size = Vector2(550, 550)
+layout_mode = 0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 585.0
+offset_bottom = 575.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/UnitDialog/ColorRect/GridContainer"]
+custom_minimum_size = Vector2(550, 2.08165e-12)
+layout_mode = 2
+alignment = 1
+
+[node name="UnitName" type="Label" parent="UI/UnitDialog/ColorRect/GridContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 2.08165e-12)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Spaceman
+"
+
+[node name="TextureRect" type="TextureRect" parent="UI/UnitDialog/ColorRect/GridContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("9_cgrt3")
+expand_mode = 3
+
+[node name="NumCredits" type="Label" parent="UI/UnitDialog/ColorRect/GridContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "2
+"
 
 [node name="Panel" type="Panel" parent="."]
 visible = false
