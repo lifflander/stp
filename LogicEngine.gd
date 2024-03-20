@@ -211,17 +211,27 @@ class Unit:
 	var unit_source_id : int
 	var le : LogicEngine
 	var unit_coord : Vector2i
-	
+	var credits_cost : int = 2
+
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int, in_unit_coord : Vector2i):
 		tile_map = in_tile_map
 		location = in_location
 		unit_source_id = in_unit_source_id
 		unit_coord = in_unit_coord
 		le = in_le
-		le.map.getTileVec(location).unit = self
-		
+		if location.x != -1 and location.y != -1:
+			le.map.getTileVec(location).unit = self
+
 	func getName():
 		return "Unknown"
+
+	func setupSelectDiaglog(ui : UnitSelectUI):
+		var unit_label = ui.find_child("UnitLabel", true) as Label
+		unit_label.set_text(getName())
+		var cost_label = ui.find_child("CostLabel", true) as Label
+		cost_label.set_text(str(credits_cost))
+		var unit_icon = ui.find_child("UnitIcon", true) as TextureRect
+		unit_icon.set_texture(tile_map.makeTextureForButton(getSmallImage()))
 
 	func changeLocation(new_location : Vector2i):
 		le.map.getTileVec(location).unit = null
@@ -236,7 +246,7 @@ class Unit:
 
 	func getValidMovesImpl(positions_at_dist : Array[Vector2i], dist : int = 1) -> Array[Vector2i]:
 		var valid_moves : Array[Vector2i] = []
-		
+
 		for position in positions_at_dist:
 			for d in le.getBasicDirections():
 				var loc_to_check : Vector2i = position + d
@@ -249,9 +259,12 @@ class Unit:
 			return valid_moves
 		else:
 			return getValidMovesImpl(valid_moves, dist+1)
-		
+
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return []
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(-1, Vector2i(-1,-1))
 
 class SpacemanUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -269,11 +282,15 @@ class SpacemanUnit extends Unit:
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(2,0))
 
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
+
 class TankUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(0, 0)
 		abilities.hp = 15
+		credits_cost = 8
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 	
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -284,6 +301,9 @@ class TankUnit extends Unit:
 
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(0,0))
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
 
 class ColonypodUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -304,6 +324,9 @@ class ColonypodUnit extends Unit:
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(4,0))
 
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
+
 class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -320,6 +343,9 @@ class SpaceshipUnit extends Unit:
 
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(5,0))
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
 
 class SatelliteUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -338,6 +364,9 @@ class SatelliteUnit extends Unit:
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(7,0))
 
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
+
 class WormholeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -354,6 +383,9 @@ class WormholeUnit extends Unit:
 
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(2,1))
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
 
 class NukeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
@@ -372,6 +404,9 @@ class NukeUnit extends Unit:
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(4,1))
 
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
+
 class HoverSaberUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
 		var unit_source_id : int = unit_tile_set
@@ -388,6 +423,9 @@ class HoverSaberUnit extends Unit:
 
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(6,1))
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
 
 var is_initialized : bool = false
 

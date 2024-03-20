@@ -1,14 +1,15 @@
-[gd_scene load_steps=13 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=14 format=3 uid="uid://cynr1206nn872"]
 
-[ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
-[ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
-[ext_resource type="Script" path="res://Camera2D.gd" id="3_2d54c"]
-[ext_resource type="Script" path="res://Map.gd" id="3_et2nw"]
-[ext_resource type="Script" path="res://Circle2D.gd" id="3_jkbrn"]
-[ext_resource type="Script" path="res://CharacterBody2D.gd" id="3_qhnfj"]
-[ext_resource type="Script" path="res://LogicEngine.gd" id="3_uiovt"]
-[ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="7_yey6t"]
-[ext_resource type="Texture2D" uid="uid://bbxuh07ukj522" path="res://assets/tilesets/Energy Credit_2_Small.png" id="9_cgrt3"]
+[ext_resource type="Script" path="res://LogicEngine.gd" id="1_4bj3c"]
+[ext_resource type="Script" path="res://Map.gd" id="2_84c1i"]
+[ext_resource type="Script" path="res://Circle2D.gd" id="3_11gr5"]
+[ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="4_r44qp"]
+[ext_resource type="Script" path="res://TileMap.gd" id="5_tt6nm"]
+[ext_resource type="Script" path="res://CharacterBody2D.gd" id="6_ca62e"]
+[ext_resource type="Script" path="res://Camera2D.gd" id="7_jmvqc"]
+[ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="8_vuyc3"]
+[ext_resource type="Texture2D" uid="uid://bbxuh07ukj522" path="res://assets/tilesets/Energy Credit_2_Small.png" id="9_hqsjv"]
+[ext_resource type="PackedScene" uid="uid://c1cq240t7nevy" path="res://unit_select_ui.tscn" id="10_1bjno"]
 
 [sub_resource type="Environment" id="Environment_qo0ox"]
 background_mode = 3
@@ -58,7 +59,7 @@ environment = SubResource("Environment_qo0ox")
 camera_attributes = SubResource("CameraAttributesPhysical_de0q8")
 
 [node name="LogicEngine" type="Node" parent="."]
-script = ExtResource("3_uiovt")
+script = ExtResource("1_4bj3c")
 
 [node name="PopulationBar2" type="ProgressBar" parent="."]
 visible = false
@@ -67,15 +68,15 @@ offset_bottom = 27.0
 script = SubResource("GDScript_0om6i")
 
 [node name="Map" type="Node" parent="."]
-script = ExtResource("3_et2nw")
+script = ExtResource("2_84c1i")
 
 [node name="Circle2D" type="Node2D" parent="."]
-script = ExtResource("3_jkbrn")
+script = ExtResource("3_11gr5")
 
 [node name="Tiles" type="TileMap" parent="."]
 y_sort_enabled = true
 position = Vector2(-281, -790)
-tile_set = ExtResource("1_mvcdc")
+tile_set = ExtResource("4_r44qp")
 rendering_quadrant_size = 30
 format = 2
 layer_0/name = "Base layer"
@@ -101,7 +102,7 @@ layer_5/tile_data = PackedInt32Array()
 layer_6/name = "Space"
 layer_6/z_index = -1
 layer_6/tile_data = PackedInt32Array()
-script = ExtResource("2_dd161")
+script = ExtResource("5_tt6nm")
 
 [node name="SpriteHolder" type="Node2D" parent="Tiles"]
 z_index = 11
@@ -113,11 +114,11 @@ y_sort_enabled = true
 position = Vector2(281, 790)
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-script = ExtResource("3_qhnfj")
+script = ExtResource("6_ca62e")
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 zoom = Vector2(0.7, 0.7)
-script = ExtResource("3_2d54c")
+script = ExtResource("7_jmvqc")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -129,7 +130,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-theme = ExtResource("7_yey6t")
+theme = ExtResource("8_vuyc3")
 
 [node name="DynamicColorRect" type="ColorRect" parent="UI/ControlBottom"]
 visible = false
@@ -186,6 +187,7 @@ anchor_right = 1.0
 grow_horizontal = 2
 
 [node name="TopUI" type="ColorRect" parent="UI/ControlTop"]
+layout_mode = 0
 offset_right = 1300.0
 offset_bottom = 120.0
 color = Color(0, 0, 0, 0.666667)
@@ -248,7 +250,7 @@ horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer/HBoxContainer"]
 layout_mode = 2
-texture = ExtResource("9_cgrt3")
+texture = ExtResource("9_hqsjv")
 
 [node name="TurnField" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
 layout_mode = 2
@@ -303,7 +305,7 @@ text = "Spaceman
 
 [node name="TextureRect" type="TextureRect" parent="UI/UnitDialog/ColorRect/GridContainer/HBoxContainer"]
 layout_mode = 2
-texture = ExtResource("9_cgrt3")
+texture = ExtResource("9_hqsjv")
 expand_mode = 3
 
 [node name="NumCredits" type="Label" parent="UI/UnitDialog/ColorRect/GridContainer/HBoxContainer"]
@@ -312,7 +314,5 @@ theme_override_font_sizes/font_size = 50
 text = "2
 "
 
-[node name="Panel" type="Panel" parent="."]
+[node name="UnitSelectUI" parent="UI" instance=ExtResource("10_1bjno")]
 visible = false
-offset_right = 684.0
-offset_bottom = 433.0

@@ -78,19 +78,15 @@ var resource_layer_id : int = -1
 var space_layer_id : int = -1
 var improvement_layer_id : int = -1
 
-class BuilderIcon extends Sprite2D:
+class BuilderIcon extends TextureButton:
 	var location : Vector2i
 	var le : LogicEngine
-	
-	func _input(event):
-		var global_pos = get_global_mouse_position()
-		var local_pos = to_local(global_pos)
-		# if event is InputEventMouseMotion and get_rect().has_point(local_pos):
-		# 	new_sprite.texture = load("res://assets/tilesets/Builder_Selection_1.png")
-		if event is InputEventMouseButton and event.is_pressed() and get_rect().has_point(local_pos):
-			print("clicked builder")
-			le.buildCity(location)
-			
+	var tile_map : IsoTileMap
+
+	func _pressed():
+		tile_map.selectCell(Vector2i(-1,-1))
+		le.buildCity(location)
+
 class BuildUnit extends TextureButton:
 	var unit : LogicEngine.Unit = null
 	var location : Vector2i
@@ -113,7 +109,11 @@ class BuildUnit extends TextureButton:
 		#rect.set_size(Vector2(100,100))
 		#add_child(rect)
 
-	func _pressed():
+	func _back_button_pressed():
+		var unit_select_ui = le.get_parent().find_child("UnitSelectUI") as UnitSelectUI
+		unit_select_ui.set_visible(false)
+
+	func _train_button_pressed():
 		if build_name == "ColonyPod":
 			unit = LogicEngine.ColonypodUnit.new(le, tile_map, location)
 		elif build_name == "Spaceman":
@@ -122,6 +122,8 @@ class BuildUnit extends TextureButton:
 			unit = LogicEngine.WormholeUnit.new(le, tile_map, location)
 		elif build_name == "Nuke":
 			unit = LogicEngine.NukeUnit.new(le, tile_map, location)
+		elif build_name == "Tank":
+			unit = LogicEngine.TankUnit.new(le, tile_map, location)
 		elif build_name == "HoverSaber":
 			unit = LogicEngine.HoverSaberUnit.new(le, tile_map, location)
 		elif build_name == "Spaceship":
@@ -132,6 +134,22 @@ class BuildUnit extends TextureButton:
 		if unit:
 			le.players[0].units.append(unit)
 			base.addSupportedUnit(unit)
+
+		var unit_select_ui = le.get_parent().find_child("UnitSelectUI") as UnitSelectUI
+		unit_select_ui.set_visible(false)
+
+	func _pressed():
+		var unit_select_ui = le.get_parent().find_child("UnitSelectUI") as UnitSelectUI
+		if build_name == "Tank":
+			LogicEngine.TankUnit.new(le, tile_map, Vector2i(-1,-1)).setupSelectDiaglog(unit_select_ui)
+
+		var train_button = unit_select_ui.find_child("TrainButton", true) as Button
+		train_button.pressed.connect(_train_button_pressed)
+
+		var back_button = unit_select_ui.find_child("BackButton", true) as Button
+		back_button.pressed.connect(_back_button_pressed)
+
+		unit_select_ui.set_visible(true)
 
 class ExtractResource extends Button:
 	var location : Vector2i
@@ -184,8 +202,19 @@ class BuildImprovement extends Button:
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
 
+func _unhandled_input(event):
+	if event is InputEventMouseButton:
+		if not event.is_pressed():
+			var global_pos = get_global_mouse_position()
+			var local_pos = to_local(global_pos)
+			var map_pos = local_to_map(local_pos)
+			print("global:, ", global_pos, ", local: ", local_pos, ", map: ", map_pos)
+			selectCell(map_pos)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	set_process_input(true)
+
 	for i in get_layers_count():
 		if get_layer_name(i) == "Base layer":
 			terrain_layer_id = i
@@ -307,6 +336,10 @@ func setUIForBase(base : LogicEngine.Base):
 		var u7 = BuildUnit.new("Satellite", loc, logic_engine, self, base)
 		u7.set_texture_normal(makeTextureForButton(LogicEngine.SatelliteUnit.smallImage()))
 		dcrc.add_child(u7)
+
+		var u8 = BuildUnit.new("Tank", loc, logic_engine, self, base)
+		u8.set_texture_normal(makeTextureForButton(LogicEngine.TankUnit.smallImage()))
+		dcrc.add_child(u8)
 
 
 func setUIForSquare(tile : Map.Tile):
@@ -619,12 +652,13 @@ func _process(delta):
 					builder = BuilderIcon.new()
 					builder.location = Vector2i(x,y)
 					builder.le = logic_engine
+					builder.tile_map = self
 					var builder_label_pos = map_to_local(Vector2i(x, y))
 					builder_label_pos.x += 50
 					builder_label_pos.y -= tile_set.tile_size.y - 20
 					var builder_global_pos = to_global(builder_label_pos)
 					builder.position = builder_global_pos
-					builder.texture = load("res://assets/tilesets/Builder_Selection_1.png")
+					builder.set_texture_normal(load("res://assets/tilesets/Builder_Selection_1.png"))
 					sprite_holder.add_child(builder)
 			else:
 				set_cell(unit_layer_id, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
