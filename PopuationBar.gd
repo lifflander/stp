@@ -18,6 +18,9 @@ func setPopulation(population : int):
 func unitAdded():
 	drawLines()
 
+func unitRemoved():
+	drawLines()
+
 func setLevel(level : int):
 	divisions = level + 1
 

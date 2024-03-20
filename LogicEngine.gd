@@ -151,10 +151,15 @@ class Base:
 		supported_units.append(unit)
 		population_bar.unitAdded()
 
+	func removeSupportedUnit(unit : Unit):
+		supported_units.erase(unit)
+		population_bar.unitRemoved()
+
 	func canSupportMoreUnits():
 		return supported_units.size() < level + 1
 		
 	func getNumberOfSupportedUnits() -> int:
+		print("getNumberOfSupportedUnits:", supported_units.size())
 		return supported_units.size()
 
 	func increasePopulation():
@@ -212,6 +217,7 @@ class Unit:
 	var le : LogicEngine
 	var unit_coord : Vector2i
 	var credits_cost : int = 2
+	var base_supporting : Base = null
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int, in_unit_coord : Vector2i):
 		tile_map = in_tile_map
@@ -221,6 +227,9 @@ class Unit:
 		le = in_le
 		if location.x != -1 and location.y != -1:
 			le.map.getTileVec(location).unit = self
+
+	func setSupportingBase(b : Base):
+		base_supporting = b
 
 	func getName():
 		return "Unknown"
@@ -232,6 +241,10 @@ class Unit:
 		cost_label.set_text(str(credits_cost))
 		var unit_icon = ui.find_child("UnitIcon", true) as TextureRect
 		unit_icon.set_texture(tile_map.makeTextureForButton(getSmallImage()))
+
+	func setLocation(new_location : Vector2i):
+		le.map.getTileVec(new_location).unit = self
+		location = new_location
 
 	func changeLocation(new_location : Vector2i):
 		le.map.getTileVec(location).unit = null
@@ -267,7 +280,7 @@ class Unit:
 		return Map.AtlasIdent.new(-1, Vector2i(-1,-1))
 
 class SpacemanUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(2, 0)
 		abilities.hp = 10
@@ -286,7 +299,7 @@ class SpacemanUnit extends Unit:
 		return smallImage()
 
 class TankUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(0, 0)
 		abilities.hp = 15
@@ -306,7 +319,7 @@ class TankUnit extends Unit:
 		return smallImage()
 
 class ColonypodUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(4, 0)
 		abilities.hp = 5
@@ -328,7 +341,7 @@ class ColonypodUnit extends Unit:
 		return smallImage()
 
 class SpaceshipUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(5, 0)
 		abilities.hp = 20
@@ -348,7 +361,7 @@ class SpaceshipUnit extends Unit:
 		return smallImage()
 
 class SatelliteUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(7, 0)
 		abilities.hp = 5
@@ -368,7 +381,7 @@ class SatelliteUnit extends Unit:
 		return smallImage()
 
 class WormholeUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(2, 1)
 		abilities.hp = 10
@@ -388,7 +401,7 @@ class WormholeUnit extends Unit:
 		return smallImage()
 
 class NukeUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(5, 1)
 		abilities.hp = 5
@@ -408,7 +421,7 @@ class NukeUnit extends Unit:
 		return smallImage()
 
 class HoverSaberUnit extends Unit:
-	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i):
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(6, 1)
 		abilities.hp = 5
@@ -435,6 +448,8 @@ func buildCity(unit_location : Vector2i):
 			print("i=", i, " unit location:", p.units[i].location, " passed loc: ", unit_location)
 			if p.units[i].location == unit_location:
 				map.getTileVec(unit_location).unit = null
+				if p.units[i].base_supporting:
+					p.units[i].base_supporting.removeSupportedUnit(p.units[i])
 				p.units.remove_at(i)
 				var base = Base.new(self, tile_map, unit_location)
 				p.bases.append(base)

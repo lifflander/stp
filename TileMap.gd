@@ -93,55 +93,32 @@ class BuildUnit extends TextureButton:
 	var tile_map : IsoTileMap
 	var le : LogicEngine
 	var base : LogicEngine.Base = null
-	var build_name : String = ""
 
-	func _init(in_build_name : String, in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : LogicEngine.Base):
-		build_name = in_build_name
+	func _init(in_loc : Vector2i, in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : LogicEngine.Base, in_unit : LogicEngine.Unit):
 		location = in_loc
 		tile_map = in_tile_map
 		le = in_le
 		base = in_base
-		#var rect : ColorRect = ColorRect.new()
-		#rect.set_color(Color(1,1,1,0.5))
-		#rect.set_z_index(0)
-		##rect.radius = 50
-		#rect.set_position(Vector2(0,0))
-		#rect.set_size(Vector2(100,100))
-		#add_child(rect)
+		unit = in_unit
 
 	func _back_button_pressed():
 		var unit_select_ui = le.get_parent().find_child("UnitSelectUI") as UnitSelectUI
 		unit_select_ui.set_visible(false)
 
 	func _train_button_pressed():
-		if build_name == "ColonyPod":
-			unit = LogicEngine.ColonypodUnit.new(le, tile_map, location)
-		elif build_name == "Spaceman":
-			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
-		elif build_name == "Wormhole":
-			unit = LogicEngine.WormholeUnit.new(le, tile_map, location)
-		elif build_name == "Nuke":
-			unit = LogicEngine.NukeUnit.new(le, tile_map, location)
-		elif build_name == "Tank":
-			unit = LogicEngine.TankUnit.new(le, tile_map, location)
-		elif build_name == "HoverSaber":
-			unit = LogicEngine.HoverSaberUnit.new(le, tile_map, location)
-		elif build_name == "Spaceship":
-			unit = LogicEngine.SpacemanUnit.new(le, tile_map, location)
-		elif build_name == "Satellite":
-			unit = LogicEngine.SatelliteUnit.new(le, tile_map, location)
-
 		if unit:
+			unit.setLocation(location)
 			le.players[0].units.append(unit)
 			base.addSupportedUnit(unit)
+			unit.setSupportingBase(base)
+			unit = null
 
 		var unit_select_ui = le.get_parent().find_child("UnitSelectUI") as UnitSelectUI
 		unit_select_ui.set_visible(false)
 
 	func _pressed():
 		var unit_select_ui = le.get_parent().find_child("UnitSelectUI") as UnitSelectUI
-		if build_name == "Tank":
-			LogicEngine.TankUnit.new(le, tile_map, Vector2i(-1,-1)).setupSelectDiaglog(unit_select_ui)
+		unit.setupSelectDiaglog(unit_select_ui)
 
 		var train_button = unit_select_ui.find_child("TrainButton", true) as Button
 		train_button.pressed.connect(_train_button_pressed)
@@ -308,39 +285,23 @@ func setUIForBase(base : LogicEngine.Base):
 	var loc = base.location
 	
 	if base.canSupportMoreUnits():
-		var u1 = BuildUnit.new("ColonyPod", loc, logic_engine, self, base)
-		u1.set_texture_normal(makeTextureForButton(LogicEngine.ColonypodUnit.smallImage()))
-		dcrc.add_child(u1)
-	
-		var u2 = BuildUnit.new("Spaceman", loc, logic_engine, self, base)
-		u2.set_texture_normal(makeTextureForButton(LogicEngine.SpacemanUnit.smallImage()))
-		dcrc.add_child(u2)
+		var units : Array[LogicEngine.Unit] = [
+			LogicEngine.ColonypodUnit.new(logic_engine, self),
+			LogicEngine.SpacemanUnit.new(logic_engine, self),
+			LogicEngine.NukeUnit.new(logic_engine, self),
+			LogicEngine.HoverSaberUnit.new(logic_engine, self),
+			LogicEngine.SatelliteUnit.new(logic_engine, self),
+			LogicEngine.TankUnit.new(logic_engine, self)
+		]
 
 		if base.hasSpacedock():
-			var u3 = BuildUnit.new("Wormhole", loc, logic_engine, self, base)
-			u3.set_texture_normal(makeTextureForButton(LogicEngine.WormholeUnit.smallImage()))
-			dcrc.add_child(u3)
-			
-			var u6 = BuildUnit.new("Spaceship", loc, logic_engine, self, base)
-			u6.set_texture_normal(makeTextureForButton(LogicEngine.SpaceshipUnit.smallImage()))
-			dcrc.add_child(u6)
+			units.append(LogicEngine.WormholeUnit.new(logic_engine, self))
+			units.append(LogicEngine.SpaceshipUnit.new(logic_engine, self))
 
-		var u4 = BuildUnit.new("Nuke", loc, logic_engine, self, base)
-		u4.set_texture_normal(makeTextureForButton(LogicEngine.NukeUnit.smallImage()))
-		dcrc.add_child(u4)
-
-		var u5 = BuildUnit.new("HoverSaber", loc, logic_engine, self, base)
-		u5.set_texture_normal(makeTextureForButton(LogicEngine.HoverSaberUnit.smallImage()))
-		dcrc.add_child(u5)
-
-		var u7 = BuildUnit.new("Satellite", loc, logic_engine, self, base)
-		u7.set_texture_normal(makeTextureForButton(LogicEngine.SatelliteUnit.smallImage()))
-		dcrc.add_child(u7)
-
-		var u8 = BuildUnit.new("Tank", loc, logic_engine, self, base)
-		u8.set_texture_normal(makeTextureForButton(LogicEngine.TankUnit.smallImage()))
-		dcrc.add_child(u8)
-
+		for u in units:
+			var u1 = BuildUnit.new(loc, logic_engine, self, base, u)
+			u1.set_texture_normal(makeTextureForButton(u.getSmallImage()))
+			dcrc.add_child(u1)
 
 func setUIForSquare(tile : Map.Tile):
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
