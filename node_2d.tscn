@@ -408,9 +408,12 @@ size_flags_horizontal = 2
 [node name="UnitAttributes" type="TextEdit" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "Lorem Ipsum dolor sit............... 2
-amet.Lorem Ipsum dolor.......... 3
-Lorem ipsum.............................. 4"
+size_flags_stretch_ratio = 0.7
+text = "Health........................................10
+Attack.......................................... 2
+Defense...................................... 2
+Movement................................... 1
+Range......................................... 1"
 wrap_mode = 1
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
