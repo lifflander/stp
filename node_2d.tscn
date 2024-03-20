@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=16 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
 [ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
@@ -9,6 +9,9 @@
 [ext_resource type="Script" path="res://LogicEngine.gd" id="3_uiovt"]
 [ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="7_yey6t"]
 [ext_resource type="Texture2D" uid="uid://bbxuh07ukj522" path="res://assets/tilesets/Energy Credit_2_Small.png" id="9_cgrt3"]
+[ext_resource type="Theme" uid="uid://cjtftm6cnw2ku" path="res:// SpacemanTheme.tres" id="10_2h0bp"]
+[ext_resource type="Texture2D" uid="uid://bslf73rawnbyi" path="res://Spaceman_5.png" id="10_0378s"]
+[ext_resource type="Texture2D" uid="uid://wxn4ludqtg3x" path="res://Energy Credit_USE.png" id="11_k0bgw"]
 
 [sub_resource type="Environment" id="Environment_qo0ox"]
 background_mode = 3
@@ -186,6 +189,7 @@ anchor_right = 1.0
 grow_horizontal = 2
 
 [node name="TopUI" type="ColorRect" parent="UI/ControlTop"]
+layout_mode = 0
 offset_right = 1300.0
 offset_bottom = 120.0
 color = Color(0, 0, 0, 0.666667)
@@ -316,3 +320,108 @@ text = "2
 visible = false
 offset_right = 684.0
 offset_bottom = 433.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
+offset_left = 406.0
+offset_top = 228.0
+offset_right = 910.0
+offset_bottom = 875.0
+theme = ExtResource("10_2h0bp")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/PanelContainer/MarginContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="UnitLabel" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+theme_override_font_sizes/font_size = 40
+text = "Spaceman"
+
+[node name="Spacer" type="Control" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="EnergyCreditIcon" type="TextureRect" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("11_k0bgw")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="CostLabel" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "2"
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SpacemanIcon" type="TextureRect" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/CenterContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("10_0378s")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Ability1Button" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer2"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Ability 1"
+
+[node name="Ability2Button" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer2"]
+layout_direction = 2
+layout_mode = 2
+text = "Ability 2"
+
+[node name="Spacer" type="Control" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="UnitAttributes" type="TextEdit" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Lorem Ipsum dolor sit............... 2
+amet.Lorem Ipsum dolor.......... 3
+Lorem ipsum.............................. 4"
+wrap_mode = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Back"
+
+[node name="TrainButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+text = "Train
+"

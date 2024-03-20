@@ -1,0 +1,55 @@
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://cjtftm6cnw2ku"]
+
+[ext_resource type="Texture2D" uid="uid://bmd5smcqrsbu7" path="res://PowersButton2.png" id="1_cse6b"]
+[ext_resource type="Texture2D" uid="uid://db2fkinb8lhhx" path="res://Box.png" id="1_sl606"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v1lec"]
+texture = ExtResource("1_cse6b")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ummlu"]
+texture = ExtResource("1_cse6b")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xgxn0"]
+texture = ExtResource("1_cse6b")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m78n8"]
+texture = ExtResource("1_cse6b")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gtubx"]
+texture = ExtResource("1_cse6b")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vthsv"]
+texture = ExtResource("1_sl606")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[resource]
+Button/styles/disabled = SubResource("StyleBoxTexture_v1lec")
+Button/styles/focus = SubResource("StyleBoxTexture_ummlu")
+Button/styles/hover = SubResource("StyleBoxTexture_xgxn0")
+Button/styles/normal = SubResource("StyleBoxTexture_m78n8")
+Button/styles/pressed = SubResource("StyleBoxTexture_gtubx")
+Label/font_sizes/font_size = 30
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_vthsv")
