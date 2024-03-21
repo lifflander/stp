@@ -17,6 +17,7 @@ class SelectionState:
 	var map : Map = null
 	var has_unit_selected : bool = false
 	var unit_valid_moves : Array[Vector2i]
+	var unit_valid_attacks : Array[Vector2i]
 
 	func _init(in_map : Map):
 		map = in_map
@@ -411,12 +412,20 @@ func selectCell(tile : Vector2i):
 				tween.tween_callback(do_move)
 				
 				tile = Vector2i(-1,-1)
-		
+
+			var squares_can_attack : Array[Vector2i] = selection.unit_valid_attacks
+			if tile in squares_can_attack:
+				unit.attack(tile)
+
 			for move in valid_moves:
 				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
+			for s in squares_can_attack:
+				set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
 		else:
 			for move in selection.unit_valid_moves:
 				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
+			for s in selection.unit_valid_attacks:
+				set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
 	
 	var old_tile = selection.select(tile)
 
@@ -459,6 +468,12 @@ func selectCell(tile : Vector2i):
 		selection.unit_valid_moves = all_moves
 		for move in all_moves:
 			set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
+
+		var units_can_attack : Array[LogicEngine.Unit] = unit.getUnitsWithinRange()
+		selection.unit_valid_attacks = []
+		for u in units_can_attack:
+			selection.unit_valid_attacks.append(u.location)
+			set_cell(selection_layer, u.location, 15, Vector2i(3,0), 0)
 	elif base_selected:
 		var base = map.getTileVec(selection.getTile()).base
 		setUIForBase(base)

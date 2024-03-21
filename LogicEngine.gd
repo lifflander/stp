@@ -157,7 +157,7 @@ class Base:
 
 	func canSupportMoreUnits():
 		return supported_units.size() < level + 1
-		
+
 	func getNumberOfSupportedUnits() -> int:
 		print("getNumberOfSupportedUnits:", supported_units.size())
 		return supported_units.size()
@@ -205,7 +205,9 @@ class UnitAbilities:
 	var distance : int = 1
 	var attack : int = 1
 	var hp : int = 10
+	var max_hp : int = 10
 	var defense : int = 1
+	var range : int = 1
 
 class Unit:
 	var location : Vector2i
@@ -273,17 +275,52 @@ class Unit:
 		else:
 			return getValidMovesImpl(valid_moves, dist+1)
 
+	func getUnitsWithinRange() -> Array[Unit]:
+		return getUnitsWithinRangeImpl([location])
+		
+	func getUnitsWithinRangeImpl(positions_at_dist : Array[Vector2i], dist : int = 1, cur_units : Array[Unit] = []) -> Array[Unit]:
+		var valid_moves : Array[Vector2i] = []
+		var units : Array[Unit] = cur_units
+		for position in positions_at_dist:
+			for d in le.getBasicDirections():
+				var loc_to_check : Vector2i = position + d
+				var tile : Map.Tile = le.map.getTileVec(loc_to_check)
+				if tile.hasUnit():
+					units.append(tile.unit)
+				valid_moves.append(loc_to_check)
+
+		if dist == abilities.range:
+			return units
+		else:
+			return getUnitsWithinRangeImpl(valid_moves, dist+1, units)
+
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
 		return []
 
 	func getSmallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(-1, Vector2i(-1,-1))
 
+	func setHP(hp : int):
+		abilities.hp = hp
+		abilities.max_hp = hp
+
+	func attack(tile : Vector2i):
+		var defending_unit = le.map.getTileVec(tile).unit
+		assert(defending_unit != null)
+		var attackForce : float = abilities.attack * (float(abilities.hp) / abilities.max_hp)
+		var defenseForce : float = defending_unit.abilities.defense * (float(abilities.hp) / abilities.max_hp)
+		var totalDamage : float = attackForce + defenseForce
+		var attackResult = round(attackForce / totalDamage) * abilities.attack
+		var defenseResult = round(attackForce / totalDamage) * abilities.defense
+		print("attackForce=", attackForce, ", defenseForce=", defenseForce, ", totalDamage=", totalDamage, ", attackResult=", attackResult, ", defenseResult=", defenseResult)
+		defending_unit.abilities.hp -= attackResult
+		abilities.hp -= defenseResult
+
 class SpacemanUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(2, 0)
-		abilities.hp = 10
+		setHP(10)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -302,7 +339,8 @@ class TankUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(0, 0)
-		abilities.hp = 15
+		setHP(15)
+		abilities.range = 3
 		credits_cost = 8
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 	
@@ -322,7 +360,7 @@ class ColonypodUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(4, 0)
-		abilities.hp = 5
+		setHP(5)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func hasBuilder() -> bool:
@@ -344,7 +382,7 @@ class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(5, 0)
-		abilities.hp = 20
+		setHP(20)
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 		
@@ -364,8 +402,9 @@ class SatelliteUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(7, 0)
-		abilities.hp = 5
+		setHP(5)
 		abilities.distance = 2
+		abilities.range = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -384,7 +423,7 @@ class WormholeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(2, 1)
-		abilities.hp = 10
+		setHP(10)
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
@@ -404,7 +443,7 @@ class NukeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(5, 1)
-		abilities.hp = 5
+		setHP(5)
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
@@ -424,7 +463,7 @@ class HoverSaberUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(6, 1)
-		abilities.hp = 5
+		setHP(5)
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
