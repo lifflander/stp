@@ -39,6 +39,9 @@ class Player:
 			#units.append(TankUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 		elif player_id == 2:
 			units.append(ColonypodUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
+
+		for u in units:
+			tile_map.drawUnit(u)
 		#elif player_id == 3:
 			#units.append(SpaceshipUnit.new(in_le, tile_map, Vector2i(player_id+5, player_id+5)))
 
@@ -220,6 +223,7 @@ class Unit:
 	var unit_coord : Vector2i
 	var credits_cost : int = 2
 	var base_supporting : Base = null
+	var unit_health_label : Label = null
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int, in_unit_coord : Vector2i):
 		tile_map = in_tile_map
@@ -307,20 +311,37 @@ class Unit:
 	func attack(tile : Vector2i):
 		var defending_unit = le.map.getTileVec(tile).unit
 		assert(defending_unit != null)
-		var attackForce : float = abilities.attack * (float(abilities.hp) / abilities.max_hp)
-		var defenseForce : float = defending_unit.abilities.defense * (float(abilities.hp) / abilities.max_hp)
-		var totalDamage : float = attackForce + defenseForce
-		var attackResult = round(attackForce / totalDamage) * abilities.attack
-		var defenseResult = round(attackForce / totalDamage) * abilities.defense
-		print("attackForce=", attackForce, ", defenseForce=", defenseForce, ", totalDamage=", totalDamage, ", attackResult=", attackResult, ", defenseResult=", defenseResult)
-		defending_unit.abilities.hp -= attackResult
-		abilities.hp -= defenseResult
+
+func unitAttack(attacking : Unit, defending : Unit):
+	assert(attacking != null)
+	assert(defending != null)
+	var attackForce : float = attacking.abilities.attack * (float(attacking.abilities.hp) / attacking.abilities.max_hp)
+	var defenseForce : float = defending.abilities.defense * (float(defending.abilities.hp) / defending.abilities.max_hp)
+	var totalDamage : float = attackForce + defenseForce
+	var attackResult : int = round(attackForce / totalDamage * attacking.abilities.attack * 4.5 + 0.49)
+	var defenseResult : int = round(attackForce / totalDamage * defending.abilities.defense * 4.5 + 0.49)
+	print("attackForce=", attackForce, ", defenseForce=", defenseForce, ", totalDamage=", totalDamage, ", attackResult=", attackResult, ", defenseResult=", defenseResult)
+	defending.abilities.hp -= attackResult
+	tile_map.drawUnit(defending)
+	if defending.abilities.hp <= 0:
+		removeUnit(defending)
+	else:
+		var defending_unit_range = defending.getUnitsWithinRange()
+		if attacking in defending_unit_range:
+			attacking.abilities.hp -= defenseResult
+			tile_map.drawUnit(attacking)
+			if attacking.abilities.hp <= 0:
+				removeUnit(attacking)
+		else:
+			tile_map.drawUnit(attacking)
 
 class SpacemanUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(2, 0)
 		setHP(10)
+		abilities.attack = 2
+		abilities.defense = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -341,6 +362,7 @@ class TankUnit extends Unit:
 		var unit_coords : Vector2i = Vector2i(0, 0)
 		setHP(15)
 		abilities.range = 3
+		abilities.attack = 3
 		credits_cost = 8
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 	
@@ -419,6 +441,9 @@ class SatelliteUnit extends Unit:
 	func getSmallImage() -> Map.AtlasIdent:
 		return smallImage()
 
+	func getUnitsWithinRange() -> Array[Unit]:
+		return []
+
 class WormholeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
@@ -481,15 +506,23 @@ class HoverSaberUnit extends Unit:
 
 var is_initialized : bool = false
 
+func removeUnit(u : Unit):
+	for p in players:
+		for i in range(len(p.units)):
+			if p.units[i] == u:
+				map.getTileVec(u.location).unit = null
+				if u.base_supporting:
+					u.base_supporting.removeSupportedUnit(u)
+				p.units.remove_at(i)
+				tile_map.undrawUnit(u, u.location, false)
+				break
+
 func buildCity(unit_location : Vector2i):
 	for p in players:
 		for i in range(len(p.units)):
 			print("i=", i, " unit location:", p.units[i].location, " passed loc: ", unit_location)
 			if p.units[i].location == unit_location:
-				map.getTileVec(unit_location).unit = null
-				if p.units[i].base_supporting:
-					p.units[i].base_supporting.removeSupportedUnit(p.units[i])
-				p.units.remove_at(i)
+				removeUnit(p.units[i])
 				var base = Base.new(self, tile_map, unit_location)
 				p.bases.append(base)
 				tile_map.drawCity(base)
@@ -497,6 +530,7 @@ func buildCity(unit_location : Vector2i):
 
 func moveUnit(unit : Unit, unit_location : Vector2i, new_location : Vector2i):
 	unit.changeLocation(new_location)
+	tile_map.drawUnit(unit)
 
 func initialize(num_players : int):
 	for i in num_players:

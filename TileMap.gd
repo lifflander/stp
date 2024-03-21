@@ -112,7 +112,9 @@ class BuildUnit extends TextureButton:
 			le.players[0].units.append(unit)
 			base.addSupportedUnit(unit)
 			unit.setSupportingBase(base)
+			tile_map.drawUnit(unit)
 			unit = null
+			tile_map.selection.times += 1
 
 		var unit_select_ui = le.get_parent().find_child("UnitSelectUI") as UnitSelectUI
 		unit_select_ui.set_visible(false)
@@ -403,6 +405,7 @@ func selectCell(tile : Vector2i):
 					print("into wormhole")
 
 				print("moving to tile: ", tile)
+				undrawUnit(unit, unit.location, false)
 				var tween = animateUnit(unit, selection.getTile(), tile)
 				elm.unit = null
 
@@ -415,12 +418,16 @@ func selectCell(tile : Vector2i):
 
 			var squares_can_attack : Array[Vector2i] = selection.unit_valid_attacks
 			if tile in squares_can_attack:
-				unit.attack(tile)
+				logic_engine.unitAttack(unit, map.getTileVec(tile).unit)
+				tile = Vector2i(-1,-1)
 
 			for move in valid_moves:
 				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
 			for s in squares_can_attack:
 				set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
+
+			if tile != Vector2i(-1,-1):
+				set_cell(unit_layer_id, selection.getTile(), unit.unit_source_id, unit.unit_coord, 0)
 		else:
 			for move in selection.unit_valid_moves:
 				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
@@ -435,12 +442,13 @@ func selectCell(tile : Vector2i):
 	var unit_selected = selection.unitSelected()
 	var base_selected = selection.baseSelected()
 
-	print("unit: ", unit_selected, ", base:", base_selected)
+	print("unit: ", unit_selected, ", base:", base_selected, ", times:", selection.times)
 
 	if unit_selected:
 		unselectCell(selection.getTile())
 
 		var unit = map.getTileVec(selection.getTile()).unit
+		set_cell(unit_layer_id, selection.getTile(), unit.unit_source_id+2, unit.unit_coord, 0)
 		var source = tile_set.get_source(10) as TileSetAtlasSource
 		var origin = source.get_tile_data(unit.unit_coord, 0).texture_origin
 		var tile_data = source.get_tile_data(unit.unit_coord, 0)
@@ -474,6 +482,21 @@ func selectCell(tile : Vector2i):
 		for u in units_can_attack:
 			selection.unit_valid_attacks.append(u.location)
 			set_cell(selection_layer, u.location, 15, Vector2i(3,0), 0)
+
+
+		if unit.hasBuilder():
+			print("making builder")
+			builder = BuilderIcon.new()
+			builder.location = unit.location
+			builder.le = logic_engine
+			builder.tile_map = self
+			var builder_label_pos = map_to_local(unit.location)
+			builder_label_pos.x += 50
+			builder_label_pos.y -= tile_set.tile_size.y - 20
+			var builder_global_pos = to_global(builder_label_pos)
+			builder.position = builder_global_pos
+			builder.set_texture_normal(load("res://assets/tilesets/Builder_Selection_1.png"))
+			sprite_holder.add_child(builder)
 	elif base_selected:
 		var base = map.getTileVec(selection.getTile()).base
 		setUIForBase(base)
@@ -597,54 +620,30 @@ func drawBorders(base : LogicEngine.Base, draw_overlap : bool) -> Array[Line2D]:
 
 var builder : BuilderIcon = null
 
+func undrawUnit(unit : LogicEngine.Unit, tile : Vector2i, is_move : bool):
+	set_cell(unit_layer_id, tile, -1, Vector2i(-1,-1), 0)
+	if !is_move:
+		unit.unit_health_label.queue_free()
+		unit.unit_health_label = null
+
+func drawUnit(unit : LogicEngine.Unit):
+	set_cell(unit_layer_id, unit.location, unit.unit_source_id, unit.unit_coord, 0)
+
+	# raster the health indicator
+	if !unit.unit_health_label:
+		unit.unit_health_label = Label.new()
+
+		unit.unit_health_label.label_settings = load("res://unit-hp-label-settings.tres")
+		label_holder.add_child(unit.unit_health_label)
+
+	unit.unit_health_label.text = str(unit.abilities.hp)
+
+	var label_pos = map_to_local(unit.location)
+	label_pos.x -= 180
+	label_pos.y -= tile_set.tile_size.y - 80
+	var global_pos = to_global(label_pos)
+	unit.unit_health_label.position = global_pos
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	for child in label_holder.get_children():
-		label_holder.remove_child(child)
-
-	# Draw the unit layer
-	for x in range(width):
-		for y in range(height):
-			var tile = map.getTileXY(x, y)
-			if tile != null and tile.unit != null:
-				set_cell(unit_layer_id, Vector2i(x,y), tile.unit.unit_source_id, tile.unit.unit_coord, 0)
-				#set_cell(selection_layer, selection.getTile(), -1, Vector2i(0,0), 0)
-				
-				# raster the health indicator
-				var new_label : Label = Label.new()
-				var label_pos = map_to_local(Vector2i(x, y))
-				label_pos.x -= 180
-				label_pos.y -= tile_set.tile_size.y - 80
-				var global_pos = to_global(label_pos)
-				new_label.position = global_pos
-				new_label.label_settings = load("res://unit-hp-label-settings.tres")
-				new_label.text = str(tile.unit.abilities.hp)
-				label_holder.add_child(new_label)
-				
-				# check if we need to raster a builder icon
-				var selected_tile = selection.getTile()
-				if not builder and tile.unit.hasBuilder() and selection.unitSelected() and selected_tile.x == x and selected_tile.y == y:
-					print("making builder")
-					builder = BuilderIcon.new()
-					builder.location = Vector2i(x,y)
-					builder.le = logic_engine
-					builder.tile_map = self
-					var builder_label_pos = map_to_local(Vector2i(x, y))
-					builder_label_pos.x += 50
-					builder_label_pos.y -= tile_set.tile_size.y - 20
-					var builder_global_pos = to_global(builder_label_pos)
-					builder.position = builder_global_pos
-					builder.set_texture_normal(load("res://assets/tilesets/Builder_Selection_1.png"))
-					sprite_holder.add_child(builder)
-			else:
-				set_cell(unit_layer_id, Vector2i(x,y), -1, Vector2i(-1,-1), 0)
-
-	var unit_selected = selection.unitSelected()
-	if unit_selected:
-		var unit = map.getTileVec(selection.getTile()).unit
-		set_cell(unit_layer_id, selection.getTile(), unit.unit_source_id+2, unit.unit_coord, 0)
-
-
-
-
-
+	pass
