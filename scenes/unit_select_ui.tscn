@@ -97,7 +97,126 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 2
 
-[node name="UnitAttributes" type="TextEdit" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+[node name="UnitAttributes" type="GridContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/v_separation = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="HealthLabel" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Health"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="HealthValue" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "10"
+horizontal_alignment = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer2"]
+layout_mode = 2
+
+[node name="DefenseLabel" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Defense"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="DefenseValue" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "10"
+horizontal_alignment = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer3"]
+layout_mode = 2
+
+[node name="AttackLabel" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Attack"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer3/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="AttackValue" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "10"
+horizontal_alignment = 2
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer4"]
+layout_mode = 2
+
+[node name="MovementLabel" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer4/HBoxContainer"]
+layout_mode = 2
+text = "Movement"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer4/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="MovementValue" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer4/HBoxContainer"]
+layout_mode = 2
+text = "10"
+horizontal_alignment = 2
+
+[node name="VBoxContainer5" type="VBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer5"]
+layout_mode = 2
+
+[node name="RangeLabel" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer5/HBoxContainer"]
+layout_mode = 2
+text = "Range"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer5/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="RangeValue" type="Label" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2/UnitAttributes/VBoxContainer5/HBoxContainer"]
+layout_mode = 2
+text = "10"
+
+[node name="UnitAttributesOld" type="TextEdit" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.7

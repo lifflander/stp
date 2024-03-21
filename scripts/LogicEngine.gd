@@ -248,6 +248,17 @@ class Unit:
 		var unit_icon = ui.find_child("UnitIcon", true) as TextureRect
 		unit_icon.set_texture(tile_map.makeTextureForButton(getSmallImage()))
 
+		var health_value = ui.find_child("HealthValue", true) as Label
+		health_value.set_text(str(abilities.hp))
+		var attack_value = ui.find_child("AttackValue", true) as Label
+		attack_value.set_text(str(abilities.attack))
+		var defense_value = ui.find_child("DefenseValue", true) as Label
+		defense_value.set_text(str(abilities.defense))
+		var movement_value = ui.find_child("MovementValue", true) as Label
+		movement_value.set_text(str(abilities.distance))
+		var range_value = ui.find_child("RangeValue", true) as Label
+		range_value.set_text(str(abilities.range))
+
 	func setLocation(new_location : Vector2i):
 		le.map.getTileVec(new_location).unit = self
 		location = new_location
