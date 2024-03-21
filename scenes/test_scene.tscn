@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://7rbg8gra110a"]
 
-[ext_resource type="Script" path="res://CharacterBody2DTest.gd" id="1_m47d7"]
+[ext_resource type="Script" path="res://scripts/CharacterBody2DTest.gd" id="1_m47d7"]
 
 [node name="Node2D" type="Node2D"]
 

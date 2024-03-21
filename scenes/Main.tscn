@@ -1,15 +1,15 @@
 [gd_scene load_steps=14 format=3 uid="uid://cynr1206nn872"]
 
-[ext_resource type="Script" path="res://LogicEngine.gd" id="1_4bj3c"]
-[ext_resource type="Script" path="res://Map.gd" id="2_84c1i"]
-[ext_resource type="Script" path="res://Circle2D.gd" id="3_11gr5"]
+[ext_resource type="Script" path="res://scripts/LogicEngine.gd" id="1_4bj3c"]
+[ext_resource type="Script" path="res://scripts/Map.gd" id="2_84c1i"]
+[ext_resource type="Script" path="res://scripts/Circle2D.gd" id="3_11gr5"]
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="4_r44qp"]
-[ext_resource type="Script" path="res://TileMap.gd" id="5_tt6nm"]
-[ext_resource type="Script" path="res://CharacterBody2D.gd" id="6_ca62e"]
-[ext_resource type="Script" path="res://Camera2D.gd" id="7_jmvqc"]
+[ext_resource type="Script" path="res://scripts/TileMap.gd" id="5_tt6nm"]
+[ext_resource type="Script" path="res://scripts/CharacterBody2D.gd" id="6_ca62e"]
+[ext_resource type="Script" path="res://scripts/Camera2D.gd" id="7_jmvqc"]
 [ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="8_vuyc3"]
 [ext_resource type="Texture2D" uid="uid://bbxuh07ukj522" path="res://assets/tilesets/Energy Credit_2_Small.png" id="9_hqsjv"]
-[ext_resource type="PackedScene" uid="uid://c1cq240t7nevy" path="res://unit_select_ui.tscn" id="10_1bjno"]
+[ext_resource type="PackedScene" uid="uid://c1cq240t7nevy" path="res://scenes/unit_select_ui.tscn" id="10_1bjno"]
 
 [sub_resource type="Environment" id="Environment_qo0ox"]
 background_mode = 3
