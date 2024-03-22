@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tm8aela041r8"
-path="res://.godot/imported/Spaceman_3.png-cc135c7a111887100f338d2db2bf8f76.ctex"
+uid="uid://dovtdlsyb6lb4"
+path="res://.godot/imported/HackerIcon.png-e7051e12bcab699200d9daedd2370dec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Spaceman_3.png"
-dest_files=["res://.godot/imported/Spaceman_3.png-cc135c7a111887100f338d2db2bf8f76.ctex"]
+source_file="res://IconTextures/HackerIcon.png"
+dest_files=["res://.godot/imported/HackerIcon.png-e7051e12bcab699200d9daedd2370dec.ctex"]
 
 [params]
 

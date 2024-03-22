@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wxn4ludqtg3x"
-path="res://.godot/imported/Energy Credit_USE.png-559b968d2f21c3f735ddb409a3d50c64.ctex"
+uid="uid://dsaqtml8idekd"
+path="res://.godot/imported/SpaceDockIcon.png-08afe485bf78d25d101b3ff62001238a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Energy Credit_USE.png"
-dest_files=["res://.godot/imported/Energy Credit_USE.png-559b968d2f21c3f735ddb409a3d50c64.ctex"]
+source_file="res://SpaceDockIcon.png"
+dest_files=["res://.godot/imported/SpaceDockIcon.png-08afe485bf78d25d101b3ff62001238a.ctex"]
 
 [params]
 

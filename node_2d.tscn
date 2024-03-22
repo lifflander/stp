@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=17 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="TileSet" uid="uid://0jewu7pkdoe8" path="res://iso-tileset-2.tres" id="1_mvcdc"]
 [ext_resource type="Script" path="res://TileMap.gd" id="2_dd161"]
@@ -10,8 +10,9 @@
 [ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="7_yey6t"]
 [ext_resource type="Texture2D" uid="uid://bbxuh07ukj522" path="res://assets/tilesets/Energy Credit_2_Small.png" id="9_cgrt3"]
 [ext_resource type="Theme" uid="uid://cjtftm6cnw2ku" path="res:// SpacemanTheme.tres" id="10_2h0bp"]
-[ext_resource type="Texture2D" uid="uid://bslf73rawnbyi" path="res://Spaceman_5.png" id="10_0378s"]
-[ext_resource type="Texture2D" uid="uid://wxn4ludqtg3x" path="res://Energy Credit_USE.png" id="11_k0bgw"]
+[ext_resource type="Texture2D" uid="uid://bslf73rawnbyi" path="res://IconTextures/Spaceman_5.png" id="10_0378s"]
+[ext_resource type="Texture2D" uid="uid://wxn4ludqtg3x" path="res://IconTextures/Energy Credit_USE.png" id="11_k0bgw"]
+[ext_resource type="Theme" uid="uid://dg7mte0pyml8u" path="res://SpacemanThemeGreenButton.tres" id="13_xuifm"]
 
 [sub_resource type="Environment" id="Environment_qo0ox"]
 background_mode = 3
@@ -326,7 +327,7 @@ offset_bottom = 433.0
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 406.0
 offset_top = 228.0
-offset_right = 910.0
+offset_right = 959.0
 offset_bottom = 875.0
 theme = ExtResource("10_2h0bp")
 
@@ -357,7 +358,7 @@ text = "Spaceman"
 
 [node name="Spacer" type="Control" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer"]
 clip_contents = true
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
@@ -404,14 +405,15 @@ text = "Ability 2"
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 2
+size_flags_stretch_ratio = 4.0
 
 [node name="UnitAttributes" type="TextEdit" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.7
-text = "Health........................................10
+text = "Health.........................................10
 Attack.......................................... 2
-Defense...................................... 2
+Defense....................................... 2
 Movement................................... 1
 Range......................................... 1"
 wrap_mode = 1
@@ -422,9 +424,13 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 2
-text = "Back"
+theme = ExtResource("10_2h0bp")
+theme_override_font_sizes/font_size = 24
+text = "BACK"
 
 [node name="TrainButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/GridContainer/VBoxContainer2/HBoxContainer3"]
 layout_mode = 2
-text = "Train
+theme = ExtResource("13_xuifm")
+theme_override_font_sizes/font_size = 24
+text = "TRAIN
 "

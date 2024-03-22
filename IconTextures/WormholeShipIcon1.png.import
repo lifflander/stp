@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmd5smcqrsbu7"
-path="res://.godot/imported/PowersButton2.png-dbfc8325b6635e6971611ed4c6f790d6.ctex"
+uid="uid://cxluc0t8rexjn"
+path="res://.godot/imported/WormholeShipIcon1.png-0d06412409f47717bbbdde7d41df0645.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PowersButton2.png"
-dest_files=["res://.godot/imported/PowersButton2.png-dbfc8325b6635e6971611ed4c6f790d6.ctex"]
+source_file="res://IconTextures/WormholeShipIcon1.png"
+dest_files=["res://.godot/imported/WormholeShipIcon1.png-0d06412409f47717bbbdde7d41df0645.ctex"]
 
 [params]
 

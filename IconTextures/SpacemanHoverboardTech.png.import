@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db2fkinb8lhhx"
-path="res://.godot/imported/Box.png-029e380f7996de360779b8755098dc02.ctex"
+uid="uid://c7gwkckas2g32"
+path="res://.godot/imported/SpacemanHoverboardTech.png-4586718aa31ac17bac97b04fbe2b5d47.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Box.png"
-dest_files=["res://.godot/imported/Box.png-029e380f7996de360779b8755098dc02.ctex"]
+source_file="res://IconTextures/SpacemanHoverboardTech.png"
+dest_files=["res://.godot/imported/SpacemanHoverboardTech.png-4586718aa31ac17bac97b04fbe2b5d47.ctex"]
 
 [params]
 

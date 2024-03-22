@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bslf73rawnbyi"
-path="res://.godot/imported/Spaceman_5.png-5f1e72b79745b227d81c989cb4b9fd5c.ctex"
+uid="uid://wxn4ludqtg3x"
+path="res://.godot/imported/Energy Credit_USE.png-967b668f5641bcec2d7ade327e256eb2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Spaceman_5.png"
-dest_files=["res://.godot/imported/Spaceman_5.png-5f1e72b79745b227d81c989cb4b9fd5c.ctex"]
+source_file="res://IconTextures/Energy Credit_USE.png"
+dest_files=["res://.godot/imported/Energy Credit_USE.png-967b668f5641bcec2d7ade327e256eb2.ctex"]
 
 [params]
 

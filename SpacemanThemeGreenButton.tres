@@ -1,60 +1,60 @@
-[gd_resource type="Theme" load_steps=10 format=3 uid="uid://cjtftm6cnw2ku"]
+[gd_resource type="Theme" load_steps=11 format=3 uid="uid://dg7mte0pyml8u"]
 
-[ext_resource type="Texture2D" uid="uid://bmd5smcqrsbu7" path="res://PanelandButtonTextures/PowersButton2.png" id="1_cse6b"]
-[ext_resource type="Texture2D" uid="uid://db2fkinb8lhhx" path="res://PanelandButtonTextures/Box.png" id="1_sl606"]
-[ext_resource type="FontFile" uid="uid://wsamfxssspcm" path="res://Fonts/Avenir.ttc" id="2_bnobb"]
+[ext_resource type="Texture2D" uid="uid://bmd5smcqrsbu7" path="res://PanelandButtonTextures/PowersButton2.png" id="1_rjmkg"]
+[ext_resource type="Texture2D" uid="uid://d2rt13vrlxe5x" path="res://PanelandButtonTextures/TrainButton.png" id="2_16f6l"]
+[ext_resource type="Texture2D" uid="uid://db2fkinb8lhhx" path="res://PanelandButtonTextures/Box.png" id="2_xc8xh"]
+[ext_resource type="FontFile" path="res://Courier.ttc" id="4_aw08m"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v1lec"]
-texture = ExtResource("1_cse6b")
+texture = ExtResource("1_rjmkg")
 texture_margin_left = 10.0
 texture_margin_top = 10.0
 texture_margin_right = 10.0
 texture_margin_bottom = 9.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ummlu"]
-texture = ExtResource("1_cse6b")
+texture = ExtResource("1_rjmkg")
 texture_margin_left = 10.0
 texture_margin_top = 10.0
 texture_margin_right = 10.0
 texture_margin_bottom = 9.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xgxn0"]
-texture = ExtResource("1_cse6b")
+texture = ExtResource("1_rjmkg")
 texture_margin_left = 10.0
 texture_margin_top = 10.0
 texture_margin_right = 10.0
 texture_margin_bottom = 9.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m78n8"]
-texture = ExtResource("1_cse6b")
+texture = ExtResource("2_16f6l")
 texture_margin_left = 10.0
 texture_margin_top = 10.0
 texture_margin_right = 10.0
 texture_margin_bottom = 9.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gtubx"]
-texture = ExtResource("1_cse6b")
+texture = ExtResource("1_rjmkg")
 texture_margin_left = 10.0
 texture_margin_top = 10.0
 texture_margin_right = 10.0
 texture_margin_bottom = 9.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_awojl"]
-texture = ExtResource("1_sl606")
-texture_margin_left = 10.0
-texture_margin_top = 10.0
-texture_margin_right = 10.0
-texture_margin_bottom = 10.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vthsv"]
+texture = ExtResource("2_xc8xh")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
 
 [resource]
-default_font_size = 22
+default_font_size = 23
 Button/styles/disabled = SubResource("StyleBoxTexture_v1lec")
 Button/styles/focus = SubResource("StyleBoxTexture_ummlu")
 Button/styles/hover = SubResource("StyleBoxTexture_xgxn0")
 Button/styles/normal = SubResource("StyleBoxTexture_m78n8")
 Button/styles/pressed = SubResource("StyleBoxTexture_gtubx")
 Label/font_sizes/font_size = 30
-Label/fonts/font = ExtResource("2_bnobb")
-PanelContainer/styles/panel = SubResource("StyleBoxTexture_awojl")
-TextEdit/font_sizes/font_size = 30
-TextEdit/fonts/font = ExtResource("2_bnobb")
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_vthsv")
+TextEdit/font_sizes/font_size = 28
+TextEdit/fonts/font = ExtResource("4_aw08m")
