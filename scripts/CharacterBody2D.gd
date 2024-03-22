@@ -10,6 +10,7 @@ func _ready():
 	set_process_input(true)
 	
 	get_tree().get_root().size_changed.connect(resize)
+	resize()
 
 func resize():
 	var size = get_tree().get_root().get_viewport().size
@@ -17,10 +18,10 @@ func resize():
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
 	var tui = get_parent().find_child("TopUI") as ColorRect
 	var cc = get_parent().find_child("CenterContainer") as CenterContainer
-	cr.set_size(Vector2i(size.x, 100))
-	dcr.set_size(Vector2i(size.x, 100))
-	tui.set_size(Vector2i(size.x, 100))
-	cc.set_size(Vector2i(size.x, 50))
+	cr.set_size(Vector2i(size.x, cr.size.y))
+	dcr.set_size(Vector2i(size.x, dcr.size.y))
+	tui.set_size(Vector2i(size.x, tui.size.y))
+	cc.set_size(Vector2i(size.x, cc.size.y))
 
 func _input(event):
 	if event is InputEventMouseButton:
