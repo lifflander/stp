@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=31 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=32 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Texture2D" uid="uid://b3bhoe2tb63dy" path="res://assets/tilesets/Atmosphere_1.png" id="1_o4mdy"]
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
@@ -201,6 +201,35 @@ texture_region_size = Vector2i(482, 350)
 3:0/0/texture_origin = Vector2i(0, 10)
 3:0/0/modulate = Color(1, 0, 0, 0.45098)
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yrrxs"]
+resource_name = "UnitSetDisabled"
+texture = ExtResource("2_t27ds")
+texture_region_size = Vector2i(473, 385)
+0:0/0 = 0
+0:0/0/modulate = Color(0.381703, 0.381703, 0.381703, 1)
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+7:1/0 = 0
+6:1/0 = 0
+5:1/0 = 0
+4:1/0 = 0
+3:1/0 = 0
+2:1/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fcyon"]
 texture = ExtResource("7_5b08o")
 margins = Vector2i(3, 0)
@@ -384,4 +413,5 @@ sources/2 = SubResource("TileSetAtlasSource_fcyon")
 sources/13 = SubResource("TileSetAtlasSource_udjj6")
 sources/14 = SubResource("TileSetAtlasSource_hhd54")
 sources/15 = SubResource("TileSetAtlasSource_tkf6t")
+sources/16 = SubResource("TileSetAtlasSource_yrrxs")
 pattern_0 = SubResource("TileMapPattern_74qju")

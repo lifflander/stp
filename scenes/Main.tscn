@@ -172,13 +172,13 @@ offset_bottom = -25.0
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/ControlBottom/CenterContainer"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="UI/ControlBottom/CenterContainer/HBoxContainer"]
+[node name="TechTreeButton" type="Button" parent="UI/ControlBottom/CenterContainer/HBoxContainer"]
 layout_mode = 2
 text = "Tech Tree"
 
-[node name="Button2" type="Button" parent="UI/ControlBottom/CenterContainer/HBoxContainer"]
+[node name="TurnCompleteButton" type="Button" parent="UI/ControlBottom/CenterContainer/HBoxContainer"]
 layout_mode = 2
-text = "Test Button"
+text = "Turn Complete"
 
 [node name="ControlTop" type="Control" parent="UI"]
 layout_mode = 3
@@ -316,3 +316,5 @@ text = "2
 
 [node name="UnitSelectUI" parent="UI" instance=ExtResource("10_1bjno")]
 visible = false
+
+[connection signal="pressed" from="UI/ControlBottom/CenterContainer/HBoxContainer/TurnCompleteButton" to="LogicEngine" method="_on_turn_complete_button_pressed"]

@@ -204,6 +204,27 @@ class Base:
 		else:
 			return border_tiles
 
+class BaseAbility:
+	func getName() -> String:
+		return "None"
+
+	func getDescription() -> String:
+		return "Write something longer here"
+
+class DashAbility extends BaseAbility:
+	func getName() -> String:
+		return "Dash"
+
+	func getDescription() -> String:
+		return "After moving this unit, you may attack."
+		
+class BounceAbility extends BaseAbility:
+	func getName() -> String:
+		return "Bounce"
+
+	func getDescription() -> String:
+		return "After moving this unit, you may attack and then you can move it again."
+
 class UnitAbilities:
 	var distance : int = 1
 	var attack : int = 1
@@ -211,6 +232,20 @@ class UnitAbilities:
 	var max_hp : int = 10
 	var defense : int = 1
 	var range : int = 1
+
+	var special : Array[BaseAbility] = []
+
+	func hasDash() -> bool:
+		for ability in special:
+			if ability is DashAbility:
+				return true
+		return false
+
+	func hasBounce() -> bool:
+		for ability in special:
+			if ability is BounceAbility:
+				return true
+		return false
 
 class Unit:
 	var location : Vector2i
@@ -224,6 +259,20 @@ class Unit:
 	var credits_cost : int = 2
 	var base_supporting : Base = null
 	var unit_health_label : Label = null
+	var moved_counter = 0
+	var attack_counter = 0
+
+	func canMove() -> bool:
+		if abilities.hasBounce():
+			return (moved_counter == 0 and attack_counter == 0) or (moved_counter == 1 and attack_counter == 1)
+		else:
+			return moved_counter == 0 and attack_counter == 0
+	
+	func canAttack() -> bool:
+		if abilities.hasDash():
+			return attack_counter == 0
+		else:
+			return attack_counter == 0 and moved_counter == 0
 
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i, in_unit_source_id : int, in_unit_coord : Vector2i):
 		tile_map = in_tile_map
@@ -247,6 +296,16 @@ class Unit:
 		cost_label.set_text(str(credits_cost))
 		var unit_icon = ui.find_child("UnitIcon", true) as TextureRect
 		unit_icon.set_texture(tile_map.makeTextureForButton(getSmallImage()))
+		
+		var ability_container = ui.find_child("AbilityContainer", true) as HBoxContainer
+		var spacer_node = ability_container.find_child("Spacer")
+		for c in ability_container.get_children():
+			ability_container.remove_child(c)
+		for ability in abilities.special:
+			var b : Button = Button.new()
+			b.set_text(ability.getName())
+			ability_container.add_child(b)
+		ability_container.add_child(spacer_node)
 
 		var health_value = ui.find_child("HealthValue", true) as Label
 		health_value.set_text(str(abilities.hp))
@@ -264,6 +323,7 @@ class Unit:
 		location = new_location
 
 	func changeLocation(new_location : Vector2i):
+		moved_counter += 1
 		le.map.getTileVec(location).unit = null
 		le.map.getTileVec(new_location).unit = self
 		location = new_location
@@ -281,7 +341,7 @@ class Unit:
 			for d in le.getBasicDirections():
 				var loc_to_check : Vector2i = position + d
 				var tile : Map.Tile = le.map.getTileVec(loc_to_check)
-				if not tile.hasUnit():
+				if not tile.hasUnit() and loc_to_check != location:
 					if tile.type in getValidTypes():
 						valid_moves.append(loc_to_check)
 
@@ -320,6 +380,7 @@ class Unit:
 		abilities.max_hp = hp
 
 	func attack(tile : Vector2i):
+		attack_counter += 1
 		var defending_unit = le.map.getTileVec(tile).unit
 		assert(defending_unit != null)
 
@@ -353,6 +414,7 @@ class SpacemanUnit extends Unit:
 		setHP(10)
 		abilities.attack = 2
 		abilities.defense = 2
+		abilities.special.append(DashAbility.new())
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -501,6 +563,7 @@ class HoverSaberUnit extends Unit:
 		var unit_coords : Vector2i = Vector2i(3, 2)
 		setHP(5)
 		abilities.distance = 2
+		abilities.special.append(BounceAbility.new())
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -623,3 +686,9 @@ func _process(delta):
 	if tile_map != null and not is_initialized:
 		is_initialized = true
 		initialize(4)
+
+func _on_turn_complete_button_pressed():
+	for p in players:
+		for u in p.units:
+			u.moved_counter = 0
+			u.attack_counter = 0

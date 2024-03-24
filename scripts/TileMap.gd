@@ -214,6 +214,9 @@ func _ready():
 	drawTerrainLayer()
 
 	selection = SelectionState.new(map)
+	
+	#var source = tile_set.get_source(8) as TileSetAtlasSource
+	#tile_set.add_source()
 
 func removeResource(t : Vector2i):
 	map.getTileVec(t).resource.source_id = -1
@@ -395,39 +398,42 @@ func selectCell(tile : Vector2i):
 		var unit = elm.unit
 		
 		if unit:
-			var valid_moves = selection.unit_valid_moves
-			if tile in valid_moves:
-				var into_wormhole : bool = false
-				if map.getTileVec(tile).isOownedByBase():
-					var base = map.getTileVec(tile).baseOwnedBy()
-					for i in base.improvements:
-						if i.location == tile and i.isWormhole():
-							into_wormhole = true
+			if unit.canMove():
+				var valid_moves = selection.unit_valid_moves
+				if tile in valid_moves:
+					var into_wormhole : bool = false
+					if map.getTileVec(tile).isOownedByBase():
+						var base = map.getTileVec(tile).baseOwnedBy()
+						for i in base.improvements:
+							if i.location == tile and i.isWormhole():
+								into_wormhole = true
 
-				if into_wormhole:
-					print("into wormhole")
+					if into_wormhole:
+						print("into wormhole")
 
-				print("moving to tile: ", tile)
-				undrawUnit(unit, unit.location, false)
-				var tween = animateUnit(unit, selection.getTile(), tile)
-				elm.unit = null
+					print("moving to tile: ", tile)
+					undrawUnit(unit, unit.location, false)
+					var tween = animateUnit(unit, selection.getTile(), tile)
+					elm.unit = null
 
-				var do_move = func do_move_impl():
-					logic_engine.moveUnit(unit, selection.getTile(), tile)
+					var do_move = func do_move_impl():
+						logic_engine.moveUnit(unit, selection.getTile(), tile)
 
-				tween.tween_callback(do_move)
-				
-				tile = Vector2i(-1,-1)
+					tween.tween_callback(do_move)
+					
+					tile = Vector2i(-1,-1)
 
-			var squares_can_attack : Array[Vector2i] = selection.unit_valid_attacks
-			if tile in squares_can_attack:
-				logic_engine.unitAttack(unit, map.getTileVec(tile).unit)
-				tile = Vector2i(-1,-1)
+					for move in valid_moves:
+						set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
 
-			for move in valid_moves:
-				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
-			for s in squares_can_attack:
-				set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
+			if unit.canAttack():
+				var squares_can_attack : Array[Vector2i] = selection.unit_valid_attacks
+				if tile in squares_can_attack:
+					logic_engine.unitAttack(unit, map.getTileVec(tile).unit)
+					tile = Vector2i(-1,-1)
+
+				for s in squares_can_attack:
+					set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
 
 			if tile != Vector2i(-1,-1):
 				set_cell(unit_layer_id, selection.getTile(), unit.unit_source_id, unit.unit_coord, 0)
@@ -466,25 +472,27 @@ func selectCell(tile : Vector2i):
 			for i in base.improvements:
 				if i.location == tile and i.isWormhole():
 					into_wormhole = true
-		
-		var all_moves : Array[Vector2i] = []
-		if into_wormhole:
-			for p in logic_engine.players:
-				for u in p.units:
-					if u is LogicEngine.WormholeUnit:
-						var valid_moves = unit.getValidMovesImpl([u.location])
-						all_moves += valid_moves
 
-		all_moves += unit.getValidMoves()
-		selection.unit_valid_moves = all_moves
-		for move in all_moves:
-			set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
+		if unit.canMove():
+			var all_moves : Array[Vector2i] = []
+			if into_wormhole:
+				for p in logic_engine.players:
+					for u in p.units:
+						if u is LogicEngine.WormholeUnit:
+							var valid_moves = unit.getValidMovesImpl([u.location])
+							all_moves += valid_moves
 
-		var units_can_attack : Array[LogicEngine.Unit] = unit.getUnitsWithinRange()
-		selection.unit_valid_attacks = []
-		for u in units_can_attack:
-			selection.unit_valid_attacks.append(u.location)
-			set_cell(selection_layer, u.location, 15, Vector2i(3,0), 0)
+			all_moves += unit.getValidMoves()
+			selection.unit_valid_moves = all_moves
+			for move in all_moves:
+				set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
+
+		if unit.canAttack():
+			var units_can_attack : Array[LogicEngine.Unit] = unit.getUnitsWithinRange()
+			selection.unit_valid_attacks = []
+			for u in units_can_attack:
+				selection.unit_valid_attacks.append(u.location)
+				set_cell(selection_layer, u.location, 15, Vector2i(3,0), 0)
 
 
 		if unit.hasBuilder():
