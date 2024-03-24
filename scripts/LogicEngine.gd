@@ -692,3 +692,4 @@ func _on_turn_complete_button_pressed():
 		for u in p.units:
 			u.moved_counter = 0
 			u.attack_counter = 0
+			tile_map.drawUnit(u)

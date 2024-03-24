@@ -191,6 +191,12 @@ func _unhandled_input(event):
 			print("global:, ", global_pos, ", local: ", local_pos, ", map: ", map_pos)
 			selectCell(map_pos)
 
+const unit_set : int = 8
+const unit_set_selected : int = 10
+const unit_set_disabled : int = 16
+const unit_set_selected_disabled : int = 17
+const unit_set_ready_move : int = 18
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_process_input(true)
@@ -214,9 +220,24 @@ func _ready():
 	drawTerrainLayer()
 
 	selection = SelectionState.new(map)
-	
-	#var source = tile_set.get_source(8) as TileSetAtlasSource
-	#tile_set.add_source()
+
+	var source = tile_set.get_source(8) as TileSetAtlasSource
+	var source_sel = tile_set.get_source(unit_set_selected) as TileSetAtlasSource
+	var source_dis = tile_set.get_source(unit_set_disabled) as TileSetAtlasSource
+	var source_dis_sel = tile_set.get_source(unit_set_selected_disabled) as TileSetAtlasSource
+	var source_move = tile_set.get_source(unit_set_ready_move) as TileSetAtlasSource
+	for x in 8:
+		for y in 4:
+			var coord = Vector2i(x,y)
+			if source.get_tile_data(coord, 0):
+				source_sel.get_tile_data(coord, 0).set_texture_origin(source.get_tile_data(coord, 0).get_texture_origin())
+				source_dis.get_tile_data(coord, 0).set_texture_origin(source.get_tile_data(coord, 0).get_texture_origin())
+				source_dis_sel.get_tile_data(coord, 0).set_texture_origin(source.get_tile_data(coord, 0).get_texture_origin())
+				source_move.get_tile_data(coord, 0).set_texture_origin(source.get_tile_data(coord, 0).get_texture_origin())
+				source_dis.get_tile_data(coord, 0).set_modulate(Color(0.5,0.5,0.5,1.0))
+				source_dis_sel.get_tile_data(coord, 0).set_modulate(Color(0.5,0.5,0.5,1.0))
+				#source_dis_sel.get_tile_data(coord, 0).set_material(load("res://orb-shader.tres"))
+				source_move.get_tile_data(coord, 0).set_material(load("res://move-material.tres"))
 
 func removeResource(t : Vector2i):
 	map.getTileVec(t).resource.source_id = -1
@@ -394,6 +415,7 @@ func unselectCell(tile : Vector2i):
 
 func selectCell(tile : Vector2i):
 	if selection.has_unit_selected:
+		print("Here")
 		var elm = map.getTileVec(selection.getTile())
 		var unit = elm.unit
 		
@@ -436,12 +458,12 @@ func selectCell(tile : Vector2i):
 					set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
 
 			if tile != Vector2i(-1,-1):
-				set_cell(unit_layer_id, selection.getTile(), unit.unit_source_id, unit.unit_coord, 0)
-		else:
-			for move in selection.unit_valid_moves:
-				set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
-			for s in selection.unit_valid_attacks:
-				set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
+				drawUnit(unit)
+
+		for move in selection.unit_valid_moves:
+			set_cell(selection_layer, move, -1, Vector2i(3,0), 0)
+		for s in selection.unit_valid_attacks:
+			set_cell(selection_layer, s, -1, Vector2i(3,0), 0)
 	
 	var old_tile = selection.select(tile)
 
@@ -457,8 +479,15 @@ func selectCell(tile : Vector2i):
 		unselectCell(selection.getTile())
 
 		var unit = map.getTileVec(selection.getTile()).unit
-		set_cell(unit_layer_id, selection.getTile(), unit.unit_source_id+2, unit.unit_coord, 0)
-		var source = tile_set.get_source(10) as TileSetAtlasSource
+
+		var source : TileSetAtlasSource
+		if unit.canMove() or (unit.canAttack() and unit.getUnitsWithinRange() != []):
+			set_cell(unit_layer_id, selection.getTile(), unit_set_selected, unit.unit_coord, 0)
+			source = tile_set.get_source(unit_set_selected) as TileSetAtlasSource
+		else:
+			set_cell(unit_layer_id, selection.getTile(), unit_set_selected_disabled, unit.unit_coord, 0)
+			source = tile_set.get_source(unit_set_selected_disabled) as TileSetAtlasSource
+
 		var origin = source.get_tile_data(unit.unit_coord, 0).texture_origin
 		var tile_data = source.get_tile_data(unit.unit_coord, 0)
 
@@ -492,7 +521,7 @@ func selectCell(tile : Vector2i):
 			selection.unit_valid_attacks = []
 			for u in units_can_attack:
 				selection.unit_valid_attacks.append(u.location)
-				set_cell(selection_layer, u.location, 15, Vector2i(3,0), 0)
+				set_cell(selection_layer, u.location, 9, Vector2i(3,1), 0)
 
 
 		if unit.hasBuilder():
@@ -638,7 +667,12 @@ func undrawUnit(unit : LogicEngine.Unit, tile : Vector2i, is_move : bool):
 		unit.unit_health_label = null
 
 func drawUnit(unit : LogicEngine.Unit):
-	set_cell(unit_layer_id, unit.location, unit.unit_source_id, unit.unit_coord, 0)
+	if unit.canMove():
+		set_cell(unit_layer_id, unit.location, unit_set_ready_move, unit.unit_coord, 0)
+	elif unit.canAttack() and unit.getUnitsWithinRange() != []:
+		set_cell(unit_layer_id, unit.location, unit_set, unit.unit_coord, 0)
+	else:
+		set_cell(unit_layer_id, unit.location, unit_set_disabled, unit.unit_coord, 0)
 
 	# raster the health indicator
 	if !unit.unit_health_label:

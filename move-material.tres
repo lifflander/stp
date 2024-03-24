@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b1oci5fpbwrfe"]
+
+[ext_resource type="Shader" path="res://orb-shader.gdshader" id="1_phkl1"]
+
+[resource]
+shader = ExtResource("1_phkl1")
+shader_parameter/line_color = Vector4(1, 1, 2.08165e-12, 0.5)
+shader_parameter/line_thickness = 5.0
