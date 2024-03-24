@@ -294,12 +294,15 @@ func setUIForBase(base : LogicEngine.Base):
 			LogicEngine.NukeUnit.new(logic_engine, self),
 			LogicEngine.HoverSaberUnit.new(logic_engine, self),
 			LogicEngine.SatelliteUnit.new(logic_engine, self),
-			LogicEngine.TankUnit.new(logic_engine, self)
+			LogicEngine.TankUnit.new(logic_engine, self),
+			LogicEngine.HackerUnit.new(logic_engine, self),
+			LogicEngine.MissileUnit.new(logic_engine, self)
 		]
 
 		if base.hasSpacedock():
 			units.append(LogicEngine.WormholeUnit.new(logic_engine, self))
 			units.append(LogicEngine.SpaceshipUnit.new(logic_engine, self))
+			units.append(LogicEngine.CapitalShipUnit.new(logic_engine, self))
 
 		for u in units:
 			var u1 = BuildUnit.new(loc, logic_engine, self, base, u)

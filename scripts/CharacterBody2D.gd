@@ -4,13 +4,27 @@ var dragging = false
 var prev_position : Vector2
 var clicked_button : bool = false
 
+#var multiplayer_peer = ENetMultiplayerPeer.new()
+
 @onready var tile_map : IsoTileMap = get_parent().get_node("Tiles")
 
 func _ready():
 	set_process_input(true)
-	
+
 	get_tree().get_root().size_changed.connect(resize)
 	resize()
+#
+	#multiplayer.server_disconnected.connect(_on_server_disconnected)
+	#multiplayer_peer.create_client("127.0.0.1", 9010)
+	#multiplayer.multiplayer_peer = multiplayer_peer
+	#print(multiplayer_peer.get_connection_status(), multiplayer_peer.CONNECTION_CONNECTING)
+	#while multiplayer_peer.get_connection_status() !=  multiplayer_peer.CONNECTION_CONNECTED:
+		#print(multiplayer_peer.get_connection_status(), multiplayer_peer.CONNECTION_CONNECTING)
+		#pass
+
+#func _on_server_disconnected():
+	#multiplayer_peer.close()
+	#print("connection lost")
 
 func resize():
 	var size = get_tree().get_root().get_viewport().size

@@ -300,7 +300,7 @@ class Unit:
 			for d in le.getBasicDirections():
 				var loc_to_check : Vector2i = position + d
 				var tile : Map.Tile = le.map.getTileVec(loc_to_check)
-				if tile.hasUnit():
+				if tile.hasUnit() and loc_to_check != location:
 					units.append(tile.unit)
 				valid_moves.append(loc_to_check)
 
@@ -478,7 +478,7 @@ class WormholeUnit extends Unit:
 class NukeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
-		var unit_coords : Vector2i = Vector2i(5, 1)
+		var unit_coords : Vector2i = Vector2i(6, 2)
 		setHP(5)
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
@@ -490,7 +490,7 @@ class NukeUnit extends Unit:
 		return "Nuke"
 
 	static func smallImage() -> Map.AtlasIdent:
-		return Map.AtlasIdent.new(13, Vector2i(4,1))
+		return Map.AtlasIdent.new(13, Vector2i(6,2))
 
 	func getSmallImage() -> Map.AtlasIdent:
 		return smallImage()
@@ -498,7 +498,7 @@ class NukeUnit extends Unit:
 class HoverSaberUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
-		var unit_coords : Vector2i = Vector2i(6, 1)
+		var unit_coords : Vector2i = Vector2i(3, 2)
 		setHP(5)
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
@@ -510,7 +510,73 @@ class HoverSaberUnit extends Unit:
 		return "HoverSaber"
 
 	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(3,2))
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
+
+class CapitalShipUnit extends Unit:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
+		var unit_source_id : int = unit_tile_set
+		var unit_coords : Vector2i = Vector2i(6, 1)
+		setHP(20)
+		abilities.distance = 2
+		abilities.range = 3
+		abilities.attack = 3
+		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.ATMOSPHERE, Map.TileTypeEnum.SPACE]
+
+	func getName():
+		return "CapitalShip"
+
+	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(6,1))
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
+
+class MissileUnit extends Unit:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
+		var unit_source_id : int = unit_tile_set
+		var unit_coords : Vector2i = Vector2i(7, 1)
+		setHP(10)
+		abilities.distance = 1
+		abilities.range = 3
+		abilities.attack = 1
+		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND]
+
+	func getName():
+		return "Missile"
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(7,1))
+
+	func getSmallImage() -> Map.AtlasIdent:
+		return smallImage()
+
+class HackerUnit extends Unit:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
+		var unit_source_id : int = unit_tile_set
+		var unit_coords : Vector2i = Vector2i(1, 2)
+		setHP(10)
+		abilities.distance = 1
+		abilities.range = 1
+		abilities.attack = 1
+		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
+
+	func getValidTypes() -> Array[Map.TileTypeEnum]:
+		return [Map.TileTypeEnum.LAND]
+
+	func getName():
+		return "Hacker"
+
+	static func smallImage() -> Map.AtlasIdent:
+		return Map.AtlasIdent.new(13, Vector2i(1,2))
 
 	func getSmallImage() -> Map.AtlasIdent:
 		return smallImage()
