@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=34 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=35 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Texture2D" uid="uid://b3bhoe2tb63dy" path="res://assets/tilesets/Atmosphere_1.png" id="1_o4mdy"]
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://872oittq8ka7" path="res://assets/tilesets/City_Levels1to8_1.png" id="8_bf1fb"]
 [ext_resource type="Texture2D" uid="uid://4sn06fsj01xw" path="res://assets/tilesets/Buildings_Overlay_2.png" id="8_geh3v"]
 [ext_resource type="Texture2D" uid="uid://bfi2wkiec7kl0" path="res://assets/tilesets/Mars_Tileset_2.png" id="8_iwov0"]
+[ext_resource type="Texture2D" uid="uid://vb88hl7ew23i" path="res://assets/tilesets/CircularCrater_Tiles_1.png" id="10_tgtjq"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_74qju"]
 tile_data = PackedInt32Array(0, 65536, 0, 1, 65536, 0, 2, 65536, 0, 65538, 65536, 0)
@@ -193,14 +194,6 @@ texture_region_size = Vector2i(480, 340)
 6:0/0 = 0
 6:0/0/texture_origin = Vector2i(0, 60)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tkf6t"]
-texture = ExtResource("7_6aigk")
-margins = Vector2i(0, 50)
-texture_region_size = Vector2i(482, 350)
-3:0/0 = 0
-3:0/0/texture_origin = Vector2i(0, 10)
-3:0/0/modulate = Color(1, 0, 0, 0.45098)
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yrrxs"]
 resource_name = "UnitSetDisabled"
 texture = ExtResource("2_t27ds")
@@ -284,6 +277,21 @@ texture_region_size = Vector2i(473, 385)
 2:0/0 = 0
 3:0/0 = 0
 4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d70ly"]
+texture = ExtResource("10_tgtjq")
+margins = Vector2i(32, 44)
+separation = Vector2i(61, 70)
+texture_region_size = Vector2i(420, 324)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+0:1/0 = 0
 5:0/0 = 0
 6:0/0 = 0
 7:0/0 = 0
@@ -449,6 +457,7 @@ texture_region_size = Vector2i(482, 350)
 1:1/0 = 0
 2:1/0 = 0
 3:1/0 = 0
+3:1/0/texture_origin = Vector2i(-15, 40)
 3:1/0/modulate = Color(1, 1, 1, 0.415686)
 
 [resource]
@@ -472,8 +481,8 @@ sources/11 = SubResource("TileSetAtlasSource_p5104")
 sources/2 = SubResource("TileSetAtlasSource_fcyon")
 sources/13 = SubResource("TileSetAtlasSource_udjj6")
 sources/14 = SubResource("TileSetAtlasSource_hhd54")
-sources/15 = SubResource("TileSetAtlasSource_tkf6t")
 sources/16 = SubResource("TileSetAtlasSource_yrrxs")
 sources/17 = SubResource("TileSetAtlasSource_o36dl")
 sources/18 = SubResource("TileSetAtlasSource_iqyn1")
+sources/19 = SubResource("TileSetAtlasSource_d70ly")
 pattern_0 = SubResource("TileMapPattern_74qju")
