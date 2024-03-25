@@ -193,6 +193,43 @@ func _ready():
 					tile.type = TileTypeEnum.ATMOSPHERE
 					tile.atlas = AtlasIdent.new(0, Vector2i(4,0))
 
+	var created_crater = false
+	for x in width:
+		for y in height:
+			if not created_crater:
+				var tile = getTileXY(x, y)
+				for c in circles:
+					if c.inSquare(Vector2i(x,y)):
+						#print("planet=" + str(c.planet) + ", x=", str(x), ", y=", str(y))
+						var alt = altitude.get_noise_2d(float(x)*50.0, float(y)*50.0)*10
+						var mountain = alt > 1
+
+						if c.planet == 0:
+							pass
+						elif c.planet == 1:
+							if tile.type == TileTypeEnum.LAND and getTileXY(x-1, y).type == TileTypeEnum.LAND and getTileXY(x, y-1).type == TileTypeEnum.LAND and getTileXY(x-1, y-1).type == TileTypeEnum.LAND:
+								if borderAtmosphere(tile.getXY()) or borderAtmosphere(Vector2i(x-1, y)) or borderAtmosphere(Vector2i(x, y-1)) or borderAtmosphere(Vector2i(x-1, y-1)):
+									pass
+								else:
+									tile.atlas = AtlasIdent.new(15, Vector2i(6,0))
+									getTileXY(x-1, y).atlas = AtlasIdent.new(15, Vector2i(4,0))
+									getTileXY(x, y-1).atlas = AtlasIdent.new(15, Vector2i(3,0))
+									getTileXY(x-1, y-1).atlas = AtlasIdent.new(15, Vector2i(2,0))
+									created_crater = true
+						else:
+							print("ERROR")
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
+func borderAtmosphere(tile : Vector2i):
+	if getTileXY(tile.x-1, tile.y).type == TileTypeEnum.ATMOSPHERE:
+		return true
+	if getTileXY(tile.x+1, tile.y).type == TileTypeEnum.ATMOSPHERE:
+		return true
+	if getTileXY(tile.x, tile.y+1).type == TileTypeEnum.ATMOSPHERE:
+		return true
+	if getTileXY(tile.x, tile.y-2).type == TileTypeEnum.ATMOSPHERE:
+		return true
+	return false

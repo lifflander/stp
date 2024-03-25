@@ -11,7 +11,7 @@ func _init(in_base : LogicEngine.Base):
 	show_percentage = false
 
 func setPopulation(population : int):
-	print("setPopulation: ", population / float(divisions) * 100)
+	print("setPopulation: ", "population=", population, ", divisions=", divisions, ", total=", population / float(divisions) * 100)
 	divisions_filled = population
 	drawLines()
 

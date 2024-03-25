@@ -554,20 +554,34 @@ func drawCity(base : LogicEngine.Base):
 	set_cell(city_layer_id, base.location, base.base_source_id, base.base_coord, 0)
 
 	var new_label : Label = Label.new()
-	new_label.position.x = 40
+	#new_label.position.x = 40
 	new_label.label_settings = load("res://base-name-label-settings.tres")
 	new_label.text = base.name
 	new_label.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
 
 	var poly_pos = map_to_local(base.location)
 	var global_pos = to_global(poly_pos)
-	
-	var new_pc : PanelContainer = PanelContainer.new()
-	new_pc.position = global_pos
+
+	var credit_image : TextureRect = TextureRect.new()
+	credit_image.set_texture(load("res://assets/tilesets/Energy Credit_2_Small.png"))
+	credit_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+
+	var pc = PanelContainer.new()
+	pc.set_position(global_pos)
+	var new_pc : HBoxContainer = HBoxContainer.new()
 	new_pc.add_child(new_label)
-	new_pc.set_size(Vector2(150,70))
-	new_pc.position.x -= new_pc.get_size().x/2
-	sprite_holder.add_child(new_pc)
+	new_pc.add_child(credit_image)
+
+	var num_credits : Label = Label.new()
+	num_credits.set_text(str(base.creditsPerTurn()))
+	num_credits.set_theme(load("res://SpacemanTheme.tres"))
+
+	new_pc.add_child(num_credits)
+
+	pc.add_child(new_pc)
+
+	sprite_holder.add_child(pc)
+	pc.set_position(Vector2(pc.get_position().x - pc.get_size().x/2, pc.get_position().y))
 
 	var base_pos = map_to_local(base.location)
 	var global_base_pos = to_global(base_pos)
@@ -577,6 +591,7 @@ func drawCity(base : LogicEngine.Base):
 	global_base_pos.y += 75
 	new_pop_bar.position = global_base_pos
 	new_pop_bar.set_size(Vector2(len*120,50))
+	new_pop_bar.setPopulation(base.population)
 	sprite_holder.add_child(new_pop_bar)
 	base.population_bar = new_pop_bar
 	new_pop_bar.drawLines()

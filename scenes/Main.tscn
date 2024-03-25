@@ -81,7 +81,6 @@ rendering_quadrant_size = 30
 format = 2
 layer_0/name = "Base layer"
 layer_0/y_sort_enabled = true
-layer_0/tile_data = PackedInt32Array(65534, 19, 0, 65533, 262163, 0, -3, 393235, 0, -65539, 327699, 0, -65538, 458771, 0, -2, 19, 1, -65537, 131091, 0, 65535, 65555, 0, -1, 196627, 0)
 layer_1/name = "Resources"
 layer_1/y_sort_enabled = true
 layer_1/tile_data = PackedInt32Array(524298, 2, 0)
@@ -252,6 +251,10 @@ horizontal_alignment = 1
 [node name="TextureRect" type="TextureRect" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer/HBoxContainer"]
 layout_mode = 2
 texture = ExtResource("9_hqsjv")
+
+[node name="EnergyPlus" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
 
 [node name="TurnField" type="Label" parent="UI/ControlTop/TopUI/DynamicCenterContainer/GridContainer"]
 layout_mode = 2

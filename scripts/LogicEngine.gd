@@ -67,7 +67,7 @@ class TileImprovement:
 
 class WormholeImprovement extends TileImprovement:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i):
-		var ident = Map.AtlasIdent.new(8, Vector2i(0,1))
+		var ident = Map.AtlasIdent.new(8, Vector2i(1,1))
 		super(in_le, in_tile_map, in_base, in_location, ident)
 
 	func isWormhole() -> bool:
@@ -119,6 +119,9 @@ class Base:
 		le.map.getTileVec(location).owned_by_base = self
 		for tile in tiles_inside:
 			le.map.getTileVec(tile).owned_by_base = self
+
+	func creditsPerTurn() -> int:
+		return level + 2
 
 	func hasSpacedock():
 		for i in improvements:
@@ -177,6 +180,9 @@ class Base:
 			population_bar.setPopulation(population)
 			base_coord = Vector2i(level-1, 0)
 			tile_map.updateCity(self)
+
+		tile_map.drawCity(self)
+		le.updatePlusEnergy()
 
 	func calculateBorder(distance : int = 1):
 		tiles_inside = calculateBorderImpl([location], 1, distance)
@@ -668,6 +674,7 @@ func buildCity(unit_location : Vector2i):
 				p.bases.append(base)
 				tile_map.drawCity(base)
 				break
+	updatePlusEnergy()
 
 func moveUnit(unit : Unit, unit_location : Vector2i, new_location : Vector2i):
 	unit.changeLocation(new_location)
@@ -694,3 +701,17 @@ func _on_turn_complete_button_pressed():
 			u.moved_counter = 0
 			u.attack_counter = 0
 			tile_map.drawUnit(u)
+	var total_credits_label = get_parent().find_child("EnergyCreditsField") as Label
+	var total_credit_turn : int = 0
+	for p in players:
+		for b in p.bases:
+			total_credit_turn += b.creditsPerTurn()
+	total_credits_label.set_text(str(int(total_credits_label.get_text()) + total_credit_turn))
+
+func updatePlusEnergy():
+	var plus_credits_label = get_parent().find_child("EnergyPlus") as Label
+	var total_credit_turn : int = 0
+	for p in players:
+		for b in p.bases:
+			total_credit_turn += b.creditsPerTurn()
+	plus_credits_label.set_text("+" + str(int(total_credit_turn)))
