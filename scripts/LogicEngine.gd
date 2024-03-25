@@ -269,6 +269,7 @@ class Unit:
 			return moved_counter == 0 and attack_counter == 0
 	
 	func canAttack() -> bool:
+		print("canAttack: attack=", attack_counter, " moved=", moved_counter)
 		if abilities.hasDash():
 			return attack_counter == 0
 		else:
@@ -380,11 +381,11 @@ class Unit:
 		abilities.max_hp = hp
 
 	func attack(tile : Vector2i):
-		attack_counter += 1
 		var defending_unit = le.map.getTileVec(tile).unit
 		assert(defending_unit != null)
 
 func unitAttack(attacking : Unit, defending : Unit):
+	attacking.attack_counter += 1
 	assert(attacking != null)
 	assert(defending != null)
 	var attackForce : float = attacking.abilities.attack * (float(attacking.abilities.hp) / attacking.abilities.max_hp)
