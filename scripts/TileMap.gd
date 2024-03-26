@@ -6,6 +6,8 @@ class_name IsoTileMap
 @onready var map : Map = get_parent().get_node("Map")
 @onready var label_holder : Node2D = get_node("LabelHolder")
 @onready var sprite_holder : Node2D = get_node("SpriteHolder")
+@onready var camera : Camera2D = get_parent().find_child("Camera2D")
+@onready var characterbody : CharacterBody2D = get_parent().find_child("CharacterBody2D")
 
 const unit_tile_set : int = 8
 var width : int = 200
@@ -190,6 +192,45 @@ func _unhandled_input(event):
 			var map_pos = local_to_map(local_pos)
 			print("global:, ", global_pos, ", local: ", local_pos, ", map: ", map_pos)
 			selectCell(map_pos)
+
+	if event is InputEventScreenTouch:
+		_handle_touch(event)
+	elif event is InputEventScreenDrag:
+		_handle_drag(event)
+	elif event is InputEventMagnifyGesture:
+		camera.set_zoom(Vector2(camera.zoom.x * event.factor, camera.zoom.y * event.factor))
+	elif event is InputEventPanGesture:
+		var local_delta = event.delta * 50
+		characterbody.set_position(Vector2(characterbody.get_position().x + local_delta.x, characterbody.get_position().y + local_delta.y))
+
+var start_zoom: Vector2
+var start_dist: float
+var touch_points: Dictionary = {}
+var start_angle: float
+var current_angle: float
+
+func _handle_touch(event: InputEventScreenTouch):
+	if event.pressed:
+		touch_points[event.index] = event.position
+	else:
+		touch_points.erase(event.index)
+
+func _handle_drag(event: InputEventScreenDrag):
+	if touch_points.size() == 2:
+		# Find the index of the not moving
+		var pivot_index = 1 if event.index == 0 else 0
+
+		# get the 3 point involved
+		var pivot_point: Vector2 = touch_points[pivot_index]
+		var old_point: Vector2 = touch_points[event.index]
+		var new_point: Vector2 = event.position
+
+		var old_vector: Vector2 = old_point - pivot_point
+		var new_vector: Vector2 = new_point - pivot_point
+		
+		var delta_scale = new_vector.length() / old_vector.length()
+		camera.set_zoom(Vector2(camera.get_zoom().x * delta_scale, camera.get_zoom().y * delta_scale))
+		touch_points[event.index] = new_point
 
 const unit_set : int = 8
 const unit_set_selected : int = 10

@@ -54,6 +54,7 @@ class Circle:
 	var y1 : int
 	var y2 : int
 	var planet = 0
+	var created_crater = false
 
 	func getSquareLen(rad : float) -> float:
 		return sqrt(2) * rad
@@ -193,31 +194,44 @@ func _ready():
 					tile.type = TileTypeEnum.ATMOSPHERE
 					tile.atlas = AtlasIdent.new(0, Vector2i(4,0))
 
-	var created_crater = false
 	for x in width:
 		for y in height:
-			if not created_crater:
-				var tile = getTileXY(x, y)
-				for c in circles:
-					if c.inSquare(Vector2i(x,y)):
-						#print("planet=" + str(c.planet) + ", x=", str(x), ", y=", str(y))
-						var alt = altitude.get_noise_2d(float(x)*50.0, float(y)*50.0)*10
-						var mountain = alt > 1
+			var tile = getTileXY(x, y)
+			for c in circles:
+				if c.inSquare(Vector2i(x,y)) and not c.created_crater:
+					#print("planet=" + str(c.planet) + ", x=", str(x), ", y=", str(y))
+					var alt = altitude.get_noise_2d(float(x)*50.0, float(y)*50.0)*10
+					var mountain = alt > 1
 
-						if c.planet == 0:
-							pass
-						elif c.planet == 1:
-							if tile.type == TileTypeEnum.LAND and getTileXY(x-1, y).type == TileTypeEnum.LAND and getTileXY(x, y-1).type == TileTypeEnum.LAND and getTileXY(x-1, y-1).type == TileTypeEnum.LAND:
-								if borderAtmosphere(tile.getXY()) or borderAtmosphere(Vector2i(x-1, y)) or borderAtmosphere(Vector2i(x, y-1)) or borderAtmosphere(Vector2i(x-1, y-1)):
-									pass
-								else:
-									tile.atlas = AtlasIdent.new(15, Vector2i(6,0))
-									getTileXY(x-1, y).atlas = AtlasIdent.new(15, Vector2i(4,0))
-									getTileXY(x, y-1).atlas = AtlasIdent.new(15, Vector2i(3,0))
-									getTileXY(x-1, y-1).atlas = AtlasIdent.new(15, Vector2i(2,0))
-									created_crater = true
-						else:
-							print("ERROR")
+					if c.planet == 0:
+						if tile.type == TileTypeEnum.LAND and getTileXY(x-1, y).type == TileTypeEnum.LAND and getTileXY(x, y-1).type == TileTypeEnum.LAND and getTileXY(x-1, y-1).type == TileTypeEnum.LAND:
+							#if borderAtmosphere(tile.getXY()) or borderAtmosphere(Vector2i(x-1, y)) or borderAtmosphere(Vector2i(x, y-1)) or borderAtmosphere(Vector2i(x-1, y-1)):
+							#	pass
+							#else:
+							tile.atlas = AtlasIdent.new(20, Vector2i(5,0))
+							getTileXY(x-1, y).atlas = AtlasIdent.new(20, Vector2i(4,0))
+							getTileXY(x, y-1).atlas = AtlasIdent.new(20, Vector2i(3,0))
+							getTileXY(x-1, y-1).atlas = AtlasIdent.new(20, Vector2i(2,0))
+							
+							if getTileXY(x+1, y).type == TileTypeEnum.LAND and getTileXY(x+1, y-1).type == TileTypeEnum.LAND:
+								getTileXY(x+1, y).atlas = AtlasIdent.new(20, Vector2i(5,0))
+								getTileXY(x+1, y-1).atlas = AtlasIdent.new(20, Vector2i(3,0))
+
+								getTileXY(x, y-1).atlas = AtlasIdent.new(20, Vector2i(0,0))
+								tile.atlas = AtlasIdent.new(20, Vector2i(0,1))
+							c.created_crater = true
+					elif c.planet == 1:
+						if tile.type == TileTypeEnum.LAND and getTileXY(x-1, y).type == TileTypeEnum.LAND and getTileXY(x, y-1).type == TileTypeEnum.LAND and getTileXY(x-1, y-1).type == TileTypeEnum.LAND:
+							if borderAtmosphere(tile.getXY()) or borderAtmosphere(Vector2i(x-1, y)) or borderAtmosphere(Vector2i(x, y-1)) or borderAtmosphere(Vector2i(x-1, y-1)):
+								pass
+							else:
+								tile.atlas = AtlasIdent.new(15, Vector2i(6,0))
+								getTileXY(x-1, y).atlas = AtlasIdent.new(15, Vector2i(4,0))
+								getTileXY(x, y-1).atlas = AtlasIdent.new(15, Vector2i(3,0))
+								getTileXY(x-1, y-1).atlas = AtlasIdent.new(15, Vector2i(2,0))
+								c.created_crater = true
+					else:
+						print("ERROR")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
