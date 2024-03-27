@@ -511,7 +511,7 @@ func selectCell(tile : Vector2i):
 							selection.in_wormhole = true
 							selection.unit_wormhole_moves = wormhole_moves
 							print("valid moves",selection.unit_wormhole_moves)
-							set_layer_modulate(terrain_layer_id, Color(0.3,0.3,0.3,0.8))
+							set_layer_modulate(terrain_layer_id, Color(0.3,0.3,0.3,1))
 
 							for move in wormhole_moves:
 								set_cell(selection_layer, move, 9, Vector2i(3,0), 0)

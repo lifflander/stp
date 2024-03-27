@@ -130,6 +130,8 @@ class Base:
 		return t
 
 	func setupSelectBaseDiaglog(ui : BaseSelectUI):
+		ui.get_parent().find_child("ControlBottom").set_visible(false)
+		ui.get_parent().find_child("ControlTop").set_visible(false)
 		var city_name : Label = ui.find_child("CityName")
 		city_name.set_text(name)
 
@@ -176,6 +178,8 @@ class Base:
 
 	func _back_button_pressed(ui : BaseSelectUI):
 		ui.set_visible(false)
+		ui.get_parent().find_child("ControlBottom").set_visible(true)
+		ui.get_parent().find_child("ControlTop").set_visible(true)
 		
 	func _train_button_pressed(ui : BaseSelectUI):
 		var unit_list : ItemList = ui.find_child("UnitListItem")
@@ -189,6 +193,8 @@ class Base:
 			tile_map.drawUnit(u)
 			tile_map.selection.times += 1
 		ui.set_visible(false)
+		ui.get_parent().find_child("ControlBottom").set_visible(true)
+		ui.get_parent().find_child("ControlTop").set_visible(true)
 
 	func _unit_item_list_changed(index : int, ui : BaseSelectUI):
 		print("changed: ", index)
