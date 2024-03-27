@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=39 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=37 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Texture2D" uid="uid://b3bhoe2tb63dy" path="res://assets/tilesets/Atmosphere_1.png" id="1_o4mdy"]
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
@@ -14,7 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://4sn06fsj01xw" path="res://assets/tilesets/Buildings_Overlay_2.png" id="8_geh3v"]
 [ext_resource type="Texture2D" uid="uid://bfi2wkiec7kl0" path="res://assets/tilesets/Mars_Tileset_2.png" id="8_iwov0"]
 [ext_resource type="Texture2D" uid="uid://cdc1gibsk56aa" path="res://assets/tilesets/Square_Crater_Mars_2.png" id="9_3gtv2"]
-[ext_resource type="Texture2D" uid="uid://vb88hl7ew23i" path="res://assets/tilesets/CircularCrater_Tiles_1.png" id="10_tgtjq"]
 [ext_resource type="Texture2D" uid="uid://cfnrp8sjq8t2n" path="res://assets/tilesets/Ice_Terrain_Crater_Tileset.png" id="12_j6vov"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_74qju"]
@@ -206,6 +205,8 @@ texture_region_size = Vector2i(480, 382)
 4:0/0 = 0
 5:0/0 = 0
 6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yrrxs"]
 resource_name = "UnitSetDisabled"
@@ -290,19 +291,6 @@ texture_region_size = Vector2i(473, 385)
 2:0/0 = 0
 3:0/0 = 0
 4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d70ly"]
-texture = ExtResource("10_tgtjq")
-texture_region_size = Vector2i(480, 380)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-0:1/0 = 0
 5:0/0 = 0
 6:0/0 = 0
 7:0/0 = 0
@@ -508,7 +496,6 @@ sources/14 = SubResource("TileSetAtlasSource_hhd54")
 sources/16 = SubResource("TileSetAtlasSource_yrrxs")
 sources/17 = SubResource("TileSetAtlasSource_o36dl")
 sources/18 = SubResource("TileSetAtlasSource_iqyn1")
-sources/19 = SubResource("TileSetAtlasSource_d70ly")
 sources/15 = SubResource("TileSetAtlasSource_h1qaa")
 sources/20 = SubResource("TileSetAtlasSource_65qvr")
 pattern_0 = SubResource("TileMapPattern_74qju")

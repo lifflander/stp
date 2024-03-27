@@ -20,6 +20,8 @@ class SelectionState:
 	var has_unit_selected : bool = false
 	var unit_valid_moves : Array[Vector2i]
 	var unit_valid_attacks : Array[Vector2i]
+	var unit_wormhole_moves : Array[Vector2i]
+	var in_wormhole = false
 
 	func _init(in_map : Map):
 		map = in_map
@@ -459,13 +461,32 @@ func unselectCell(tile : Vector2i):
 			line.set_visible(false)
 
 func selectCell(tile : Vector2i):
+	if selection.in_wormhole and not (tile in selection.unit_wormhole_moves):
+		return
+	
 	if selection.has_unit_selected:
-		print("Here")
 		var elm = map.getTileVec(selection.getTile())
 		var unit = elm.unit
-		
+
 		if unit:
-			if unit.canMove():
+			print("has unit")
+			if unit.canMove() or selection.in_wormhole:
+
+				if tile in selection.unit_wormhole_moves:
+					undrawUnit(unit, unit.location, false)
+					var tween = animateUnit(unit, selection.getTile(), tile)
+					elm.unit = null
+
+					var do_move = func do_move_impl():
+						logic_engine.moveUnit(unit, selection.getTile(), tile)
+
+					tween.tween_callback(do_move)
+
+					selection.in_wormhole = false
+					set_layer_modulate(terrain_layer_id, Color(1,1,1,1))
+					selection.unit_wormhole_moves = []
+					tile = Vector2i(-1,-1)
+				
 				var valid_moves = selection.unit_valid_moves
 				if tile in valid_moves:
 					var into_wormhole : bool = false
@@ -475,20 +496,39 @@ func selectCell(tile : Vector2i):
 							if i.location == tile and i.isWormhole():
 								into_wormhole = true
 
+					var wormhole_moves : Array[Vector2i] = []
 					if into_wormhole:
 						print("into wormhole")
 
-					print("moving to tile: ", tile)
-					undrawUnit(unit, unit.location, false)
-					var tween = animateUnit(unit, selection.getTile(), tile)
-					elm.unit = null
+						for p in logic_engine.players:
+							for u in p.units:
+								if u is LogicEngine.WormholeUnit:
+									var loc_array : Array[Vector2i] = [u.location]
+									var worm_moves = unit.getValidMovesImpl(loc_array)
+									wormhole_moves.append_array(worm_moves)
 
-					var do_move = func do_move_impl():
-						logic_engine.moveUnit(unit, selection.getTile(), tile)
+						if wormhole_moves.size() > 0:
+							selection.in_wormhole = true
+							selection.unit_wormhole_moves = wormhole_moves
+							print("valid moves",selection.unit_wormhole_moves)
+							set_layer_modulate(terrain_layer_id, Color(0.3,0.3,0.3,0.8))
 
-					tween.tween_callback(do_move)
-					
-					tile = Vector2i(-1,-1)
+							for move in wormhole_moves:
+								set_cell(selection_layer, move, 9, Vector2i(3,0), 0)
+							return
+
+					else:
+						print("moving to tile: ", tile)
+						undrawUnit(unit, unit.location, false)
+						var tween = animateUnit(unit, selection.getTile(), tile)
+						elm.unit = null
+
+						var do_move = func do_move_impl():
+							logic_engine.moveUnit(unit, selection.getTile(), tile)
+
+						tween.tween_callback(do_move)
+
+						tile = Vector2i(-1,-1)
 
 					for move in valid_moves:
 						set_cell(selection_layer, move, -1, Vector2i(3,0), 0)

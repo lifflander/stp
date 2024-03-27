@@ -161,6 +161,7 @@ class Base:
 		]
 
 		var unit_list : ItemList = ui.find_child("UnitListItem")
+		unit_list.clear()
 		for u in units:
 			var item_id = unit_list.add_item(u.getName(), makeTextureForButton(u.getSmallImage()))
 			unit_list.set_item_metadata(item_id, u)
@@ -169,35 +170,24 @@ class Base:
 		
 		var close_button : Button = ui.find_child("CloseButton")
 		close_button.pressed.connect(_back_button_pressed.bind(ui))
-		#var unit_label = ui.find_child("UnitLabel", true) as Label
-		#unit_label.set_text(getName())
-		#var cost_label = ui.find_child("CostLabel", true) as Label
-		#cost_label.set_text(str(credits_cost))
-		#var unit_icon = ui.find_child("UnitIcon", true) as TextureRect
-		#unit_icon.set_texture(tile_map.makeTextureForButton(getSmallImage()))
-		#
-		#var ability_container = ui.find_child("AbilityContainer", true) as HBoxContainer
-		#var spacer_node = ability_container.find_child("Spacer")
-		#for c in ability_container.get_children():
-			#ability_container.remove_child(c)
-		#for ability in abilities.special:
-			#var b : Button = Button.new()
-			#b.set_text(ability.getName())
-			#ability_container.add_child(b)
-		#ability_container.add_child(spacer_node)
-#
-		#var health_value = ui.find_child("HealthValue", true) as Label
-		#health_value.set_text(str(abilities.hp))
-		#var attack_value = ui.find_child("AttackValue", true) as Label
-		#attack_value.set_text(str(abilities.attack))
-		#var defense_value = ui.find_child("DefenseValue", true) as Label
-		#defense_value.set_text(str(abilities.defense))
-		#var movement_value = ui.find_child("MovementValue", true) as Label
-		#movement_value.set_text(str(abilities.distance))
-		#var range_value = ui.find_child("RangeValue", true) as Label
-		#range_value.set_text(str(abilities.range))
+		
+		var train_button : Button = ui.find_child("TrainButton")
+		train_button.pressed.connect(_train_button_pressed.bind(ui))
 
 	func _back_button_pressed(ui : BaseSelectUI):
+		ui.set_visible(false)
+		
+	func _train_button_pressed(ui : BaseSelectUI):
+		var unit_list : ItemList = ui.find_child("UnitListItem")
+		var selected_item = unit_list.get_selected_items()[0]
+		var u : Unit = unit_list.get_item_metadata(selected_item)
+		if u:
+			u.setLocation(location)
+			le.players[0].units.append(u)
+			addSupportedUnit(u)
+			u.setSupportingBase(self)
+			tile_map.drawUnit(u)
+			tile_map.selection.times += 1
 		ui.set_visible(false)
 
 	func _unit_item_list_changed(index : int, ui : BaseSelectUI):
@@ -231,6 +221,14 @@ class Base:
 		var range_bar : ChunkedProgressBar = ui.find_child("RangeBar")
 		range_bar.num_chunks = max_range
 		range_bar.num_chunks_filled = u.abilities.range
+
+		var ability_container : HFlowContainer = ui.find_child("AbilitiesContainer")
+		for c in ability_container.get_children():
+			ability_container.remove_child(c)
+		for ability in u.abilities.special:
+			var b : Button = Button.new()
+			b.set_text(ability.getName())
+			ability_container.add_child(b)
 
 	func creditsPerTurn() -> int:
 		return level + 2
