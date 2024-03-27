@@ -120,6 +120,118 @@ class Base:
 		for tile in tiles_inside:
 			le.map.getTileVec(tile).owned_by_base = self
 
+	func makeTextureForButton(ident : Map.AtlasIdent) -> AtlasTexture:
+		var source = tile_map.tile_set.get_source(ident.source_id) as TileSetAtlasSource
+		#var origin = source.get_tile_data(ident.atlas_coord, 0).texture_origin
+		var texture = source.get_texture()
+		var t : AtlasTexture = AtlasTexture.new()
+		t.set_atlas(texture)
+		t.set_region(source.get_tile_texture_region(ident.atlas_coord))
+		return t
+
+	func setupSelectBaseDiaglog(ui : BaseSelectUI):
+		var city_name : Label = ui.find_child("CityName")
+		city_name.set_text(name)
+
+		var pop_bar : ChunkedProgressBar = ui.find_child("PopulationBar")
+		pop_bar.num_chunks = level+1
+		pop_bar.num_chunks_filled = population
+
+		var city_level : Label = ui.find_child("CityLevel")
+		city_level.set_text("Level " + str(level))
+
+		var cred_per_turn : Label = ui.find_child("CreditsPerTurn")
+		cred_per_turn.set_text(str(creditsPerTurn()))
+		
+		var city_image : TextureRect = ui.find_child("CityImage")
+		city_image.set_texture(makeTextureForButton(Map.AtlasIdent.new(base_source_id, base_coord)))
+
+		var units : Array[Unit] = [
+			ColonypodUnit.new(le, tile_map),
+			SpacemanUnit.new(le, tile_map),
+			NukeUnit.new(le, tile_map),
+			HoverSaberUnit.new(le, tile_map),
+			SatelliteUnit.new(le, tile_map),
+			TankUnit.new(le, tile_map),
+			HackerUnit.new(le, tile_map),
+			MissileUnit.new(le, tile_map),
+			WormholeUnit.new(le, tile_map),
+			SpaceshipUnit.new(le, tile_map),
+			CapitalShipUnit.new(le, tile_map)
+		]
+
+		var unit_list : ItemList = ui.find_child("UnitListItem")
+		for u in units:
+			var item_id = unit_list.add_item(u.getName(), makeTextureForButton(u.getSmallImage()))
+			unit_list.set_item_metadata(item_id, u)
+
+		unit_list.item_selected.connect(_unit_item_list_changed.bind(ui))
+		
+		var close_button : Button = ui.find_child("CloseButton")
+		close_button.pressed.connect(_back_button_pressed.bind(ui))
+		#var unit_label = ui.find_child("UnitLabel", true) as Label
+		#unit_label.set_text(getName())
+		#var cost_label = ui.find_child("CostLabel", true) as Label
+		#cost_label.set_text(str(credits_cost))
+		#var unit_icon = ui.find_child("UnitIcon", true) as TextureRect
+		#unit_icon.set_texture(tile_map.makeTextureForButton(getSmallImage()))
+		#
+		#var ability_container = ui.find_child("AbilityContainer", true) as HBoxContainer
+		#var spacer_node = ability_container.find_child("Spacer")
+		#for c in ability_container.get_children():
+			#ability_container.remove_child(c)
+		#for ability in abilities.special:
+			#var b : Button = Button.new()
+			#b.set_text(ability.getName())
+			#ability_container.add_child(b)
+		#ability_container.add_child(spacer_node)
+#
+		#var health_value = ui.find_child("HealthValue", true) as Label
+		#health_value.set_text(str(abilities.hp))
+		#var attack_value = ui.find_child("AttackValue", true) as Label
+		#attack_value.set_text(str(abilities.attack))
+		#var defense_value = ui.find_child("DefenseValue", true) as Label
+		#defense_value.set_text(str(abilities.defense))
+		#var movement_value = ui.find_child("MovementValue", true) as Label
+		#movement_value.set_text(str(abilities.distance))
+		#var range_value = ui.find_child("RangeValue", true) as Label
+		#range_value.set_text(str(abilities.range))
+
+	func _back_button_pressed(ui : BaseSelectUI):
+		ui.set_visible(false)
+
+	func _unit_item_list_changed(index : int, ui : BaseSelectUI):
+		print("changed: ", index)
+		var max_health = 20
+		var max_defense = 5
+		var max_attack = 5
+		var max_movement = 4
+		var max_range = 3
+		
+		var unit_list : ItemList = ui.find_child("UnitListItem")
+		var u : Unit = unit_list.get_item_metadata(index)
+		var unit_level : TabBar = ui.find_child("UnitLevel")
+		if not u.isAbleToAttack():
+			unit_level.set_current_tab(0)
+		unit_level.set_tab_disabled(0, not u.isAbleToAttack())
+		unit_level.set_tab_disabled(1, not u.isAbleToAttack())
+		unit_level.set_tab_disabled(2, not u.isAbleToAttack())
+		var health_bar : ChunkedProgressBar = ui.find_child("HealthBar")
+		health_bar.num_chunks = max_health
+		health_bar.num_chunks_filled = u.abilities.hp
+		var defense_bar : ChunkedProgressBar = ui.find_child("DefenseBar")
+		defense_bar.num_chunks = max_defense
+		defense_bar.num_chunks_filled = u.abilities.defense
+		var attack_bar : ChunkedProgressBar = ui.find_child("AttackBar")
+		attack_bar.num_chunks = max_attack
+		attack_bar.num_chunks_filled = u.abilities.attack
+		var movement_bar : ChunkedProgressBar = ui.find_child("MovementBar")
+		movement_bar.num_chunks = max_movement
+		movement_bar.num_chunks_filled = u.abilities.distance
+		var range_bar : ChunkedProgressBar = ui.find_child("RangeBar")
+		range_bar.num_chunks = max_range
+		range_bar.num_chunks_filled = u.abilities.range
+
 	func creditsPerTurn() -> int:
 		return level + 2
 
@@ -382,6 +494,9 @@ class Unit:
 	func getSmallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(-1, Vector2i(-1,-1))
 
+	func isAbleToAttack() -> bool:
+		return true
+
 	func setHP(hp : int):
 		abilities.hp = hp
 		abilities.max_hp = hp
@@ -480,6 +595,9 @@ class ColonypodUnit extends Unit:
 	func getSmallImage() -> Map.AtlasIdent:
 		return smallImage()
 
+	func isAbleToAttack() -> bool:
+		return false
+
 class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
@@ -515,6 +633,9 @@ class SatelliteUnit extends Unit:
 	func getName():
 		return "Satellite"
 
+	func isAbleToAttack() -> bool:
+		return false
+
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(7,0))
 
@@ -527,7 +648,7 @@ class SatelliteUnit extends Unit:
 class WormholeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
-		var unit_coords : Vector2i = Vector2i(2, 1)
+		var unit_coords : Vector2i = Vector2i(3, 1)
 		setHP(10)
 		abilities.distance = 2
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
@@ -539,7 +660,10 @@ class WormholeUnit extends Unit:
 		return "Wormhole"
 
 	static func smallImage() -> Map.AtlasIdent:
-		return Map.AtlasIdent.new(13, Vector2i(2,1))
+		return Map.AtlasIdent.new(13, Vector2i(3,1))
+
+	func isAbleToAttack() -> bool:
+		return false
 
 	func getSmallImage() -> Map.AtlasIdent:
 		return smallImage()
@@ -644,6 +768,9 @@ class HackerUnit extends Unit:
 
 	func getName():
 		return "Hacker"
+
+	func isAbleToAttack() -> bool:
+		return true
 
 	static func smallImage() -> Map.AtlasIdent:
 		return Map.AtlasIdent.new(13, Vector2i(1,2))

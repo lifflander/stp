@@ -351,28 +351,32 @@ func setUIForBase(base : LogicEngine.Base):
 	dcrc.add_child(new_label)
 #
 	var loc = base.location
-	
-	if base.canSupportMoreUnits():
-		var units : Array[LogicEngine.Unit] = [
-			LogicEngine.ColonypodUnit.new(logic_engine, self),
-			LogicEngine.SpacemanUnit.new(logic_engine, self),
-			LogicEngine.NukeUnit.new(logic_engine, self),
-			LogicEngine.HoverSaberUnit.new(logic_engine, self),
-			LogicEngine.SatelliteUnit.new(logic_engine, self),
-			LogicEngine.TankUnit.new(logic_engine, self),
-			LogicEngine.HackerUnit.new(logic_engine, self),
-			LogicEngine.MissileUnit.new(logic_engine, self)
-		]
 
-		if base.hasSpacedock():
-			units.append(LogicEngine.WormholeUnit.new(logic_engine, self))
-			units.append(LogicEngine.SpaceshipUnit.new(logic_engine, self))
-			units.append(LogicEngine.CapitalShipUnit.new(logic_engine, self))
+	var base_select_ui = get_parent().find_child("BaseSelectUI") as BaseSelectUI
+	base.setupSelectBaseDiaglog(base_select_ui)
+	base_select_ui.set_visible(true)
 
-		for u in units:
-			var u1 = BuildUnit.new(loc, logic_engine, self, base, u)
-			u1.set_texture_normal(makeTextureForButton(u.getSmallImage()))
-			dcrc.add_child(u1)
+	#if base.canSupportMoreUnits():
+		#var units : Array[LogicEngine.Unit] = [
+			#LogicEngine.ColonypodUnit.new(logic_engine, self),
+			#LogicEngine.SpacemanUnit.new(logic_engine, self),
+			#LogicEngine.NukeUnit.new(logic_engine, self),
+			#LogicEngine.HoverSaberUnit.new(logic_engine, self),
+			#LogicEngine.SatelliteUnit.new(logic_engine, self),
+			#LogicEngine.TankUnit.new(logic_engine, self),
+			#LogicEngine.HackerUnit.new(logic_engine, self),
+			#LogicEngine.MissileUnit.new(logic_engine, self)
+		#]
+#
+		#if base.hasSpacedock():
+			#units.append(LogicEngine.WormholeUnit.new(logic_engine, self))
+			#units.append(LogicEngine.SpaceshipUnit.new(logic_engine, self))
+			#units.append(LogicEngine.CapitalShipUnit.new(logic_engine, self))
+#
+		#for u in units:
+			#var u1 = BuildUnit.new(loc, logic_engine, self, base, u)
+			#u1.set_texture_normal(makeTextureForButton(u.getSmallImage()))
+			#dcrc.add_child(u1)
 
 func setUIForSquare(tile : Map.Tile):
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
@@ -615,7 +619,7 @@ func drawCity(base : LogicEngine.Base):
 
 	var num_credits : Label = Label.new()
 	num_credits.set_text(str(base.creditsPerTurn()))
-	num_credits.set_theme(load("res://SpacemanTheme.tres"))
+	num_credits.set_theme(load("res://selected-theme.tres"))
 
 	new_pc.add_child(num_credits)
 

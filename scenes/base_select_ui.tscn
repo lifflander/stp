@@ -39,7 +39,7 @@ size_flags_horizontal = 3
 [node name="CityInfo" type="HBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/CityInfo"]
+[node name="CityImage" type="TextureRect" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/CityInfo"]
 layout_mode = 2
 texture = ExtResource("2_34j7b")
 
@@ -105,7 +105,7 @@ theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
 
-[node name="HealthBar" type="ProgressBar" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/CityInfo/VBoxContainer/MarginContainer2"]
+[node name="PopulationBar" type="ProgressBar" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/CityInfo/VBoxContainer/MarginContainer2"]
 custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -148,7 +148,7 @@ theme_override_constants/margin_bottom = 25
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/MarginContainer/HBoxContainer2/VBoxContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="TabBar" type="TabBar" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/MarginContainer/HBoxContainer2/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="UnitLevel" type="TabBar" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/MarginContainer/HBoxContainer2/VBoxContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 100)
 layout_mode = 2
 size_flags_horizontal = 3

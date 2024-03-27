@@ -1,6 +1,10 @@
 class_name ChunkedProgressBar extends ProgressBar
 
-@export var num_chunks = 3
+@export var num_chunks = 3:
+	get: return num_chunks
+	set(value):
+		num_chunks = value
+		drawChunks()
 @export var num_chunks_filled = 1:
 	get: return num_chunks_filled
 	set(value):

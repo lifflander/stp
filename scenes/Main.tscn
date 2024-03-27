@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cynr1206nn872"]
+[gd_scene load_steps=16 format=3 uid="uid://cynr1206nn872"]
 
 [ext_resource type="Script" path="res://scripts/LogicEngine.gd" id="1_4bj3c"]
 [ext_resource type="Script" path="res://scripts/Map.gd" id="2_84c1i"]
@@ -10,6 +10,8 @@
 [ext_resource type="Theme" uid="uid://byrrjw305mtni" path="res://basic-theme.tres" id="8_vuyc3"]
 [ext_resource type="Texture2D" uid="uid://bbxuh07ukj522" path="res://assets/tilesets/Energy Credit_2_Small.png" id="9_hqsjv"]
 [ext_resource type="PackedScene" uid="uid://c1cq240t7nevy" path="res://scenes/unit_select_ui.tscn" id="10_1bjno"]
+[ext_resource type="PackedScene" uid="uid://df4ald2q4exg" path="res://scenes/base_select_ui.tscn" id="11_id4gb"]
+[ext_resource type="Script" path="res://scripts/BaseSelectUI.gd" id="12_gu8wn"]
 
 [sub_resource type="Environment" id="Environment_qo0ox"]
 background_mode = 3
@@ -321,5 +323,9 @@ text = "2
 
 [node name="UnitSelectUI" parent="UI" instance=ExtResource("10_1bjno")]
 visible = false
+
+[node name="BaseSelectUI" parent="UI" instance=ExtResource("11_id4gb")]
+visible = false
+script = ExtResource("12_gu8wn")
 
 [connection signal="pressed" from="UI/ControlBottom/CenterContainer/HBoxContainer/TurnCompleteButton" to="LogicEngine" method="_on_turn_complete_button_pressed"]
