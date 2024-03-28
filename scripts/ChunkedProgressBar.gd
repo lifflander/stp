@@ -42,6 +42,10 @@ func drawChunks():
 func _ready():
 	drawChunks()
 
+var first_time = true
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	drawChunks()
+	if first_time:
+		drawChunks()
+		first_time = false
