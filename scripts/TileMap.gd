@@ -823,7 +823,7 @@ func drawUnit(unit : LogicEngine.Unit):
 		unit.unit_health_label.label_settings = load("res://unit-hp-label-settings.tres")
 		label_holder.add_child(unit.unit_health_label)
 
-	unit.unit_health_label.text = str(unit.abilities.hp)
+	unit.unit_health_label.text = str(unit.getHP())
 
 	var label_pos = map_to_local(unit.location)
 	label_pos.x -= 180

@@ -151,15 +151,14 @@ class Base:
 		city_image.set_texture(makeTextureForButton(Map.AtlasIdent.new(base_source_id, base_coord)))
 
 		var units : Array[Unit] = [
-			ColonypodUnit.new(le, tile_map),
 			SpacemanUnit.new(le, tile_map),
+			ColonypodUnit.new(le, tile_map),
 			NukeUnit.new(le, tile_map),
 			HoverSaberUnit.new(le, tile_map),
 			SatelliteUnit.new(le, tile_map),
 			TankUnit.new(le, tile_map),
 			HackerUnit.new(le, tile_map),
 			MissileUnit.new(le, tile_map),
-			WormholeUnit.new(le, tile_map),
 			SpaceshipUnit.new(le, tile_map),
 			CapitalShipUnit.new(le, tile_map)
 		]
@@ -171,12 +170,43 @@ class Base:
 			unit_list.set_item_metadata(item_id, u)
 
 		unit_list.item_selected.connect(_unit_item_list_changed.bind(ui))
-		
+
+		var unit_level : TabBar = ui.find_child("UnitLevel")
+		unit_level.tab_changed.connect(_level_tab_changed.bind(ui))
+
 		var close_button : Button = ui.find_child("CloseButton")
 		close_button.pressed.connect(_back_button_pressed.bind(ui))
-		
+
 		var train_button : Button = ui.find_child("TrainButton")
 		train_button.pressed.connect(_train_button_pressed.bind(ui))
+
+	const max_health = 20
+	const max_defense = 5
+	const max_attack = 5
+	const max_movement = 4
+	const max_range = 3
+
+	func _level_tab_changed(tab : int, ui : BaseSelectUI):
+		var unit_list : ItemList = ui.find_child("UnitListItem")
+		if unit_list.is_anything_selected():
+			var selected_item = unit_list.get_selected_items()[0]
+			var u : Unit = unit_list.get_item_metadata(selected_item)
+			if u:
+				var health_bar : ChunkedProgressBar = ui.find_child("HealthBar")
+				health_bar.num_chunks = max_health
+				health_bar.num_chunks_filled = u.getHP(tab)
+				var defense_bar : ChunkedProgressBar = ui.find_child("DefenseBar")
+				defense_bar.num_chunks = max_defense
+				defense_bar.num_chunks_filled = u.getDefense(tab)
+				var attack_bar : ChunkedProgressBar = ui.find_child("AttackBar")
+				attack_bar.num_chunks = max_attack
+				attack_bar.num_chunks_filled = u.getAttack(tab)
+				var movement_bar : ChunkedProgressBar = ui.find_child("MovementBar")
+				movement_bar.num_chunks = max_movement
+				movement_bar.num_chunks_filled = u.getDistance(tab)
+				var range_bar : ChunkedProgressBar = ui.find_child("RangeBar")
+				range_bar.num_chunks = max_range
+				range_bar.num_chunks_filled = u.getRange(tab)
 
 	func _back_button_pressed(ui : BaseSelectUI):
 		ui.set_visible(false)
@@ -202,35 +232,33 @@ class Base:
 
 	func _unit_item_list_changed(index : int, ui : BaseSelectUI):
 		print("changed: ", index)
-		var max_health = 20
-		var max_defense = 5
-		var max_attack = 5
-		var max_movement = 4
-		var max_range = 3
-		
+
+		var unit_level : TabBar = ui.find_child("UnitLevel")
+		var tab = unit_level.get_current_tab()
+
 		var unit_list : ItemList = ui.find_child("UnitListItem")
 		var u : Unit = unit_list.get_item_metadata(index)
-		var unit_level : TabBar = ui.find_child("UnitLevel")
-		if not u.isAbleToAttack():
-			unit_level.set_current_tab(0)
+
+		#if not u.isAbleToAttack():
+		unit_level.set_current_tab(0)
 		unit_level.set_tab_disabled(0, not u.isAbleToAttack())
 		unit_level.set_tab_disabled(1, not u.isAbleToAttack())
 		unit_level.set_tab_disabled(2, not u.isAbleToAttack())
 		var health_bar : ChunkedProgressBar = ui.find_child("HealthBar")
 		health_bar.num_chunks = max_health
-		health_bar.num_chunks_filled = u.abilities.hp
+		health_bar.num_chunks_filled = u.getHP(tab)
 		var defense_bar : ChunkedProgressBar = ui.find_child("DefenseBar")
 		defense_bar.num_chunks = max_defense
-		defense_bar.num_chunks_filled = u.abilities.defense
+		defense_bar.num_chunks_filled = u.getDefense(tab)
 		var attack_bar : ChunkedProgressBar = ui.find_child("AttackBar")
 		attack_bar.num_chunks = max_attack
-		attack_bar.num_chunks_filled = u.abilities.attack
+		attack_bar.num_chunks_filled = u.getAttack(tab)
 		var movement_bar : ChunkedProgressBar = ui.find_child("MovementBar")
 		movement_bar.num_chunks = max_movement
-		movement_bar.num_chunks_filled = u.abilities.distance
+		movement_bar.num_chunks_filled = u.getDistance(tab)
 		var range_bar : ChunkedProgressBar = ui.find_child("RangeBar")
 		range_bar.num_chunks = max_range
-		range_bar.num_chunks_filled = u.abilities.range
+		range_bar.num_chunks_filled = u.getRange(tab)
 
 		var ability_container : HFlowContainer = ui.find_child("AbilitiesContainer")
 		for c in ability_container.get_children():
@@ -351,7 +379,7 @@ class BounceAbility extends BaseAbility:
 	func getDescription() -> String:
 		return "After moving this unit, you may attack and then you can move it again."
 
-class UnitAbilities:
+class AbilitySet:
 	var distance : int = 1
 	var attack : int = 1
 	var hp : int = 10
@@ -359,7 +387,40 @@ class UnitAbilities:
 	var defense : int = 1
 	var range : int = 1
 
+class UnitAbilities:
+	var green : AbilitySet = AbilitySet.new()
+	var hardened : AbilitySet = AbilitySet.new()
+	var elite : AbilitySet = AbilitySet.new()
+
 	var special : Array[BaseAbility] = []
+
+	func setHP(in_green : int, in_hardened : int = in_green, in_elite : int = in_green):
+		green.hp = in_green
+		green.max_hp = in_green
+		hardened.hp = in_hardened
+		hardened.max_hp = in_hardened
+		elite.hp = in_elite
+		elite.max_hp = in_elite
+
+	func setAttack(in_green : int, in_hardened : int = in_green, in_elite : int = in_green):
+		green.attack = in_green
+		hardened.attack = in_hardened
+		elite.attack = in_elite
+
+	func setDefense(in_green : int, in_hardened : int = in_green, in_elite : int = in_green):
+		green.defense = in_green
+		hardened.defense = in_hardened
+		elite.defense = in_elite
+
+	func setRange(in_green : int, in_hardened : int = in_green, in_elite : int = in_green):
+		green.range = in_green
+		hardened.range = in_hardened
+		elite.range = in_elite
+
+	func setDistance(in_green : int, in_hardened : int = in_green, in_elite : int = in_green):
+		green.distance = in_green
+		hardened.distance = in_hardened
+		elite.distance = in_elite
 
 	func hasDash() -> bool:
 		for ability in special:
@@ -387,6 +448,37 @@ class Unit:
 	var unit_health_label : Label = null
 	var moved_counter = 0
 	var attack_counter = 0
+	var level : int = 0
+
+	func getHP(in_level : int = level):
+		if in_level == 0: return abilities.green.hp
+		elif in_level == 1: return abilities.hardened.hp
+		elif in_level == 2: return abilities.elite.hp
+
+	func getDistance(in_level : int = level):
+		if in_level == 0: return abilities.green.distance
+		elif in_level == 1: return abilities.hardened.distance
+		elif in_level == 2: return abilities.elite.distance
+
+	func getAttack(in_level : int = level):
+		if in_level == 0: return abilities.green.attack
+		elif in_level == 1: return abilities.hardened.attack
+		elif in_level == 2: return abilities.elite.attack
+
+	func getDefense(in_level : int = level):
+		if in_level == 0: return abilities.green.defense
+		elif in_level == 1: return abilities.hardened.defense
+		elif in_level == 2: return abilities.elite.defense
+
+	func getRange(in_level : int = level):
+		if in_level == 0: return abilities.green.range
+		elif in_level == 1: return abilities.hardened.range
+		elif in_level == 2: return abilities.elite.range
+
+	func getMaxHP(in_level : int = level):
+		if in_level == 0: return abilities.green.max_hp
+		elif in_level == 1: return abilities.hardened.max_hp
+		elif in_level == 2: return abilities.elite.max_hp
 
 	func canMove() -> bool:
 		if abilities.hasBounce():
@@ -472,7 +564,7 @@ class Unit:
 					if tile.type in getValidTypes():
 						valid_moves.append(loc_to_check)
 
-		if dist == abilities.distance:
+		if dist == getDistance():
 			return valid_moves
 		else:
 			return getValidMovesImpl(valid_moves, dist+1)
@@ -491,7 +583,7 @@ class Unit:
 					units.append(tile.unit)
 				valid_moves.append(loc_to_check)
 
-		if dist == abilities.range:
+		if dist == getRange():
 			return units
 		else:
 			return getUnitsWithinRangeImpl(valid_moves, dist+1, units)
@@ -504,10 +596,6 @@ class Unit:
 
 	func isAbleToAttack() -> bool:
 		return true
-
-	func setHP(hp : int):
-		abilities.hp = hp
-		abilities.max_hp = hp
 
 	func attack(tile : Vector2i):
 		var defending_unit = le.map.getTileVec(tile).unit
@@ -541,9 +629,9 @@ class SpacemanUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(2, 0)
-		setHP(10)
-		abilities.attack = 2
-		abilities.defense = 2
+		abilities.setHP(10, 15, 20)
+		abilities.setAttack(2)
+		abilities.setDefense(2)
 		abilities.special.append(DashAbility.new())
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
@@ -563,9 +651,9 @@ class TankUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(0, 0)
-		setHP(15)
-		abilities.range = 3
-		abilities.attack = 3
+		abilities.setHP(10, 15, 20)
+		abilities.setRange(3)
+		abilities.setAttack(3)
 		credits_cost = 8
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 	
@@ -585,7 +673,11 @@ class ColonypodUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(4, 0)
-		setHP(5)
+		abilities.setHP(5,5,5)
+		abilities.setAttack(0)
+		abilities.setDefense(1)
+		abilities.setRange(1)
+		abilities.setDistance(1)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func hasBuilder() -> bool:
@@ -610,8 +702,11 @@ class SpaceshipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(5, 0)
-		setHP(20)
-		abilities.distance = 2
+		abilities.setHP(10,15,20)
+		abilities.setAttack(2)
+		abilities.setDefense(1)
+		abilities.setRange(1)
+		abilities.setDistance(2)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 		
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -630,9 +725,11 @@ class SatelliteUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(7, 0)
-		setHP(5)
-		abilities.distance = 2
-		abilities.range = 2
+		abilities.setHP(5,5,5)
+		abilities.setAttack(0)
+		abilities.setDefense(0)
+		abilities.setRange(1)
+		abilities.setDistance(3)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -657,8 +754,11 @@ class WormholeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(3, 1)
-		setHP(10)
-		abilities.distance = 2
+		abilities.setHP(10)
+		abilities.setAttack(0)
+		abilities.setDefense(1)
+		abilities.setRange(1)
+		abilities.setDistance(2)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -680,8 +780,11 @@ class NukeUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(6, 2)
-		setHP(5)
-		abilities.distance = 2
+		abilities.setHP(5)
+		abilities.setAttack(0)
+		abilities.setDefense(0)
+		abilities.setRange(1)
+		abilities.setDistance(3)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -700,8 +803,11 @@ class HoverSaberUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(3, 2)
-		setHP(5)
-		abilities.distance = 2
+		abilities.setHP(10,15,20)
+		abilities.setAttack(2)
+		abilities.setDefense(2)
+		abilities.setRange(1)
+		abilities.setDistance(2)
 		abilities.special.append(BounceAbility.new())
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
@@ -721,10 +827,11 @@ class CapitalShipUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(6, 1)
-		setHP(20)
-		abilities.distance = 2
-		abilities.range = 3
-		abilities.attack = 3
+		abilities.setHP(15,20,25)
+		abilities.setAttack(2)
+		abilities.setDefense(3)
+		abilities.setRange(2)
+		abilities.setDistance(2)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -743,10 +850,11 @@ class MissileUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(7, 1)
-		setHP(10)
-		abilities.distance = 1
-		abilities.range = 3
-		abilities.attack = 1
+		abilities.setHP(10,15,20)
+		abilities.setAttack(5)
+		abilities.setDefense(1)
+		abilities.setRange(4)
+		abilities.setDistance(1)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -765,10 +873,11 @@ class HackerUnit extends Unit:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_location : Vector2i = Vector2i(-1,-1)):
 		var unit_source_id : int = unit_tile_set
 		var unit_coords : Vector2i = Vector2i(1, 2)
-		setHP(10)
-		abilities.distance = 1
-		abilities.range = 1
-		abilities.attack = 1
+		abilities.setHP(10)
+		abilities.setAttack(0)
+		abilities.setDefense(1)
+		abilities.setRange(1)
+		abilities.setDistance(1)
 		super(in_le, in_tile_map, in_location, unit_source_id, unit_coords)
 
 	func getValidTypes() -> Array[Map.TileTypeEnum]:
@@ -785,6 +894,46 @@ class HackerUnit extends Unit:
 
 	func getSmallImage() -> Map.AtlasIdent:
 		return smallImage()
+
+class Tech:
+	var le : LogicEngine
+	var tile_map : IsoTileMap
+
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		le = in_le
+		tile_map = in_tile_map
+
+class Hovering extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
+
+class Space extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
+
+class Mining extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
+
+class Lasers extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
+
+class Diplomacy extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
+
+class Terraforming extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
+
+class Climbing extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
+
+class NuclearEnergy extends Tech:
+	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap):
+		super(in_le, in_tile_map)
 
 var is_initialized : bool = false
 

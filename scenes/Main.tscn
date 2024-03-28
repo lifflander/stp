@@ -83,7 +83,6 @@ rendering_quadrant_size = 30
 format = 2
 layer_0/name = "Base layer"
 layer_0/y_sort_enabled = true
-layer_0/tile_data = PackedInt32Array(-131075, 131092, 0, -131074, 20, 0, -131073, 196628, 0, -65539, 65556, 0, -3, 262164, 0, -2, 20, 1, -65538, 393236, 0, -1, 327700, 0, -65537, 458772, 0, 65529, 131087, 0, 65530, 15, 0, 196601, 262159, 0, 131065, 65551, 0, 196603, 327695, 0, 131066, 393231, 0, 65531, 196623, 0, 131067, 393231, 0, 196602, 393231, 0)
 layer_1/name = "Resources"
 layer_1/y_sort_enabled = true
 layer_1/tile_data = PackedInt32Array()
