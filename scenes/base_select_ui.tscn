@@ -9,9 +9,15 @@
 [node name="BaseSelectUI" type="CanvasLayer"]
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -669.0
+offset_top = -929.5
+offset_right = 669.0
+offset_bottom = 929.5
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_mnyx7")
@@ -122,7 +128,7 @@ theme_override_constants/separation = 40
 alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/GridContainer/VBoxContainer/MarginContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(600, 1000)
+custom_minimum_size = Vector2(400, 1000)
 layout_mode = 2
 horizontal_scroll_mode = 0
 

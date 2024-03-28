@@ -186,7 +186,40 @@ class BuildImprovement extends Button:
 func convertTo1D(idx : Vector2i) -> int:
 	return idx.x * width + idx.y
 
+var inputs_enabled : bool = true
+
+func disableInputs():
+	inputs_enabled = false
+
+func enableInputs():
+	inputs_enabled = true
+
+var input_timer : Timer = Timer.new()
+
 func _unhandled_input(event):
+	if not inputs_enabled:
+		return
+
+	#print("handle: ", event)
+
+	if event is InputEventMouseButton: #not input_timer.is_stopped() and e
+		_handle_input_event(event)
+
+	if event is InputEventScreenDrag:
+		_handle_drag(event)
+	elif event is InputEventMagnifyGesture:
+		camera.set_zoom(Vector2(camera.zoom.x * event.factor, camera.zoom.y * event.factor))
+	elif event is InputEventPanGesture:
+		var local_delta = event.delta * 50
+		characterbody.set_position(Vector2(characterbody.get_position().x + local_delta.x, characterbody.get_position().y + local_delta.y))
+	elif event is InputEventMouseButton:
+		if not event.is_pressed():
+			input_timer.start(0.3)
+			input_timer.timeout.connect(_handle_input_event.bind(event))
+	elif event is InputEventScreenTouch:
+		_handle_touch(event)
+
+func _handle_input_event(event):
 	if event is InputEventMouseButton:
 		if not event.is_pressed():
 			var global_pos = get_global_mouse_position()
@@ -194,16 +227,6 @@ func _unhandled_input(event):
 			var map_pos = local_to_map(local_pos)
 			print("global:, ", global_pos, ", local: ", local_pos, ", map: ", map_pos)
 			selectCell(map_pos)
-
-	if event is InputEventScreenTouch:
-		_handle_touch(event)
-	elif event is InputEventScreenDrag:
-		_handle_drag(event)
-	elif event is InputEventMagnifyGesture:
-		camera.set_zoom(Vector2(camera.zoom.x * event.factor, camera.zoom.y * event.factor))
-	elif event is InputEventPanGesture:
-		var local_delta = event.delta * 50
-		characterbody.set_position(Vector2(characterbody.get_position().x + local_delta.x, characterbody.get_position().y + local_delta.y))
 
 var start_zoom: Vector2
 var start_dist: float
@@ -356,7 +379,6 @@ func setUIForBase(base : LogicEngine.Base):
 
 	var base_select_ui = get_parent().find_child("BaseSelectUI") as BaseSelectUI
 	base.setupSelectBaseDiaglog(base_select_ui)
-	base_select_ui.set_visible(true)
 
 	#if base.canSupportMoreUnits():
 		#var units : Array[LogicEngine.Unit] = [

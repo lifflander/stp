@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=37 format=3 uid="uid://0jewu7pkdoe8"]
+[gd_resource type="TileSet" load_steps=39 format=3 uid="uid://0jewu7pkdoe8"]
 
 [ext_resource type="Texture2D" uid="uid://b3bhoe2tb63dy" path="res://assets/tilesets/Atmosphere_1.png" id="1_o4mdy"]
 [ext_resource type="Material" uid="uid://dp8smeaxg8g1" path="res://orb-shader.tres" id="2_40q4k"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://4sn06fsj01xw" path="res://assets/tilesets/Buildings_Overlay_2.png" id="8_geh3v"]
 [ext_resource type="Texture2D" uid="uid://bfi2wkiec7kl0" path="res://assets/tilesets/Mars_Tileset_2.png" id="8_iwov0"]
 [ext_resource type="Texture2D" uid="uid://cdc1gibsk56aa" path="res://assets/tilesets/Square_Crater_Mars_2.png" id="9_3gtv2"]
+[ext_resource type="Texture2D" uid="uid://lpitymoo4ak3" path="res://assets/tilesets/Wormhole-Animation-1.png" id="10_ubtcm"]
 [ext_resource type="Texture2D" uid="uid://cfnrp8sjq8t2n" path="res://assets/tilesets/Ice_Terrain_Crater_Tileset.png" id="12_j6vov"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_74qju"]
@@ -295,6 +296,44 @@ texture_region_size = Vector2i(473, 385)
 6:0/0 = 0
 7:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cqi3h"]
+texture = ExtResource("10_ubtcm")
+texture_region_size = Vector2i(365, 477)
+0:0/animation_columns = 30
+0:0/animation_speed = 0.3
+0:0/animation_frame_0/duration = 0.05
+0:0/animation_frame_1/duration = 0.05
+0:0/animation_frame_2/duration = 0.05
+0:0/animation_frame_3/duration = 0.05
+0:0/animation_frame_4/duration = 0.05
+0:0/animation_frame_5/duration = 0.05
+0:0/animation_frame_6/duration = 0.05
+0:0/animation_frame_7/duration = 0.05
+0:0/animation_frame_8/duration = 0.05
+0:0/animation_frame_9/duration = 0.05
+0:0/animation_frame_10/duration = 0.05
+0:0/animation_frame_11/duration = 0.05
+0:0/animation_frame_12/duration = 0.05
+0:0/animation_frame_13/duration = 0.05
+0:0/animation_frame_14/duration = 0.05
+0:0/animation_frame_15/duration = 0.05
+0:0/animation_frame_16/duration = 0.05
+0:0/animation_frame_17/duration = 0.05
+0:0/animation_frame_18/duration = 0.05
+0:0/animation_frame_19/duration = 0.05
+0:0/animation_frame_20/duration = 0.05
+0:0/animation_frame_21/duration = 0.05
+0:0/animation_frame_22/duration = 0.05
+0:0/animation_frame_23/duration = 0.05
+0:0/animation_frame_24/duration = 0.05
+0:0/animation_frame_25/duration = 0.05
+0:0/animation_frame_26/duration = 0.05
+0:0/animation_frame_27/duration = 0.05
+0:0/animation_frame_28/duration = 0.05
+0:0/animation_frame_29/duration = 0.05
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 150)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fcyon"]
 texture = ExtResource("7_5b08o")
 margins = Vector2i(3, 0)
@@ -500,4 +539,5 @@ sources/17 = SubResource("TileSetAtlasSource_o36dl")
 sources/18 = SubResource("TileSetAtlasSource_iqyn1")
 sources/15 = SubResource("TileSetAtlasSource_h1qaa")
 sources/20 = SubResource("TileSetAtlasSource_65qvr")
+sources/19 = SubResource("TileSetAtlasSource_cqi3h")
 pattern_0 = SubResource("TileMapPattern_74qju")

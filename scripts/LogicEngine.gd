@@ -67,7 +67,7 @@ class TileImprovement:
 
 class WormholeImprovement extends TileImprovement:
 	func _init(in_le : LogicEngine, in_tile_map : IsoTileMap, in_base : Base, in_location : Vector2i):
-		var ident = Map.AtlasIdent.new(8, Vector2i(1,1))
+		var ident = Map.AtlasIdent.new(19, Vector2i(0,0))
 		super(in_le, in_tile_map, in_base, in_location, ident)
 
 	func isWormhole() -> bool:
@@ -130,6 +130,8 @@ class Base:
 		return t
 
 	func setupSelectBaseDiaglog(ui : BaseSelectUI):
+		tile_map.disableInputs()
+		ui.set_visible(true)
 		ui.get_parent().find_child("ControlBottom").set_visible(false)
 		ui.get_parent().find_child("ControlTop").set_visible(false)
 		var city_name : Label = ui.find_child("CityName")
@@ -180,6 +182,7 @@ class Base:
 		ui.set_visible(false)
 		ui.get_parent().find_child("ControlBottom").set_visible(true)
 		ui.get_parent().find_child("ControlTop").set_visible(true)
+		tile_map.enableInputs()
 		
 	func _train_button_pressed(ui : BaseSelectUI):
 		var unit_list : ItemList = ui.find_child("UnitListItem")
@@ -195,6 +198,7 @@ class Base:
 		ui.set_visible(false)
 		ui.get_parent().find_child("ControlBottom").set_visible(true)
 		ui.get_parent().find_child("ControlTop").set_visible(true)
+		tile_map.enableInputs()
 
 	func _unit_item_list_changed(index : int, ui : BaseSelectUI):
 		print("changed: ", index)
