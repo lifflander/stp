@@ -200,10 +200,18 @@ func _unhandled_input(event):
 	if not inputs_enabled:
 		return
 
-	#print("handle: ", event)
+	#if event is InputEventMouseButton:
+		#print("stopped=", input_timer.is_stopped(), ", time left=", input_timer.get_time_left(), ", wait=", input_timer.get_wait_time())
 
-	if event is InputEventMouseButton: #not input_timer.is_stopped() and e
-		_handle_input_event(event)
+	if event is InputEventMouseButton and not input_timer.is_stopped():
+		print("double tap=", true)
+		var global_pos = get_global_mouse_position()
+		var local_pos = to_local(global_pos)
+		var map_pos = local_to_map(local_pos)
+		selection.select(map_pos)
+		if selection.baseSelected():
+			var base = map.getTileVec(selection.getTile()).base
+			setUIForBase(base, true)
 
 	if event is InputEventScreenDrag:
 		_handle_drag(event)
@@ -214,7 +222,11 @@ func _unhandled_input(event):
 		characterbody.set_position(Vector2(characterbody.get_position().x + local_delta.x, characterbody.get_position().y + local_delta.y))
 	elif event is InputEventMouseButton:
 		if not event.is_pressed():
-			input_timer.start(0.3)
+			print("start timer")
+			input_timer = Timer.new()
+			add_child(input_timer)
+			input_timer.set_one_shot(true)
+			input_timer.start(0.1)
 			input_timer.timeout.connect(_handle_input_event.bind(event))
 	elif event is InputEventScreenTouch:
 		_handle_touch(event)
@@ -364,7 +376,11 @@ func makeTextureForButton(ident : Map.AtlasIdent) -> AtlasTexture:
 	t.set_region(source.get_tile_texture_region(ident.atlas_coord))
 	return t
 
-func setUIForBase(base : LogicEngine.Base):
+func _create_unit_pressed(base : LogicEngine.Base):
+	var base_select_ui = get_parent().find_child("BaseSelectUI") as BaseSelectUI
+	base.setupSelectBaseDiaglog(base_select_ui)
+
+func setUIForBase(base : LogicEngine.Base, full_ui : bool):
 	print("setUIBase")
 	var dcr = get_parent().find_child("DynamicColorRect") as ColorRect
 	dcr.visible = true
@@ -374,11 +390,15 @@ func setUIForBase(base : LogicEngine.Base):
 	var new_label : Label = Label.new()
 	new_label.text = base.name + ": Level " + str(base.level)
 	dcrc.add_child(new_label)
-#
-	var loc = base.location
+	
+	var open_base : Button = Button.new()
+	open_base.set_text("Create Unit")
+	open_base.pressed.connect(_create_unit_pressed.bind(base))
+	dcrc.add_child(open_base)
 
-	var base_select_ui = get_parent().find_child("BaseSelectUI") as BaseSelectUI
-	base.setupSelectBaseDiaglog(base_select_ui)
+	if full_ui:
+		var base_select_ui = get_parent().find_child("BaseSelectUI") as BaseSelectUI
+		base.setupSelectBaseDiaglog(base_select_ui)
 
 	#if base.canSupportMoreUnits():
 		#var units : Array[LogicEngine.Unit] = [
@@ -646,7 +666,7 @@ func selectCell(tile : Vector2i):
 			sprite_holder.add_child(builder)
 	elif base_selected:
 		var base = map.getTileVec(selection.getTile()).base
-		setUIForBase(base)
+		setUIForBase(base, false)
 		for line in base.highlight_border_lines:
 			line.set_visible(true)
 	else:
